@@ -31,17 +31,17 @@ class RobotController
     /**
      * 显示机器人信息
      *
-     * @return User|string
+     * @return array
      */
-    public function show(): User|string
+    public function show(): array
     {
         try {
             $response = Telegram::bot('mybot')->getMe();
         } catch (TelegramSDKException $e) {
-            return $e->getMessage();
+            return [$e->getMessage()];
         }
         
-        return $response;
+        return [$response];
     }
     
 }
