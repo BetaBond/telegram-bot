@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Telegram\Bot\Api;
+use Telegram\Bot\Exceptions\TelegramSDKException;
+use Telegram\Bot\Laravel\Facades\Telegram;
 use Telegram\Bot\Objects\User;
 
 /**
@@ -34,8 +36,8 @@ class RobotController
     public function show(): User|string
     {
         try {
-            $response = $this->telegram->getMe();
-        } catch (Exception $e) {
+            $response = Telegram::bot('mybot')->getMe();
+        } catch (TelegramSDKException $e) {
             return $e->getMessage();
         }
         
