@@ -18,12 +18,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::controller(
-    RobotController::class
-)->prefix(
-    '/telegram/webhook'
-)->group(function () {
+Route::prefix('/telegram')->group(function () {
     
-    Route::any('show');
+    Route::controller(
+        RobotController::class
+    )->prefix(
+        '/webhook'
+    )->group(function () {
+        
+        Route::any('show', 'show');
+        
+    });
     
 });
