@@ -32,9 +32,9 @@ class RobotController
      */
     public function show(): array
     {
-        $response = Telegram::getMe();
+//        $response = Telegram::getMe();
         
-        return [$response];
+        return [$this->telegram];
     }
     
 }
