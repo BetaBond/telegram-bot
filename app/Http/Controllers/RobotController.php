@@ -36,7 +36,7 @@ class RobotController
         $response = $this->telegram->getMe();
         
         $this->telegram->sendMessage([
-            'chat_id' => '@southwan',
+            'chat_id' => '-969934184',
             'text' => 'Hello World'
         ]);
         
