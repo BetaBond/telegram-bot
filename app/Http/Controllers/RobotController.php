@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
-use Telegram\Bot\Laravel\Facades\Telegram;
+use Telegram\Bot\Keyboard\Keyboard;
 
 /**
  * 机器人控制器
@@ -48,7 +48,7 @@ class RobotController
             ['0']
         ];
     
-        $reply_markup = Telegram::replyKeyboardMarkup([
+        $reply_markup = Keyboard::make([
             'keyboard' => $keyboard,
             'resize_keyboard' => true,
             'one_time_keyboard' => true
