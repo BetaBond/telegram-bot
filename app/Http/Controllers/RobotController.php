@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Telegram\Bot\Api;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
 /**
@@ -29,12 +30,12 @@ class RobotController
      * 显示机器人信息
      *
      * @return array
+     * @throws TelegramSDKException
      */
     public function show(): array
     {
-//        $response = Telegram::getMe();
         
-        return [$this->telegram];
+        return [$this->telegram->getMe()];
     }
     
 }
