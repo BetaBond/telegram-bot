@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
 use Telegram\Bot\Api;
-use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Laravel\Facades\Telegram;
-use Telegram\Bot\Objects\User;
 
 /**
  * 机器人控制器
