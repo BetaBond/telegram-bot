@@ -34,7 +34,11 @@ class RobotController
      */
     public function show(): array
     {
-        $telegram = new Api('5669756920:AAGO81biPNyd48fQsz_5vsGZ9NWMXhND8ps');
+        $telegram = new Api(
+            token: '5669756920:AAGO81biPNyd48fQsz_5vsGZ9NWMXhND8ps',
+            baseBotUrl: 'telegram.southwan.cn/',
+        );
+        
         $response = $telegram->getMe();
         
         return [$response];
