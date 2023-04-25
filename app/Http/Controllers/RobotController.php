@@ -36,7 +36,7 @@ class RobotController
     public function show(): array
     {
         try {
-            $response = Telegram::bot('mybot')->getMe();
+            $response = Telegram::bot()->getMe();
         } catch (TelegramSDKException $e) {
             return [$e->getMessage()];
         }
