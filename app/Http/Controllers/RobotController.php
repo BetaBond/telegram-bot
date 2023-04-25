@@ -34,8 +34,10 @@ class RobotController
      */
     public function show(): array
     {
+        $telegram = new Api('5669756920:AAGO81biPNyd48fQsz_5vsGZ9NWMXhND8ps');
+        $response = $telegram->getMe();
         
-        return [$this->telegram->getMe()];
+        return [$response];
     }
     
 }
