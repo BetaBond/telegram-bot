@@ -92,7 +92,7 @@ return [
     | Default: https://api.telegram.org/bot
     |
     */
-    'base_bot_url' => 'telegram.southwan.cn/',
+    'base_bot_url' => 'telegram.southwan.cn/bot',
     
     /*
     |--------------------------------------------------------------------------

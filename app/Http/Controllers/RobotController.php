@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
-use Telegram\Bot\Laravel\Facades\Telegram;
 
 /**
  * 机器人控制器
@@ -34,12 +33,7 @@ class RobotController
      */
     public function show(): array
     {
-        $telegram = new Api(
-            token: '5669756920:AAGO81biPNyd48fQsz_5vsGZ9NWMXhND8ps',
-            baseBotUrl: 'telegram.southwan.cn/bot',
-        );
-        
-        $response = $telegram->getMe();
+        $response = $this->telegram->getMe();
         
         return [$response];
     }
