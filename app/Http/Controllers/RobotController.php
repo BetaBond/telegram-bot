@@ -36,7 +36,7 @@ class RobotController
     public function show(): array
     {
         $response = Telegram::getMe();
-    
+        
         return [$response];
     }
     
