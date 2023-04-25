@@ -36,7 +36,7 @@ class RobotController
     {
         $telegram = new Api(
             token: '5669756920:AAGO81biPNyd48fQsz_5vsGZ9NWMXhND8ps',
-            baseBotUrl: 'telegram.southwan.cn/',
+            baseBotUrl: 'telegram.southwan.cn/bot',
         );
         
         $response = $telegram->getMe();
