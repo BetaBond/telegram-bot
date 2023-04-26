@@ -111,8 +111,6 @@ class WebhookController
         
         Log::info(json_encode([$update], JSON_UNESCAPED_UNICODE));
         
-        Telegram::addCommand(StartCommand::class);
-        
         return 'ok';
     }
     
