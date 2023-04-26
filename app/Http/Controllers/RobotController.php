@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Keyboard\Keyboard;
+use Telegram\Bot\Laravel\Facades\Telegram;
 
 /**
  * 机器人控制器
@@ -27,6 +28,20 @@ class RobotController
     }
     
     /**
+     * 设置 [WebHook]
+     *
+     * @return array
+     */
+    public function webhook(): array
+    {
+        $response = Telegram::setWebhook([
+            'url' => 'https://southwan.cn/telegram/webhook'
+        ]);
+        
+        return [$response];
+    }
+    
+    /**
      * 显示机器人信息
      *
      * @return array
@@ -40,27 +55,27 @@ class RobotController
             'chat_id' => '5835484544',
             'text' => 'Hello World'
         ]);
-    
+        
         $keyboard = [
             ['7', '8', '9'],
             ['4', '5', '6'],
             ['1', '2', '3'],
             ['0']
         ];
-    
+        
         $reply_markup = Keyboard::make([
             'keyboard' => $keyboard,
             'resize_keyboard' => true,
             'one_time_keyboard' => true
         ]);
-    
+        
         $response = $this->telegram->sendMessage([
             'chat_id' => '-969934184',
             'text' => 'Hello World',
             'reply_markup' => $reply_markup
         ]);
-    
-    
+        
+        
         return [$response];
     }
     
