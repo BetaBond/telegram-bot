@@ -68,7 +68,9 @@ class Handler extends ExceptionHandler
         $request
     ): HttpResponse|JsonResponse|Response {
         $message = $e->validator->errors()->first();
+        
         Log::info("convertValidationExceptionToResponse: $message");
+        Log::info(json_encode($request::all(), JSON_UNESCAPED_UNICODE));
         
         if ($e->response) {
             return $e->response;
