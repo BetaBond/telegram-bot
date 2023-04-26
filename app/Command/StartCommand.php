@@ -18,7 +18,7 @@ class StartCommand extends Command
      *
      * @var string
      */
-    protected string $name = '开始';
+    protected string $name = 'start';
     
     /**
      * 指令说明
