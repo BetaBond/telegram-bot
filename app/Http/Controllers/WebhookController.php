@@ -104,9 +104,9 @@ class WebhookController
         
         $chatId = $message['chat']['id'];
         $textMessage = $message['text'];
-        $formId = $message['form']['id'];
-        $formFirstName = $message['form']['first_name'];
-        $formUserName = $message['form']['user_name'];
+        $formId = $message['from']['id'];
+        $formFirstName = $message['from']['first_name'];
+        $formUserName = $message['from']['user_name'];
         
         $this->telegram->sendMessage([
             'chat_id' => $chatId,
