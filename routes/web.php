@@ -25,7 +25,8 @@ Route::prefix('/telegram')->group(function () {
     )->prefix(
         '/webhook'
     )->group(function () {
-        
+    
+        Route::any('webhook', 'webhook');
         Route::any('show', 'show');
         
     });
