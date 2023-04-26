@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Command\StartCommand;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
@@ -109,6 +110,8 @@ class WebhookController
         ]);
         
         Log::info(json_encode([$update], JSON_UNESCAPED_UNICODE));
+        
+        Telegram::addCommand(StartCommand::class);
         
         return 'ok';
     }
