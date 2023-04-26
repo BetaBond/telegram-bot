@@ -50,13 +50,13 @@ class WebhookController
         
         $message = $requestParams['message'];
         
-        Validator::validate([
+        Validator::validate($message, [
             'message_id' => ['required', 'integer'],
             'from' => ['required', 'array'],
             'chat' => ['required', 'array'],
             'date' => ['required', 'integer'],
             'text' => ['required', 'string'],
-        ], $message);
+        ]);
         
         Log::info('1');
         
