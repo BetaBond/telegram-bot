@@ -49,9 +49,6 @@ class WebhookController
         ]);
         
         $message = $requestParams['message'];
-        Log::info(json_encode($message, JSON_UNESCAPED_UNICODE));
-        
-        return false;
         
         Validator::validate([
             'message_id' => ['required', 'integer'],
