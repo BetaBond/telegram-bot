@@ -33,7 +33,7 @@ class StartCommand extends Command
      */
     public function handle(): void
     {
-        $this->replyWithLocation([
+        $this->replyWithMessage([
             'text' => 'Hey, there! Welcome to our bot!',
         ]);
     }
