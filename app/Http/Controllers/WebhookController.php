@@ -38,10 +38,10 @@ class WebhookController
      * 消息处理中心
      *
      * @param  Request  $request
-     * @return bool
+     * @return bool|string
      * @throws TelegramSDKException
      */
-    public function message(Request $request): bool
+    public function message(Request $request): bool|string
     {
         $requestParams = $request::validate([
             'update_id' => ['required', 'integer'],
@@ -112,8 +112,8 @@ class WebhookController
             'chat_id' => $chatId,
             'text' => "接收到消息: $textMessage, 由$formFirstName(@$formUserName|$formId)发送"
         ]);
-        
-        return true;
+    
+        return 'ok';
     }
     
 }
