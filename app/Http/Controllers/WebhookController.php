@@ -48,7 +48,8 @@ class WebhookController
             'message' => ['required', 'array'],
         ]);
         
-        Log::info(json_encode($requestParams['message'], JSON_UNESCAPED_UNICODE));
+        $message = $requestParams['message'];
+        Log::info(json_encode($message, JSON_UNESCAPED_UNICODE));
         
         Validator::validate([
             'message_id' => ['required', 'integer'],
@@ -56,57 +57,57 @@ class WebhookController
             'chat' => ['required', 'array'],
             'date' => ['required', 'integer'],
             'text' => ['required', 'string'],
-        ], $requestParams['message']);
+        ], $message);
         
         Log::info('1');
-        
-        $request::validate([
+    
+        Validator::validate([
             'id' => ['required', 'integer'],
             'is_bot' => ['required', 'boolean'],
             'first_name' => ['required', 'string'],
             'username' => ['required', 'string'],
             'language_code' => ['required', 'string'],
-        ], $requestParams['message']['from']);
+        ], $message['from']);
         
         Log::info('2');
         
         // 排除机器人消息
-        if ($requestParams['message']['from']['is_bot'] !== false) {
+        if ($message['from']['is_bot'] !== false) {
             return false;
         }
         
         Log::info('3');
         
         // 群消息和私聊消息分流处理
-        
-        $request::validate([
+    
+        Validator::validate([
             'id' => ['required', 'integer'],
             'type' => ['required', 'string', Rule::in(['group', 'private'])],
-        ], $requestParams['message']['chat']);
+        ], $message['chat']);
         
         Log::info('4');
         
-        $chatType = $requestParams['message']['chat']['type'];
+        $chatType = $message['chat']['type'];
         
         if ($chatType === 'group') {
-            $request::validate([
+            Validator::validate([
                 'title' => ['required', 'string'],
                 'all_members_are_administrators' => ['required', 'boolean'],
-            ], $requestParams['message']['chat']);
+            ], $message['chat']);
         }
         
         if ($chatType === 'private') {
-            $request::validate([
+            Validator::validate([
                 'first_name' => ['required', 'string'],
                 'username' => ['required', 'string'],
-            ], $requestParams['message']['chat']);
+            ], $message['chat']);
         }
         
-        $chatId = $requestParams['message']['chat']['id'];
-        $textMessage = $requestParams['message']['text'];
-        $formId = $requestParams['form']['id'];
-        $formFirstName = $requestParams['form']['first_name'];
-        $formUserName = $requestParams['form']['user_name'];
+        $chatId = $message['chat']['id'];
+        $textMessage = $message['text'];
+        $formId = $message['form']['id'];
+        $formFirstName = $message['form']['first_name'];
+        $formUserName = $message['form']['user_name'];
         
         $this->telegram->sendMessage([
             'chat_id' => $chatId,
