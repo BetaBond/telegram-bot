@@ -18,7 +18,7 @@ class StartCommand extends Command
      *
      * @var string
      */
-    protected string $name = 'start';
+    protected string $name = '开始';
     
     /**
      * 指令说明
@@ -35,9 +35,9 @@ class StartCommand extends Command
     public function handle(): void
     {
         $keyboard = [
-            '/汇率设置',
-            '/进账',
-            '/出账',
+            ['/汇率设置'],
+            ['/进账'],
+            ['/出账'],
         ];
         
         $reply_markup = Keyboard::make([
@@ -47,7 +47,7 @@ class StartCommand extends Command
         ]);
         
         $this->replyWithMessage([
-            'text' => 'Hello',
+            'text' => '请选择需要执行的指令！',
             'reply_markup' => $reply_markup,
         ]);
     }
