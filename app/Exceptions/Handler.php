@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Validation\ValidationException;
@@ -60,13 +61,12 @@ class Handler extends ExceptionHandler
      *
      * @param  ValidationException  $e
      * @param  Request  $request
-     * @return \Illuminate\Http\Response|JsonResponse|Response|null
+     * @return HttpResponse|JsonResponse|Response
      */
     protected function convertValidationExceptionToResponse(
         ValidationException $e,
         $request
-    ): \Illuminate\Http\Response|JsonResponse|Response|null {
-        
+    ): HttpResponse|JsonResponse|Response {
         $message = $e->validator->errors()->first();
         Log::info("convertValidationExceptionToResponse: $message");
         
@@ -74,7 +74,7 @@ class Handler extends ExceptionHandler
             return $e->response;
         }
         
-        return null;
+        return \Illuminate\Support\Facades\Response::json();
     }
     
 }
