@@ -51,6 +51,8 @@ class WebhookController
         $message = $requestParams['message'];
         Log::info(json_encode($message, JSON_UNESCAPED_UNICODE));
         
+        return false;
+        
         Validator::validate([
             'message_id' => ['required', 'integer'],
             'from' => ['required', 'array'],
@@ -60,7 +62,7 @@ class WebhookController
         ], $message);
         
         Log::info('1');
-    
+        
         Validator::validate([
             'id' => ['required', 'integer'],
             'is_bot' => ['required', 'boolean'],
@@ -79,7 +81,7 @@ class WebhookController
         Log::info('3');
         
         // 群消息和私聊消息分流处理
-    
+        
         Validator::validate([
             'id' => ['required', 'integer'],
             'type' => ['required', 'string', Rule::in(['group', 'private'])],
