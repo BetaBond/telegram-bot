@@ -25,7 +25,7 @@ class StartCommand extends Command
      *
      * @var string
      */
-    protected string $description = 'Start Command to get you started';
+    protected string $description = '获取您能够操作的所有指令';
     
     /**
      * 操作的业务处理
@@ -35,9 +35,9 @@ class StartCommand extends Command
     public function handle(): void
     {
         $keyboard = [
-            ['/汇率设置'],
-            ['/进账'],
-            ['/出账'],
+            ['/ERS (汇率设置)'],
+            ['/income (入账)'],
+            ['/clearing (出账)'],
         ];
         
         $reply_markup = Keyboard::make([
