@@ -47,7 +47,7 @@ class WebhookController
             'message' => ['required', 'array'],
         ]);
         
-        Log::info('0');
+        Log::info(json_encode($requestParams['message'], JSON_UNESCAPED_UNICODE));
         
         $request::validate([
             'message_id' => ['required', 'integer'],
@@ -56,7 +56,7 @@ class WebhookController
             'date' => ['required', 'integer'],
             'text' => ['required', 'string'],
         ], $requestParams['message']);
-    
+        
         Log::info('1');
         
         $request::validate([
@@ -66,14 +66,14 @@ class WebhookController
             'username' => ['required', 'string'],
             'language_code' => ['required', 'string'],
         ], $requestParams['message']['from']);
-    
+        
         Log::info('2');
         
         // 排除机器人消息
         if ($requestParams['message']['from']['is_bot'] !== false) {
             return false;
         }
-    
+        
         Log::info('3');
         
         // 群消息和私聊消息分流处理
@@ -82,7 +82,7 @@ class WebhookController
             'id' => ['required', 'integer'],
             'type' => ['required', 'string', Rule::in(['group', 'private'])],
         ], $requestParams['message']['chat']);
-    
+        
         Log::info('4');
         
         $chatType = $requestParams['message']['chat']['type'];
