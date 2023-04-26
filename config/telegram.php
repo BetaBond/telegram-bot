@@ -127,7 +127,7 @@ return [
     |
     */
     'commands' => [
-        HelpCommand::class,
+//        HelpCommand::class,
     ],
     
     /*
