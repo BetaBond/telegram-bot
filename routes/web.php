@@ -24,7 +24,7 @@ Route::prefix('/telegram')->group(function () {
     Route::controller(
         WebhookController::class
     )->prefix(
-        '/webhook'
+        'webhook'
     )->group(function () {
         
         Route::any('message', 'message');
@@ -34,7 +34,7 @@ Route::prefix('/telegram')->group(function () {
     Route::controller(
         RobotController::class
     )->prefix(
-        '/robot'
+        'robot'
     )->group(function () {
         
         Route::any('webhook', 'webhook');
