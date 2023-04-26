@@ -47,7 +47,7 @@ class StartCommand extends Command
         ]);
         
         $this->replyWithMessage([
-            'text' => '请选择需要执行的指令！',
+            'text' => 'Hello',
             'reply_markup' => $reply_markup,
         ]);
     }
