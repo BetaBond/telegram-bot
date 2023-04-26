@@ -60,13 +60,13 @@ class WebhookController
         
         Log::info('1');
         
-        Validator::validate([
+        Validator::validate($message['from'], [
             'id' => ['required', 'integer'],
             'is_bot' => ['required', 'boolean'],
             'first_name' => ['required', 'string'],
             'username' => ['required', 'string'],
             'language_code' => ['required', 'string'],
-        ], $message['from']);
+        ]);
         
         Log::info('2');
         
@@ -79,27 +79,27 @@ class WebhookController
         
         // 群消息和私聊消息分流处理
         
-        Validator::validate([
+        Validator::validate($message['chat'], [
             'id' => ['required', 'integer'],
             'type' => ['required', 'string', Rule::in(['group', 'private'])],
-        ], $message['chat']);
+        ]);
         
         Log::info('4');
         
         $chatType = $message['chat']['type'];
         
         if ($chatType === 'group') {
-            Validator::validate([
+            Validator::validate($message['chat'], [
                 'title' => ['required', 'string'],
                 'all_members_are_administrators' => ['required', 'boolean'],
-            ], $message['chat']);
+            ]);
         }
         
         if ($chatType === 'private') {
-            Validator::validate([
+            Validator::validate($message['chat'], [
                 'first_name' => ['required', 'string'],
                 'username' => ['required', 'string'],
-            ], $message['chat']);
+            ]);
         }
         
         $chatId = $message['chat']['id'];
