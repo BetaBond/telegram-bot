@@ -58,8 +58,6 @@ class WebhookController
             'text' => ['required', 'string'],
         ]);
         
-        Log::info('1');
-        
         Validator::validate($message['from'], [
             'id' => ['required', 'integer'],
             'is_bot' => ['required', 'boolean'],
@@ -68,14 +66,10 @@ class WebhookController
             'language_code' => ['required', 'string'],
         ]);
         
-        Log::info('2');
-        
         // 排除机器人消息
         if ($message['from']['is_bot'] !== false) {
             return false;
         }
-        
-        Log::info('3');
         
         // 群消息和私聊消息分流处理
         
@@ -83,8 +77,6 @@ class WebhookController
             'id' => ['required', 'integer'],
             'type' => ['required', 'string', Rule::in(['group', 'private'])],
         ]);
-        
-        Log::info('4');
         
         $chatType = $message['chat']['type'];
         
