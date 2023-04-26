@@ -15,7 +15,7 @@ class WebhookController
     
     public function message(Request $request): array
     {
-        Log::info(json_encode($request::all()));
+        Log::info(json_encode($request::all(), JSON_PARTIAL_OUTPUT_ON_ERROR));
         
         return [];
     }
