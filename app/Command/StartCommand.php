@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use Telegram\Bot\Commands\Command;
+use Telegram\Bot\Keyboard\Keyboard;
 
 /**
  * 开始指令
@@ -33,8 +34,22 @@ class StartCommand extends Command
      */
     public function handle(): void
     {
+        $keyboard = [
+            ['7', '8', '9'],
+            ['4', '5', '6'],
+            ['1', '2', '3'],
+            ['0']
+        ];
+    
+        $reply_markup = Keyboard::make([
+            'keyboard' => $keyboard,
+            'resize_keyboard' => true,
+            'one_time_keyboard' => true
+        ]);
+        
         $this->replyWithMessage([
             'text' => 'Hey, there! Welcome to our bot!',
+            'reply_markup' => $reply_markup,
         ]);
     }
     
