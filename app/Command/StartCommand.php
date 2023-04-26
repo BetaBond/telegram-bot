@@ -18,7 +18,7 @@ class StartCommand extends Command
      *
      * @var string
      */
-    protected string $name = 'start';
+    protected string $name = '开始';
     
     /**
      * 指令说明
@@ -35,12 +35,11 @@ class StartCommand extends Command
     public function handle(): void
     {
         $keyboard = [
-            ['7', '8', '9'],
-            ['4', '5', '6'],
-            ['1', '2', '3'],
-            ['0']
+            '/汇率设置',
+            '/进账',
+            '/出账',
         ];
-    
+        
         $reply_markup = Keyboard::make([
             'keyboard' => $keyboard,
             'resize_keyboard' => true,
@@ -48,7 +47,7 @@ class StartCommand extends Command
         ]);
         
         $this->replyWithMessage([
-            'text' => 'Hey, there! Welcome to our bot!',
+            'text' => '请选择需要执行的指令！',
             'reply_markup' => $reply_markup,
         ]);
     }
