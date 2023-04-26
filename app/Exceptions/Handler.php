@@ -70,7 +70,7 @@ class Handler extends ExceptionHandler
         $message = $e->validator->errors()->first();
         
         Log::info("convertValidationExceptionToResponse: $message");
-        Log::info(json_encode($request::all(), JSON_UNESCAPED_UNICODE));
+        Log::info(json_encode($request->all(), JSON_UNESCAPED_UNICODE));
         
         if ($e->response) {
             return $e->response;
