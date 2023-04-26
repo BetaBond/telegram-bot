@@ -108,7 +108,7 @@ class WebhookController
             'text' => "接收到消息: $textMessage, 由$formFirstName(@$formUserName|$formId)发送"
         ]);
         
-        Log::info(json_encode([$update, JSON_UNESCAPED_UNICODE]));
+        Log::info(json_encode([$update], JSON_UNESCAPED_UNICODE));
         
         return 'ok';
     }
