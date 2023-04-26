@@ -62,7 +62,8 @@ class Handler extends ExceptionHandler
      */
     protected function convertValidationExceptionToResponse(ValidationException $e, $request): Response
     {
-        Log::info($e->validator->errors()->first());
+        $message = $e->validator->errors()->first();
+        Log::info("convertValidationExceptionToResponse: $message");
         
         return $e->response;
     }
