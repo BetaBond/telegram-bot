@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
@@ -49,7 +50,7 @@ class WebhookController
         
         Log::info(json_encode($requestParams['message'], JSON_UNESCAPED_UNICODE));
         
-        $request::validate([
+        Validator::validate([
             'message_id' => ['required', 'integer'],
             'from' => ['required', 'array'],
             'chat' => ['required', 'array'],
