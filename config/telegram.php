@@ -1,5 +1,8 @@
 <?php
 
+use App\Command\ClearingCommand;
+use App\Command\ERSCommand;
+use App\Command\IncomeCommand;
 use App\Command\StartCommand;
 use Telegram\Bot\Commands\HelpCommand;
 
@@ -41,6 +44,9 @@ return [
             'commands' => [
 //                 Acme\Project\Commands\MyTelegramBot\BotCommand::class
                 StartCommand::class,
+                ERSCommand::class,
+                IncomeCommand::class,
+                ClearingCommand::class
             ],
         ],
     
