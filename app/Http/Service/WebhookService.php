@@ -129,12 +129,14 @@ class WebhookService
             
             foreach ($income as $item) {
                 $date = (new DateTimeImmutable())
-                    ->setTimestamp((int)$item[BillTrace::CREATED_AT])
+                    ->setTimestamp((int) $item[BillTrace::CREATED_AT])
                     ->setTimezone(new DateTimeZone('Asia/Shanghai'))
                     ->format('Y-m-d H:i:s');
                 
                 $money = $item[BillTrace::MONEY];
+                $money = str_replace('.', '//.', $money);
                 $difference = $money / $exchangeRate;
+                $difference = str_replace('.', '//.', $difference);
                 
                 $message[] = "`\\[$date\\]`  \\|  $money/$exchangeRate=$difference";
             }
