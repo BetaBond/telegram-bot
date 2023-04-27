@@ -52,7 +52,7 @@ class WebhookService
         }
         
         if (is_numeric($params[0])) {
-            return "参数类型错误";
+            return "参数类型错误".$params[0];
         }
         
         $cache = Cache::put('exchange_rate', $params[0]);
