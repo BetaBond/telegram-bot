@@ -145,7 +145,7 @@ class WebhookService
                 $username = $item[BillTrace::USERNAME];
                 
                 $messageString = "`\\[$date\\]`  \\|  ";
-                $messageString .= "$moneyString/$exchangeRateString\\=$differenceString  ";
+                $messageString .= "$moneyString/$exchangeRateString\\=$differenceString  \\|  ";
                 $messageString .= "@$username";
                 
                 $message[] = $messageString;
