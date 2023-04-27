@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
@@ -102,6 +103,15 @@ class WebhookController
         $formUserName = $message['from']['username'];
         
         $update = Telegram::commandsHandler(true);
+        
+        $time = time();
+        $key = "$chatId@$formId^$time";
+        
+        if (!Cache::get($key, false)) {
+            Cache::put("message@$formId", '', 1);
+        } else {
+            return false;
+        }
         
         $this->telegram->sendMessage([
             'chat_id' => $chatId,
