@@ -51,11 +51,12 @@ class WebhookService
             return "参数错误";
         }
         
-        if (is_numeric($params[0])) {
-            return "参数类型错误".$params[0];
+        if (!is_numeric($params[0])) {
+            return "参数类型错误";
         }
         
-        $cache = Cache::put('exchange_rate', $params[0]);
+        $exchangeRate = (float) $params[0];
+        $cache = Cache::put('exchange_rate', $exchangeRate);
         
         return $cache ? "成功" : "失败";
     }
