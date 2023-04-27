@@ -148,7 +148,7 @@ class WebhookService
                 $difference = str_replace('.', "\\.", (string) $difference);
                 $exchangeRate = str_replace('.', "\\.", (string) $exchangeRate);
                 
-                $message[] = "`\\[$date\\]`  \\|  $money/$exchangeRate=$difference";
+                $message[] = "`\\[$date\\]`  \\|  $money/$exchangeRate\\=$difference";
             }
             
             Log::info(implode("\n", $message));
