@@ -112,6 +112,7 @@ class WebhookController
         
         $time = time();
         $key = "$chatId@$formId#$time";
+        $value = Cache::get($key);
         
         if (Cache::get($key) == $time) {
             return false;
@@ -121,7 +122,7 @@ class WebhookController
         
         $this->telegram->sendMessage([
             'chat_id' => $chatId,
-            'text' => "接收到消息: $textMessage, 由$formFirstName(@$formUserName|$formId)在$date(Asia/Shanghai)发送"
+            'text' => "($value)接收到消息: $textMessage, 由$formFirstName(@$formUserName|$formId)在$date(Asia/Shanghai)发送"
         ]);
         
         Log::info(json_encode([$update], JSON_UNESCAPED_UNICODE));
