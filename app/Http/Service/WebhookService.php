@@ -2,6 +2,8 @@
 
 namespace App\Http\Service;
 
+use App\Models\Bill;
+use App\Models\Trace\BillTrace;
 use Illuminate\Support\Facades\Cache;
 
 class WebhookService
@@ -74,13 +76,71 @@ class WebhookService
         return "失败";
     }
     
-    public static function income(array $params): string
-    {
-        return "";
+    /**
+     * 设置进账信息
+     *
+     * @param  array  $params
+     * @param  string  $formUserName
+     * @param  int  $tUID
+     * @return string
+     */
+    public static function income(
+        array $params,
+        string $formUserName,
+        int $tUID
+    ): string {
+        if (empty($params)) {
+            return "参数错误";
+        }
+        
+        if (!is_numeric($params[0])) {
+            return "参数类型错误";
+        }
+        
+        $money = (float) $params[0];
+        
+        if ($money <= 0) {
+            return "金额必须大于0";
+        }
+        
+        $exchangeRate = Cache::get('exchange_rate', false);
+        if ($exchangeRate === false) {
+            return "汇率未设置";
+        }
+        
+        $model = Bill::query()->create([
+            BillTrace::MONEY => $money,
+            BillTrace::EXCHANGE_RATE => $exchangeRate,
+            BillTrace::TYPE => 1,
+            BillTrace::T_UID => $tUID,
+        ])->save();
+        
+        if ($model) {
+            return implode("\n", [
+                "*进账成功！！！*",
+                "@$formUserName"
+            ]);
+        }
+        
+        return "失败";
     }
     
     public static function clearing(array $params): string
     {
+        if (empty($params)) {
+            return "参数错误";
+        }
+        
+        if (!is_numeric($params[0])) {
+            return "参数类型错误";
+        }
+        
+        $money = (float) $params[0];
+        
+        if ($money <= 0) {
+            return "金额必须大于0";
+        }
+        
         return "";
     }
     

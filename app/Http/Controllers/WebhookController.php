@@ -102,15 +102,14 @@ class WebhookController
         $chatId = $message['chat']['id'];
         $textMessage = $message['text'];
         $formId = $message['from']['id'];
-        $formFirstName = $message['from']['first_name'];
         $formUserName = $message['from']['username'];
         $time = $message['date'];
-        $date = (new DateTimeImmutable())
-            ->setTimestamp($time)
-            ->setTimezone(new DateTimeZone('Asia/Shanghai'))
-            ->format('Y-m-d H:i:s');
+//        $date = (new DateTimeImmutable())
+//            ->setTimestamp($time)
+//            ->setTimezone(new DateTimeZone('Asia/Shanghai'))
+//            ->format('Y-m-d H:i:s');
         
-        $update = Telegram::commandsHandler(true);
+        Telegram::commandsHandler(true);
         
         $key = "$time$chatId@$formId";
         $value = Cache::get($key);
@@ -138,8 +137,8 @@ class WebhookController
             '说明' => WebhookService::explain(),
             '帮助' => WebhookService::help(),
             '汇率' => WebhookService::exchangeRate($textMessage),
-            '进账' => WebhookService::income($textMessage),
-            '出账' => WebhookService::clearing($textMessage),
+            '进账' => WebhookService::income($textMessage, $formUserName, $formId),
+            '出账' => WebhookService::clearing($textMessage, $formUserName, $formId),
             default => false,
         };
 
