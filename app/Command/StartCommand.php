@@ -35,9 +35,9 @@ class StartCommand extends Command
     public function handle(): void
     {
         $keyboard = [
-            ['/ERS [汇率] (汇率设置)'],
-            ['/income [金额] (入账)'],
-            ['/clearing [金额] (出账)'],
+            ['/ERS'],
+            ['/income'],
+            ['/clearing'],
         ];
         
         $reply_markup = Keyboard::make([

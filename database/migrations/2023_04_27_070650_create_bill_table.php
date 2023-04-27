@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Trace\BillTrace as Trace;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,14 +19,14 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('bill', function (Blueprint $table) {
-            $table->id()->comment('账单ID');
-            $table->tinyInteger('type')->comment('账目类型 (-1:出账 / 1:入账)');
-            $table->integer('t_uid')->comment('Telegram UID');
-            $table->decimal('decimal')->comment('金额');
-            $table->decimal('exchange_rate')->comment('汇率');
-            $table->integer('created_at')->comment('创建时间');
-            $table->integer('updated_at')->comment('修改时间');
+        Schema::create(Trace::TABLE, function (Blueprint $table) {
+            $table->bigInteger(Trace::ID)->primary()->unique()->comment('账单ID');
+            $table->tinyInteger(Trace::TYPE)->comment('账目类型 (-1:出账 / 1:入账)');
+            $table->integer(Trace::T_UID)->comment('Telegram UID');
+            $table->decimal(Trace::MONEY)->comment('金额');
+            $table->decimal(Trace::EXCHANGE_RATE)->comment('汇率');
+            $table->integer(Trace::CREATED_AT)->comment('创建时间');
+            $table->integer(Trace::UPDATED_AT)->comment('修改时间');
         });
     }
     
@@ -36,7 +37,7 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('bill');
+        Schema::dropIfExists(Trace::TABLE);
     }
     
 };
