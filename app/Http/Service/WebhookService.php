@@ -58,7 +58,15 @@ class WebhookService
         $exchangeRate = (float) $params[0];
         $cache = Cache::put('exchange_rate', $exchangeRate);
         
-        return $cache ? "成功" : "失败";
+        if ($cache) {
+            $exchangeRate = Cache::get('exchange_rate');
+            return implode("\n", [
+                "*汇率设置成功！！！*",
+                "当前汇率为：`$exchangeRate`"
+            ]);
+        }
+        
+        return "失败";
     }
     
     public static function income(array $params): string
