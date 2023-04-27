@@ -7,6 +7,7 @@ use App\Models\Trace\BillTrace;
 use DateTimeImmutable;
 use DateTimeZone;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class WebhookService
 {
@@ -149,6 +150,8 @@ class WebhookService
                 
                 $message[] = "`\\[$date\\]`  \\|  $money/$exchangeRate=$difference";
             }
+            
+            Log::info(implode("\n", $message));
             
             return implode("\n", $message);
         }
