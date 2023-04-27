@@ -127,8 +127,7 @@ class WebhookService
             $message[] = "*进账：*";
             
             foreach ($income as $item) {
-                Log::info($item[BillTrace::CREATED_AT]);
-                $date = date('Y-m-d H:i:s', (int) $item[BillTrace::CREATED_AT]);
+                $date = date('H:i:s', (int) $item[BillTrace::CREATED_AT]);
                 
                 $money = $item[BillTrace::MONEY];
                 $money = (float) $money;
@@ -143,8 +142,13 @@ class WebhookService
                 $moneyString = str_replace('.', "\\.", (string) $money);
                 $differenceString = str_replace('.', "\\.", (string) $difference);
                 $exchangeRateString = str_replace('.', "\\.", (string) $exchangeRate);
+                $username = $item[BillTrace::USERNAME];
                 
-                $message[] = "`\\[$date\\]`  \\|  $moneyString/$exchangeRateString\\=$differenceString";
+                $messageString = "`\\[$date\\]`  \\|  ";
+                $messageString .= "$moneyString/$exchangeRateString\\=$differenceString  ";
+                $messageString .= "@$username";
+                
+                $message[] = $messageString;
             }
             
             return implode("\n", $message);
