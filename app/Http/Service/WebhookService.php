@@ -13,7 +13,7 @@ class WebhookService
     public static function explain(): string
     {
         return "
-        使用说明:
+                           使用说明
         =============================================
         1. 每个用户在会话(群聊/私聊)中每秒最多受理一次指令
         2. 每个指令需要带上对应的参数以空格进行分割
@@ -29,7 +29,7 @@ class WebhookService
     public static function help(): string
     {
         return "
-        指令帮助:
+                           指令帮助
         =============================================
         说明 | 获取当前版本的一些使用说明
         帮助 | 获取当前版本的指令使用指南
