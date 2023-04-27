@@ -152,6 +152,7 @@ class WebhookController
             $this->telegram->sendMessage([
                 'chat_id' => $chatId,
                 'parse_mode' => 'MarkdownV2',
+                'protect_content' => true,
                 'text' => $message
             ]);
         }
