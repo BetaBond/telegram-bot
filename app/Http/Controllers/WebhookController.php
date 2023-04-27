@@ -68,7 +68,6 @@ class WebhookController
             'is_bot' => ['required', 'boolean'],
             'first_name' => ['required', 'string'],
             'username' => ['required', 'string'],
-            'language_code' => ['required', 'string'],
         ]);
         
         // 排除机器人消息
