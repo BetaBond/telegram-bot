@@ -2,6 +2,8 @@
 
 namespace App\Http\Service;
 
+use Illuminate\Support\Facades\Cache;
+
 class WebhookService
 {
     
@@ -45,7 +47,17 @@ class WebhookService
      */
     public static function exchangeRate(array $params): string
     {
-        return "";
+        if (empty($params)) {
+            return "参数错误";
+        }
+        
+        if (is_numeric($params[0])) {
+            return "参数类型错误";
+        }
+        
+        $cache = Cache::put('exchange_rate', $params[0]);
+        
+        return $cache ? "成功" : "失败";
     }
     
     public static function income(array $params): string
