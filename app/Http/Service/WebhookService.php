@@ -143,9 +143,9 @@ class WebhookService
                     $difference = $money / $exchangeRate;
                 }
                 
-                $money = str_replace('.', '//.', (string) $money);
-                $difference = str_replace('.', '//.', (string) $difference);
-                $exchangeRate = str_replace('.', '//.', (string) $exchangeRate);
+                $money = str_replace('.', '\\.', (string) $money);
+                $difference = str_replace('.', '\\.', (string) $difference);
+                $exchangeRate = str_replace('.', '\\.', (string) $exchangeRate);
                 
                 $message[] = "`\\[$date\\]`  \\|  $money/$exchangeRate=$difference";
             }
