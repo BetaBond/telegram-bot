@@ -4,8 +4,6 @@ namespace App\Http\Service;
 
 use App\Models\Bill;
 use App\Models\Trace\BillTrace;
-use DateTimeImmutable;
-use DateTimeZone;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -141,11 +139,11 @@ class WebhookService
                     $difference = $money / $exchangeRate;
                 }
                 
-                $money = str_replace('.', "\\.", (string) $money);
-                $difference = str_replace('.', "\\.", (string) $difference);
-                $exchangeRate = str_replace('.', "\\.", (string) $exchangeRate);
+                $moneyString = str_replace('.', "\\.", (string) $money);
+                $differenceString = str_replace('.', "\\.", (string) $difference);
+                $exchangeRateString = str_replace('.', "\\.", (string) $exchangeRate);
                 
-                $message[] = "`\\[$date\\]`  \\|  $money/$exchangeRate\\=$difference";
+                $message[] = "`\\[$date\\]`  \\|  $moneyString/$exchangeRateString\\=$differenceString";
             }
             
             Log::info(implode("\n", $message));
