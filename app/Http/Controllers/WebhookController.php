@@ -140,6 +140,7 @@ class WebhookController
             '汇率' => WebhookService::exchangeRate($params),
             '进账' => WebhookService::income($params),
             '出账' => WebhookService::clearing($params),
+            default => "指令错误",
         };
 
 //        $this->telegram->sendMessage([
