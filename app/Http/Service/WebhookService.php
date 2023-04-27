@@ -129,7 +129,7 @@ class WebhookService
             
             foreach ($income as $item) {
                 $date = (new DateTimeImmutable())
-                    ->setTimestamp($item[BillTrace::CREATED_AT])
+                    ->setTimestamp((int)$item[BillTrace::CREATED_AT])
                     ->setTimezone(new DateTimeZone('Asia/Shanghai'))
                     ->format('Y-m-d H:i:s');
                 
