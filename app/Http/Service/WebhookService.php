@@ -56,13 +56,18 @@ class WebhookService
         }
         
         $exchangeRate = (float) $params[0];
+        
+        if ($exchangeRate <= 0) {
+            return "汇率必须大于0";
+        }
+        
         $cache = Cache::put('exchange_rate', $exchangeRate);
         
         if ($cache) {
             $exchangeRate = Cache::get('exchange_rate');
             return implode("\n", [
                 "*汇率设置成功！！！*",
-                "当前汇率为：`$exchangeRate`"
+                "当前汇率为：`$$exchangeRate`"
             ]);
         }
         
