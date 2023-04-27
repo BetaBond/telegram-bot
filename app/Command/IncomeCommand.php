@@ -36,9 +36,10 @@ class IncomeCommand extends Command
         $fallback = $this->getUpdate()->getMessage();
         
         $text = $fallback['text'];
+        $text = explode(' ', $text);
         
         $this->replyWithMessage([
-            'text' => '设置成功！'.$text,
+            'text' => '设置成功！'.json_encode($text, JSON_UNESCAPED_UNICODE),
         ]);
     }
     
