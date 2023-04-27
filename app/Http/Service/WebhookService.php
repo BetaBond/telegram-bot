@@ -26,7 +26,12 @@ class WebhookService
      */
     public static function help(): string
     {
-        return "";
+        return implode("\n", [
+            "*指令使用帮助：*",
+            "`说明` 在当前版本的使用说明",
+            "`帮助` 在当前版本的使用帮助（指令列表）",
+            "`汇率` 设置当前的汇率 | 汇率 `汇率|小数`"
+        ]);
     }
     
     /**
