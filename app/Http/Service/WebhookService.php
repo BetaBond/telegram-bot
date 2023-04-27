@@ -4,6 +4,8 @@ namespace App\Http\Service;
 
 use App\Models\Bill;
 use App\Models\Trace\BillTrace;
+use DateTimeImmutable;
+use DateTimeZone;
 use Illuminate\Support\Facades\Cache;
 
 class WebhookService
@@ -113,13 +115,31 @@ class WebhookService
             BillTrace::EXCHANGE_RATE => $exchangeRate,
             BillTrace::TYPE => 1,
             BillTrace::T_UID => $tUID,
+            BillTrace::USERNAME => $formUserName,
         ])->save();
         
         if ($model) {
-            return implode("\n", [
-                "*进账成功！！！*",
-                "@$formUserName"
-            ]);
+            $income = Bill::query()->whereBetween(BillTrace::CREATED_AT, [
+                strtotime(date('Y-m-d').'00:00:00'),
+                strtotime(date('Y-m-d').'23:59:59'),
+            ])->where('type', 1)->get()->toArray();
+            
+            $message = ["*进账成功！！！*"];
+            $message[] = "*进账：*";
+            
+            foreach ($income as $item) {
+                $date = (new DateTimeImmutable())
+                    ->setTimestamp($item[BillTrace::CREATED_AT])
+                    ->setTimezone(new DateTimeZone('Asia/Shanghai'))
+                    ->format('Y-m-d H:i:s');
+                
+                $money = $item[BillTrace::MONEY];
+                $difference = $money / $exchangeRate;
+                
+                $message[] = "`\\[$date\\]`  \\|  $money/$exchangeRate=$difference";
+            }
+            
+            return implode("\n", $message);
         }
         
         return "失败";
