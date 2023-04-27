@@ -113,11 +113,11 @@ class WebhookController
         $time = time();
         $key = "$chatId@$formId#$time";
         
-        if (Cache::has($key)) {
+        if (Cache::get($key) == $time) {
             return false;
         }
         
-        Cache::put($key, $time, 1);
+        Cache::put($key, $time);
         
         $this->telegram->sendMessage([
             'chat_id' => $chatId,
