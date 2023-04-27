@@ -129,10 +129,7 @@ class WebhookService
             $message[] = "*进账：*";
             
             foreach ($income as $item) {
-                $date = (new DateTimeImmutable())
-                    ->setTimestamp((int) $item[BillTrace::CREATED_AT])
-                    ->setTimezone(new DateTimeZone('Asia/Shanghai'))
-                    ->format('Y-m-d H:i:s');
+                $date = date('Y-m-d H:i:s', $item[BillTrace::CREATED_AT]);
                 
                 $money = $item[BillTrace::MONEY];
                 $money = (float) $money;
