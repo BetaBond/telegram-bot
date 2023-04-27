@@ -114,7 +114,7 @@ class WebhookController
         $key = "$chatId@$formId^$time";
         
         if (!Cache::has($key)) {
-            Cache::put("message@$formId", '', 1);
+            Cache::put($key, '', 1);
         } else {
             return false;
         }
