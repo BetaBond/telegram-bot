@@ -120,9 +120,17 @@ class WebhookController
         
         Cache::put($key, $time, 30);
         
+        // 指令解析器
+        $textMessage = explode(' ', $textMessage);
+
+//        $this->telegram->sendMessage([
+//            'chat_id' => $chatId,
+//            'text' => "($value)接收到消息: $textMessage, 由$formFirstName(@$formUserName|$formId)在$date(Asia/Shanghai)发送"
+//        ]);
+        
         $this->telegram->sendMessage([
             'chat_id' => $chatId,
-            'text' => "($value)接收到消息: $textMessage, 由$formFirstName(@$formUserName|$formId)在$date(Asia/Shanghai)发送"
+            'text' => json_encode($textMessage, JSON_UNESCAPED_UNICODE)
         ]);
         
         Log::info(json_encode([$update], JSON_UNESCAPED_UNICODE));
