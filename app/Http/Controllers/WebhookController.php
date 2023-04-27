@@ -103,15 +103,15 @@ class WebhookController
         $formId = $message['from']['id'];
         $formFirstName = $message['from']['first_name'];
         $formUserName = $message['from']['username'];
+        $time = $message['date'];
         $date = (new DateTimeImmutable())
-            ->setTimestamp($message['date'])
+            ->setTimestamp($time)
             ->setTimezone(new DateTimeZone('Asia/Shanghai'))
             ->format('Y-m-d H:i:s');
         
         $update = Telegram::commandsHandler(true);
         
-        $time = time();
-        $key = "$time^$chatId@$formId";
+        $key = "$time$chatId@$formId";
         $value = Cache::get($key);
         
         if ($value == $time) {
