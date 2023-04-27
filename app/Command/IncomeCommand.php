@@ -17,7 +17,7 @@ class IncomeCommand extends Command
      *
      * @var string
      */
-    protected string $name = 'clearing';
+    protected string $name = 'income';
     
     /**
      * 指令说明

@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use Illuminate\Support\Facades\Cache;
 use Telegram\Bot\Commands\Command;
 
 /**
@@ -33,8 +34,27 @@ class ERSCommand extends Command
      */
     public function handle(): void
     {
+        $fallback = $this->getUpdate()->getMessage();
+        
+        $text = $fallback['text'];
+        $text = explode(' ', $text);
+        
+        if (!isset($text[1])) {
+            $this->replyWithMessage([
+                'text' => '汇率未填写',
+            ]);
+        }
+        
+        if (is_numeric($text[1])) {
+            $this->replyWithMessage([
+                'text' => '汇率必须为数值',
+            ]);
+        }
+        
+        $cache = Cache::put('exchange_rate', $text[1]);
+        
         $this->replyWithMessage([
-            'text' => '设置成功！',
+            'text' => $cache ? '设置成功！' : '设置失败！',
         ]);
     }
     

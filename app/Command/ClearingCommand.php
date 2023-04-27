@@ -17,7 +17,7 @@ class ClearingCommand extends Command
      *
      * @var string
      */
-    protected string $name = 'income';
+    protected string $name = 'clearing';
     
     /**
      * 指令说明
