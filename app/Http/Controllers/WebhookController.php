@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Telegram\Bot\Api;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
 /**
@@ -39,6 +40,7 @@ class WebhookController
      *
      * @param  Request  $request
      * @return bool|string
+     * @throws TelegramSDKException
      */
     public function message(Request $request): bool|string
     {
@@ -93,18 +95,18 @@ class WebhookController
             ]);
         }
         
-//        $chatId = $message['chat']['id'];
-//        $textMessage = $message['text'];
-//        $formId = $message['from']['id'];
-//        $formFirstName = $message['from']['first_name'];
-//        $formUserName = $message['from']['username'];
+        $chatId = $message['chat']['id'];
+        $textMessage = $message['text'];
+        $formId = $message['from']['id'];
+        $formFirstName = $message['from']['first_name'];
+        $formUserName = $message['from']['username'];
         
         $update = Telegram::commandsHandler(true);
         
-//        $this->telegram->sendMessage([
-//            'chat_id' => $chatId,
-//            'text' => "接收到消息: $textMessage, 由$formFirstName(@$formUserName|$formId)发送"
-//        ]);
+        $this->telegram->sendMessage([
+            'chat_id' => $chatId,
+            'text' => "接收到消息: $textMessage, 由$formFirstName(@$formUserName|$formId)发送"
+        ]);
         
         Log::info(json_encode([$update], JSON_UNESCAPED_UNICODE));
         
