@@ -140,7 +140,7 @@ class WebhookController
             '汇率' => WebhookService::exchangeRate($params),
             '进账' => WebhookService::income($params),
             '出账' => WebhookService::clearing($params),
-            default => "指令错误",
+            default => false,
         };
 
 //        $this->telegram->sendMessage([
@@ -148,11 +148,13 @@ class WebhookController
 //            'text' => "($value)接收到消息: $textMessage, 由$formFirstName(@$formUserName|$formId)在$date(Asia/Shanghai)发送"
 //        ]);
         
-        $this->telegram->sendMessage([
-            'chat_id' => $chatId,
-            'parse_mode' => 'MarkdownV2',
-            'text' => $message
-        ]);
+        if ($message !== false) {
+            $this->telegram->sendMessage([
+                'chat_id' => $chatId,
+                'parse_mode' => 'MarkdownV2',
+                'text' => $message
+            ]);
+        }
         
         return 'ok';
     }
