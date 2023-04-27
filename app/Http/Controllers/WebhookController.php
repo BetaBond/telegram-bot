@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Service\WebhookService;
 use DateTimeImmutable;
 use DateTimeZone;
 use Illuminate\Support\Facades\Cache;
@@ -122,6 +123,24 @@ class WebhookController
         
         // 指令解析器
         $textMessage = explode(' ', $textMessage);
+        
+        if (empty($textMessage)) {
+            $this->telegram->sendMessage([
+                'chat_id' => $chatId,
+                'text' => '指令错误'
+            ]);
+        }
+        
+        $command = $textMessage[0];
+        $params = array_shift($textMessage);
+        
+        $message = match ($command) {
+            '说明' => WebhookService::explain(),
+            '帮助' => WebhookService::help(),
+            '汇率' => WebhookService::exchangeRate($params),
+            '进账' => WebhookService::income($params),
+            '出账' => WebhookService::clearing($params),
+        };
 
 //        $this->telegram->sendMessage([
 //            'chat_id' => $chatId,
@@ -130,10 +149,8 @@ class WebhookController
         
         $this->telegram->sendMessage([
             'chat_id' => $chatId,
-            'text' => json_encode($textMessage, JSON_UNESCAPED_UNICODE)
+            'text' => $message
         ]);
-        
-        Log::info(json_encode([$update], JSON_UNESCAPED_UNICODE));
         
         return 'ok';
     }
