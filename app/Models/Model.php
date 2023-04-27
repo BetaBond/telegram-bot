@@ -87,8 +87,8 @@ class Model extends EloquentModel
         $this->primaryKey = $trace::ID;
         
         $this->casts = array_merge($this->casts, [
-            $trace::UPDATED_AT => AutoTimezone::class,
-            $trace::CREATED_AT => AutoTimezone::class,
+//            $trace::UPDATED_AT => AutoTimezone::class,
+//            $trace::CREATED_AT => AutoTimezone::class,
         ]);
         
         $this->hidden = $trace::HIDE;
