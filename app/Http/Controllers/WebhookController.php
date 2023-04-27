@@ -132,14 +132,14 @@ class WebhookController
         }
         
         $command = $textMessage[0];
-        $params = array_shift($textMessage);
+        array_shift($textMessage);
         
         $message = match ($command) {
             '说明' => WebhookService::explain(),
             '帮助' => WebhookService::help(),
-            '汇率' => WebhookService::exchangeRate($params),
-            '进账' => WebhookService::income($params),
-            '出账' => WebhookService::clearing($params),
+            '汇率' => WebhookService::exchangeRate($textMessage),
+            '进账' => WebhookService::income($textMessage),
+            '出账' => WebhookService::clearing($textMessage),
             default => false,
         };
 
