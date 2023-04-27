@@ -111,14 +111,14 @@ class WebhookController
         $update = Telegram::commandsHandler(true);
         
         $time = time();
-        $key = "$chatId@$formId#$time";
+        $key = "$time^$chatId@$formId";
         $value = Cache::get($key);
         
-        if (Cache::get($key) == $time) {
+        if ($value == $time) {
             return false;
         }
         
-        Cache::put($key, $time);
+        Cache::put($key, $time, 30);
         
         $this->telegram->sendMessage([
             'chat_id' => $chatId,
