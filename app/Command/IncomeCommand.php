@@ -33,8 +33,12 @@ class IncomeCommand extends Command
      */
     public function handle(): void
     {
+        $fallback = $this->getUpdate()->getMessage();
+        
+        $text = $fallback->value('text');
+        
         $this->replyWithMessage([
-            'text' => '设置成功！',
+            'text' => '设置成功！'.$text,
         ]);
     }
     
