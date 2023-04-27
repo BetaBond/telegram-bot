@@ -105,7 +105,7 @@ class WebhookController
         $formUserName = $message['from']['username'];
         $date = (new DateTimeImmutable())
             ->setTimestamp($message['date'])
-            ->setTimezone(new DateTimeZone('Etc/GMT+8'))
+            ->setTimezone(new DateTimeZone('Asia/Shanghai'))
             ->format('Y-m-d H:i:s');
         
         $update = Telegram::commandsHandler(true);
@@ -121,7 +121,7 @@ class WebhookController
         
         $this->telegram->sendMessage([
             'chat_id' => $chatId,
-            'text' => "接收到消息: $textMessage, 由$formFirstName(@$formUserName|$formId)在$date(GMT+8)发送"
+            'text' => "接收到消息: $textMessage, 由$formFirstName(@$formUserName|$formId)在$date(Asia/Shanghai)发送"
         ]);
         
         Log::info(json_encode([$update], JSON_UNESCAPED_UNICODE));
