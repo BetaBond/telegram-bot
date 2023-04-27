@@ -111,7 +111,7 @@ class WebhookController
         $update = Telegram::commandsHandler(true);
         
         $time = time();
-        $key = "$chatId@$formId^$time";
+        $key = "$chatId@$formId#$time";
         
         if (Cache::has($key)) {
             return false;
