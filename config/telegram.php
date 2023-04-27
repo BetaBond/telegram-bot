@@ -1,10 +1,5 @@
 <?php
 
-use App\Command\ClearingCommand;
-use App\Command\ERSCommand;
-use App\Command\IncomeCommand;
-use App\Command\StartCommand;
-
 return [
     
     /*

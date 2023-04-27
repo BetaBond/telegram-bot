@@ -22,7 +22,7 @@ return new class extends Migration {
         Schema::create(Trace::TABLE, function (Blueprint $table) {
             $table->bigInteger(Trace::ID)->primary()->unique()->comment('账单ID');
             $table->tinyInteger(Trace::TYPE)->comment('账目类型 (-1:出账 / 1:入账)');
-            $table->integer(Trace::T_UID)->comment('Telegram UID');
+            $table->bigInteger(Trace::T_UID)->comment('Telegram UID');
             $table->decimal(Trace::MONEY)->comment('金额');
             $table->decimal(Trace::EXCHANGE_RATE)->comment('汇率');
             $table->integer(Trace::CREATED_AT)->comment('创建时间');
