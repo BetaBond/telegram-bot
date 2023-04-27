@@ -23,6 +23,7 @@ return new class extends Migration {
             $table->bigInteger(Trace::ID)->primary()->unique()->comment('账单ID');
             $table->tinyInteger(Trace::TYPE)->comment('账目类型 (-1:出账 / 1:入账)');
             $table->bigInteger(Trace::T_UID)->comment('Telegram UID');
+            $table->string(Trace::USERNAME, 64)->comment('Telegram 用户名');
             $table->decimal(Trace::MONEY)->comment('金额');
             $table->decimal(Trace::EXCHANGE_RATE)->comment('汇率');
             $table->integer(Trace::CREATED_AT)->comment('创建时间');

@@ -41,6 +41,13 @@ class BillTrace extends TraceEloquent
     const T_UID = 't_uid';
     
     /**
+     * 用户名
+     *
+     * @var string
+     */
+    const USERNAME = 'username';
+    
+    /**
      * 金额
      *
      * @var string
