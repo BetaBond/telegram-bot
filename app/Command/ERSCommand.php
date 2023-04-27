@@ -41,7 +41,7 @@ class ERSCommand extends Command
         
         if (!isset($text[1])) {
             $this->replyWithMessage([
-                'text' => '汇率未填写',
+                'text' => '汇率未填写'.json_encode($text, JSON_UNESCAPED_UNICODE),
             ]);
         }
         
