@@ -133,6 +133,12 @@ class WebhookController
             '出账' => WebhookService::clearing($textMessage, $formUserName, $formId),
             default => false,
         };
+        
+        $message = str_replace('.', "\\.", $message);
+        $message = str_replace('-', "\\-", $message);
+        $message = str_replace('=', "\\=", $message);
+        $message = str_replace('[', "\\[", $message);
+        $message = str_replace(']', "\\]", $message);
 
 //        $this->telegram->sendMessage([
 //            'chat_id' => $chatId,

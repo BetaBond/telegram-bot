@@ -201,13 +201,9 @@ class WebhookService
             $exchangeRate = number_format($exchangeRate, 2);
             $difference = number_format($difference, 2);
             
-            $moneyString = str_replace('.', "\\.", $money);
-            $differenceString = str_replace('.', "\\.", $difference);
-            $exchangeRateString = str_replace('.', "\\.", $exchangeRate);
-            
             // 构建字符串
-            $messageString = "\\[`$date`\\]  ";
-            $messageString .= "￥$moneyString/￥$exchangeRateString\\=$$differenceString  ";
+            $messageString = "[`$date`]  ";
+            $messageString .= "￥$money/￥$exchangeRate=$$difference  ";
             
             $formMessage[$item[BillTrace::T_UID]]['username'] = $username;
             $formMessage[$item[BillTrace::T_UID]]['income']['messages'][] = $messageString;
@@ -243,13 +239,9 @@ class WebhookService
             $exchangeRate = number_format($exchangeRate, 2);
             $difference = number_format($difference, 2);
             
-            $moneyString = str_replace('.', "\\.", $money);
-            $differenceString = str_replace('.', "\\.", $difference);
-            $exchangeRateString = str_replace('.', "\\.", $exchangeRate);
-            
             // 构建字符串
-            $messageString = "\\[`$date`\\]  ";
-            $messageString .= "￥$moneyString/￥$exchangeRateString\\=$$differenceString  ";
+            $messageString = "[`$date`]  ";
+            $messageString .= "￥$money/￥$exchangeRate=$$difference  ";
             
             $formMessage[$item[BillTrace::T_UID]]['username'] = $username;
             $formMessage[$item[BillTrace::T_UID]]['clearing']['messages'][] = $messageString;
@@ -290,14 +282,9 @@ class WebhookService
             }
         }
         
-        $messages[] = '';
         $cny = number_format($cny, 2);
         $usd = number_format($usd, 2);
-        $cny = $cny < 0 ? "\\$cny" : $cny;
-        $usd = $usd < 0 ? "\\$usd" : $usd;
-        $cny = str_replace('.', "\\.", $cny);
-        $usd = str_replace('.', "\\.", $usd);
-        $messages[] = "合计进账：\\[`$$usd`\\]  \\[`￥$cny`\\]";
+        $messages[] = "合计进账：[`$$usd`]  [`￥$cny`]";
         
         return implode("\n", $messages);
     }
