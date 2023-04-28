@@ -164,7 +164,7 @@ class WebhookService
             $message[] = "";
             $usd = number_format($usd, 2);
             $cny = number_format($cny, 2);
-            $message[] = "合计进账：\\[`$$usd`\\]  |  \\[`￥$cny`\\]";
+            $message[] = "合计进账：\\[`$$usd`\\]  \\|  \\[`￥$cny`\\]";
             
             return implode("\n", $message);
         }
