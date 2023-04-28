@@ -85,7 +85,7 @@ class WebhookService
         $cache = Cache::put($type[$params[0]], $exchangeRate);
         
         if ($cache) {
-            $exchangeRate = Cache::get($type[$params[1]]);
+            $exchangeRate = Cache::get($type[$params[0]]);
             return implode("\n", [
                 "*设置成功！！！*",
                 "当前为：`$$exchangeRate`"
