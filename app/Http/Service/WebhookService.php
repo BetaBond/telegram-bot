@@ -131,6 +131,7 @@ class WebhookService
             $usd = 0;
             $cny = 0;
             
+            $formMessage = [];
             foreach ($income as $item) {
                 $date = date('H:i:s', (int) $item[BillTrace::CREATED_AT]);
                 
@@ -158,7 +159,15 @@ class WebhookService
                 $messageString .= "$moneyString/$exchangeRateString\\=$differenceString  ";
                 $messageString .= "@$username";
                 
-                $message[] = $messageString;
+                $formMessage[BillTrace::T_UID]['username'] = $username;
+                $formMessage[BillTrace::T_UID]['messages'][] = $messageString;
+            }
+            
+            foreach ($formMessage as $items) {
+                $message[] = '@'.$items['username'];
+                foreach ($items['messages'] as $item) {
+                    $message[] = $item;
+                }
             }
             
             $message[] = "";
