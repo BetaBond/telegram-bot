@@ -194,8 +194,8 @@ class WebhookService
         
         $messages[] = '进账（'.count($income).' 笔）：';
         $messages[] = '';
-        
-        $difference = 0;
+    
+        $bill = 0;
         
         // 构建进账字符信息
         foreach ($formMessage as $items) {
@@ -205,7 +205,7 @@ class WebhookService
                     $messages[] = $item;
                 }
                 $messages[] = '';
-                $difference += $items['income']['bill'];
+                $bill += $items['income']['bill'];
             }
         }
         
@@ -220,11 +220,11 @@ class WebhookService
                     $messages[] = $item;
                 }
                 $messages[] = '';
-                $difference -= $items['clearing']['bill'];
+                $bill -= $items['clearing']['bill'];
             }
         }
         
-        $messages[] = "合计进账：	[ `₮$difference` ]";
+        $messages[] = "合计进账：	[ `₮$bill` ]";
         
         return implode("\n", $messages);
     }
