@@ -258,11 +258,20 @@ class WebhookService
             $money = (float) $item[BillTrace::MONEY];
             $exchangeRate = (float) $item[BillTrace::EXCHANGE_RATE];
             
+            $incomeExchangeRate = Cache::get('income_exchange_rate', false);
+            $clearingExchangeRate = Cache::get('clearing_exchange_rate', false);
+            
+            $difference = 0;
+            
             // 数学计算
-            if (empty($money) || empty($exchangeRate)) {
-                $difference = 0;
-            } else {
-                $difference = $money / $exchangeRate;
+            if (!empty($money) && !empty($exchangeRate)) {
+                if ($key === 'income') {
+                    $difference = $money * $incomeExchangeRate / $exchangeRate;
+                }
+                
+                if ($key === 'clearing') {
+                    $difference = $money / $clearingExchangeRate - 0.045;
+                }
             }
             
             $formMessage[$item[BillTrace::T_UID]][$key]['usd'] += $difference;
@@ -275,7 +284,14 @@ class WebhookService
             
             // 构建字符串
             $messageString = "[`$date`]  ";
-            $messageString .= "￥$money/￥$exchangeRate=$$difference  ";
+            
+            if ($key === 'income') {
+                $messageString .= "$money*$incomeExchangeRate/$exchangeRate=$difference  ";
+            }
+            
+            if ($key === 'clearing') {
+                $messageString .= "$money/$clearingExchangeRate-0.045=$difference  ";
+            }
             
             $formMessage[$item[BillTrace::T_UID]]['username'] = $username;
             $formMessage[$item[BillTrace::T_UID]][$key]['messages'][] = $messageString;
