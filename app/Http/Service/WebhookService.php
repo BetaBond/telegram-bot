@@ -127,12 +127,16 @@ class WebhookService
             $message[] = "";
             $number = count($income);
             $message[] = "*进账（$number 笔）：*";
+            $message[] = "";
+            $usd = 0;
+            $cny = 0;
             
             foreach ($income as $item) {
                 $date = date('H:i:s', (int) $item[BillTrace::CREATED_AT]);
                 
                 $money = $item[BillTrace::MONEY];
                 $money = (float) $money;
+                $cny += $money;
                 $exchangeRate = (float) $item[BillTrace::EXCHANGE_RATE];
                 $money = number_format($money, 2);
                 $exchangeRate = number_format($exchangeRate, 2);
@@ -141,6 +145,7 @@ class WebhookService
                     $difference = 0;
                 } else {
                     $difference = $money / $exchangeRate;
+                    $usd += $difference;
                     $difference = number_format($difference, 2);
                 }
                 
@@ -149,12 +154,17 @@ class WebhookService
                 $exchangeRateString = str_replace('.', "\\.", $exchangeRate);
                 $username = $item[BillTrace::USERNAME];
                 
-                $messageString = "`\\[$date\\]`  \\|  ";
+                $messageString = "\\[`$date`\\]  \\|  ";
                 $messageString .= "$moneyString/$exchangeRateString\\=$differenceString  \\|  ";
                 $messageString .= "@$username";
                 
                 $message[] = $messageString;
             }
+            
+            $message[] = "";
+            $usd = number_format($usd, 2);
+            $cny = number_format($cny, 2);
+            $message[] = "合计进账：\\[`$$usd`\\]  |  \\[`￥$cny`\\]";
             
             return implode("\n", $message);
         }
