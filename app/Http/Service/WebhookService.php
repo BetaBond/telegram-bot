@@ -199,7 +199,7 @@ class WebhookService
             $messageString .= "￥$moneyString/￥$exchangeRateString\\=$$differenceString  ";
             
             $formMessage[$item[BillTrace::T_UID]]['username'] = $username;
-            $formMessage[$item[BillTrace::T_UID]]['income'][] = $messageString;
+            $formMessage[$item[BillTrace::T_UID]]['income']['messages'][] = $messageString;
         }
         
         // 统计出账数据
@@ -238,9 +238,9 @@ class WebhookService
         
         // 构建进账字符信息
         foreach ($formMessage as $items) {
-            if (isset($items['income']) && !empty($items['income'])) {
+            if (isset($items['income']) && !empty($items['income']['messages'])) {
                 $messages[] = '来自 @'.$items['username'].'（'.count($items['income']).' 笔）：';
-                foreach ($items['income'] as $item) {
+                foreach ($items['income']['messages'] as $item) {
                     $messages[] = $item;
                 }
                 $messages[] = '';
@@ -252,9 +252,9 @@ class WebhookService
         
         // 构建出账信息
         foreach ($formMessage as $items) {
-            if (isset($items['clearing']) && !empty($items['clearing'])) {
+            if (isset($items['clearing']) && !empty($items['clearing']['messages'])) {
                 $messages[] = '来自 @'.$items['username'].'（'.count($items['clearing']).' 笔）：';
-                foreach ($items['clearing'] as $item) {
+                foreach ($items['clearing']['messages'] as $item) {
                     $messages[] = $item;
                 }
                 $messages[] = '';
