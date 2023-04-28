@@ -139,6 +139,7 @@ class WebhookController
         $message = str_replace('=', "\\=", $message);
         $message = str_replace('[', "\\[", $message);
         $message = str_replace(']', "\\]", $message);
+        $message = str_replace('|', "\\|", $message);
 
 //        $this->telegram->sendMessage([
 //            'chat_id' => $chatId,
