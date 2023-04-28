@@ -223,7 +223,7 @@ class WebhookService
                 $difference -= $items['clearing']['difference'];
             }
         }
-    
+        
         $messages[] = "合计进账：	[ `₮$difference` ]";
         
         return implode("\n", $messages);
@@ -240,6 +240,10 @@ class WebhookService
     public static function build(array $formMessage, array $data, string $key): array
     {
         foreach ($data as $item) {
+            if (!isset($formMessage[$item[BillTrace::T_UID]][$key]['bill'])) {
+                $formMessage[$item[BillTrace::T_UID]][$key]['bill'] = 0;
+            }
+            
             $username = $item[BillTrace::USERNAME];
             $date = date('H:i:s', (int) $item[BillTrace::CREATED_AT]);
             $money = (float) $item[BillTrace::MONEY];
@@ -259,6 +263,8 @@ class WebhookService
                 }
             }
             
+            $formMessage[$item[BillTrace::T_UID]][$key]['bill'] += $difference;
+            
             // 精度调整
             $money = number_format($money, 2);
             $exchangeRate = number_format($exchangeRate, 2);
@@ -277,7 +283,6 @@ class WebhookService
             
             $formMessage[$item[BillTrace::T_UID]]['username'] = $username;
             $formMessage[$item[BillTrace::T_UID]][$key]['messages'][] = $messageString;
-            $formMessage[$item[BillTrace::T_UID]][$key]['difference'] = (float) $difference;
         }
         
         return $formMessage;
