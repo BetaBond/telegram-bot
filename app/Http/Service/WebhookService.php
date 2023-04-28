@@ -235,20 +235,24 @@ class WebhookService
         
         // 构建进账字符信息
         foreach ($formMessage as $items) {
-            $messages[] = '来自 @'.$items['username'].'（'.count($items['income']).' 笔）：';
-            foreach ($items['income'] as $item) {
-                $messages[] = $item;
+            if (isset($items['income']) && !empty($items['income'])) {
+                $messages[] = '来自 @'.$items['username'].'（'.count($items['income']).' 笔）：';
+                foreach ($items['income'] as $item) {
+                    $messages[] = $item;
+                }
+                $messages[] = '';
             }
-            $messages[] = '';
         }
         
         // 构建出账信息
         foreach ($formMessage as $items) {
-            $messages[] = '来自 @'.$items['username'].'（'.count($items['clearing']).' 笔）：';
-            foreach ($items['clearing'] as $item) {
-                $messages[] = $item;
+            if (isset($items['clearing']) && !empty($items['clearing'])) {
+                $messages[] = '来自 @'.$items['username'].'（'.count($items['clearing']).' 笔）：';
+                foreach ($items['clearing'] as $item) {
+                    $messages[] = $item;
+                }
+                $messages[] = '';
             }
-            $messages[] = '';
         }
         
         return implode("\n", $messages);
