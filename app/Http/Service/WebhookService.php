@@ -132,16 +132,19 @@ class WebhookService
                 $money = $item[BillTrace::MONEY];
                 $money = (float) $money;
                 $exchangeRate = (float) $item[BillTrace::EXCHANGE_RATE];
+                $money = number_format($money, 2);
+                $exchangeRate = number_format($exchangeRate, 2);
                 
                 if (empty($money) || empty($exchangeRate)) {
                     $difference = 0;
                 } else {
                     $difference = $money / $exchangeRate;
+                    $difference = number_format($difference, 2);
                 }
                 
-                $moneyString = str_replace('.', "\\.", (string) $money);
+                $moneyString = str_replace('.', "\\.", $money);
                 $differenceString = str_replace('.', "\\.", (string) $difference);
-                $exchangeRateString = str_replace('.', "\\.", (string) $exchangeRate);
+                $exchangeRateString = str_replace('.', "\\.", $exchangeRate);
                 $username = $item[BillTrace::USERNAME];
                 
                 $messageString = "`\\[$date\\]`  \\|  ";

@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Service\WebhookService;
-use DateTimeImmutable;
-use DateTimeZone;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -103,10 +100,6 @@ class WebhookController
         $formId = $message['from']['id'];
         $formUserName = $message['from']['username'];
         $time = $message['date'];
-//        $date = (new DateTimeImmutable())
-//            ->setTimestamp($time)
-//            ->setTimezone(new DateTimeZone('Asia/Shanghai'))
-//            ->format('Y-m-d H:i:s');
         
         Telegram::commandsHandler(true);
         
@@ -150,7 +143,7 @@ class WebhookController
             $this->telegram->sendMessage([
                 'chat_id' => $chatId,
                 'parse_mode' => 'MarkdownV2',
-                'protect_content' => true,
+                // 'protect_content' => true,
                 'text' => $message
             ]);
         }
