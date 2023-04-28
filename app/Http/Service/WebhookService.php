@@ -90,6 +90,139 @@ class WebhookService
         string $formUserName,
         int $tUID
     ): string {
+        $billValidate = self::billValidate($params);
+        if ($billValidate !== true) {
+            return $billValidate;
+        }
+        
+        $money = (float) $params[0];
+        $exchangeRate = Cache::get('exchange_rate', false);
+        
+        $model = Bill::query()->create([
+            BillTrace::MONEY => $money,
+            BillTrace::EXCHANGE_RATE => $exchangeRate,
+            BillTrace::TYPE => 1,
+            BillTrace::T_UID => $tUID,
+            BillTrace::USERNAME => $formUserName,
+        ])->save();
+        
+        if ($model) {
+            return self::dataMessage();
+        }
+        
+        return "失败";
+    }
+    
+    /**
+     * 设置出账信息
+     *
+     * @param  array  $params
+     * @param  string  $formUserName
+     * @param  int  $tUID
+     * @return string
+     */
+    public static function clearing(
+        array $params,
+        string $formUserName,
+        int $tUID
+    ): string {
+        $billValidate = self::billValidate($params);
+        if ($billValidate !== true) {
+            return $billValidate;
+        }
+        
+        $money = (float) $params[0];
+        $exchangeRate = Cache::get('exchange_rate', false);
+        
+        $model = Bill::query()->create([
+            BillTrace::MONEY => $money,
+            BillTrace::EXCHANGE_RATE => $exchangeRate,
+            BillTrace::TYPE => -1,
+            BillTrace::T_UID => $tUID,
+            BillTrace::USERNAME => $formUserName,
+        ])->save();
+        
+        if ($model) {
+        
+        }
+        
+        return "失败";
+    }
+    
+    /**
+     * 数据消息
+     *
+     * @return string
+     */
+    public static function dataMessage(): string
+    {
+        // 进账数据
+        $income = Bill::query()->whereBetween(BillTrace::CREATED_AT, [
+            strtotime(date('Y-m-d').'00:00:00'),
+            strtotime(date('Y-m-d').'23:59:59'),
+        ])->where('type', 1)->get()->toArray();
+        
+        // 出账数据
+        $clearing = Bill::query()->whereBetween(BillTrace::CREATED_AT, [
+            strtotime(date('Y-m-d').'00:00:00'),
+            strtotime(date('Y-m-d').'23:59:59'),
+        ])->where('type', -1)->get()->toArray();
+        
+        $messages = [];
+        $formMessage = [];
+        
+        // 统计进账数据
+        foreach ($income as $item) {
+            $username = $item[BillTrace::USERNAME];
+            $date = date('H:i:s', (int) $item[BillTrace::CREATED_AT]);
+            $money = (float) $item[BillTrace::MONEY];
+            $exchangeRate = (float) $item[BillTrace::EXCHANGE_RATE];
+            
+            // 数学计算
+            if (empty($money) || empty($exchangeRate)) {
+                $difference = 0;
+            } else {
+                $difference = $money / $exchangeRate;
+            }
+            
+            // 精度调整
+            $money = number_format($money, 2);
+            $exchangeRate = number_format($exchangeRate, 2);
+            $difference = number_format($difference, 2);
+            
+            $moneyString = str_replace('.', "\\.", $money);
+            $differenceString = str_replace('.', "\\.", $difference);
+            $exchangeRateString = str_replace('.', "\\.", $exchangeRate);
+            
+            // 构建字符串
+            $messageString = "\\[`$date`\\]  ";
+            $messageString .= "￥$moneyString/￥$exchangeRateString\\=$$differenceString  ";
+            
+            $formMessage[$item[BillTrace::T_UID]]['username'] = $username;
+            $formMessage[$item[BillTrace::T_UID]]['income'][] = $messageString;
+        }
+        
+        
+        // 构建进账字符信息
+        foreach ($formMessage as $items) {
+            $messages[] = '来自 @'.$items['username'].'（'.count($items['income']).' 笔）：';
+            foreach ($items['income'] as $item) {
+                $messages[] = $item;
+            }
+            $messages[] = '';
+        }
+        
+        return implode("\n", $messages);
+    }
+    
+    /**
+     * 账单参数验证
+     *
+     * @param  array  $params
+     * @return bool|string
+     */
+    public static function billValidate(array $params): bool|string
+    {
         if (empty($params)) {
             return "参数错误";
         }
@@ -109,94 +242,7 @@ class WebhookService
             return "汇率未设置";
         }
         
-        $model = Bill::query()->create([
-            BillTrace::MONEY => $money,
-            BillTrace::EXCHANGE_RATE => $exchangeRate,
-            BillTrace::TYPE => 1,
-            BillTrace::T_UID => $tUID,
-            BillTrace::USERNAME => $formUserName,
-        ])->save();
-        
-        if ($model) {
-            $income = Bill::query()->whereBetween(BillTrace::CREATED_AT, [
-                strtotime(date('Y-m-d').'00:00:00'),
-                strtotime(date('Y-m-d').'23:59:59'),
-            ])->where('type', 1)->get()->toArray();
-            
-            $message = ["*进账成功！！！*"];
-            $message[] = '';
-            $number = count($income);
-            $message[] = "* 今日进账（$number 笔）：*";
-            $message[] = "";
-            $usd = 0;
-            $cny = 0;
-            
-            $formMessage = [];
-            foreach ($income as $item) {
-                $date = date('H:i:s', (int) $item[BillTrace::CREATED_AT]);
-                
-                $money = $item[BillTrace::MONEY];
-                $money = (float) $money;
-                $cny += $money;
-                $exchangeRate = (float) $item[BillTrace::EXCHANGE_RATE];
-                $money = number_format($money, 2);
-                $exchangeRate = number_format($exchangeRate, 2);
-                
-                if (empty($money) || empty($exchangeRate)) {
-                    $difference = 0;
-                } else {
-                    $difference = $money / $exchangeRate;
-                    $usd += $difference;
-                    $difference = number_format($difference, 2);
-                }
-                
-                $moneyString = str_replace('.', "\\.", $money);
-                $differenceString = str_replace('.', "\\.", (string) $difference);
-                $exchangeRateString = str_replace('.', "\\.", $exchangeRate);
-                $username = $item[BillTrace::USERNAME];
-                
-                $messageString = "\\[`$date`\\]  ";
-                $messageString .= "￥$moneyString/￥$exchangeRateString\\=$$differenceString  ";
-                
-                $formMessage[$item[BillTrace::T_UID]]['username'] = $username;
-                $formMessage[$item[BillTrace::T_UID]]['messages'][] = $messageString;
-            }
-            
-            foreach ($formMessage as $items) {
-                $message[] = '来自 @'.$items['username'].'（'.count($items['messages']).' 笔）：';
-                foreach ($items['messages'] as $item) {
-                    $message[] = $item;
-                }
-                $message[] = '';
-            }
-            
-            $usd = number_format($usd, 2);
-            $cny = number_format($cny, 2);
-            $message[] = "合计进账：\\[`$$usd`\\]  \\[`￥$cny`\\]";
-            
-            return implode("\n", $message);
-        }
-        
-        return "失败";
-    }
-    
-    public static function clearing(array $params): string
-    {
-        if (empty($params)) {
-            return "参数错误";
-        }
-        
-        if (!is_numeric($params[0])) {
-            return "参数类型错误";
-        }
-        
-        $money = (float) $params[0];
-        
-        if ($money <= 0) {
-            return "金额必须大于0";
-        }
-        
-        return "";
+        return true;
     }
     
 }
