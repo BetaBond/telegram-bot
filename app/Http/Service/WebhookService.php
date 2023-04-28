@@ -194,7 +194,7 @@ class WebhookService
         
         $messages[] = '进账（'.count($income).' 笔）：';
         $messages[] = '';
-    
+        
         $bill = 0;
         
         // 构建进账字符信息
@@ -224,7 +224,7 @@ class WebhookService
             }
         }
         
-        $messages[] = "合计进账：	[ `₮$bill` ]";
+        $messages[] = '合计进账：	[ `₮'.round((float) $bill, 2).'` ]';
         
         return implode("\n", $messages);
     }
@@ -266,9 +266,9 @@ class WebhookService
             $formMessage[$item[BillTrace::T_UID]][$key]['bill'] += $difference;
             
             // 精度调整
-            $money = number_format($money, 2);
-            $exchangeRate = number_format($exchangeRate, 2);
-            $difference = number_format($difference, 2);
+            $money = round($money, 2);
+            $exchangeRate = round($exchangeRate, 2);
+            $difference = round($difference, 2);
             
             // 构建字符串
             $messageString = "[`$date`]  ";
