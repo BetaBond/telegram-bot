@@ -5,8 +5,12 @@ namespace App\Http\Service;
 use App\Models\Bill;
 use App\Models\Trace\BillTrace;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
+/**
+ * Webhook 服务类
+ *
+ * @author southwan
+ */
 class WebhookService
 {
     
