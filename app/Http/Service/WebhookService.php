@@ -233,6 +233,7 @@ class WebhookService
             $formMessage[$item[BillTrace::T_UID]]['clearing'][] = $messageString;
         }
         
+        $messages[] = '今日进账（'.count($income).' 笔）：';
         // 构建进账字符信息
         foreach ($formMessage as $items) {
             if (isset($items['income']) && !empty($items['income'])) {
@@ -244,6 +245,7 @@ class WebhookService
             }
         }
         
+        $messages[] = '今日出账（'.count($clearing).' 笔）：';
         // 构建出账信息
         foreach ($formMessage as $items) {
             if (isset($items['clearing']) && !empty($items['clearing'])) {
