@@ -58,23 +58,37 @@ class WebhookService
             return "参数错误";
         }
         
-        if (!is_numeric($params[0])) {
+        if (count($params) !== 2) {
+            return "参数不足";
+        }
+        
+        $type = [
+            '进账' => 'income_exchange_rate',
+            '出账' => 'clearing_exchange_rate',
+            '费率' => 'rate_exchange_rate',
+        ];
+        
+        if (in_array($params[1], array_keys($type))) {
+            return "第一个参数必须是[进账 | 出账 | 费率]其中之一";
+        }
+        
+        if (!is_numeric($params[1])) {
             return "参数类型错误";
         }
         
-        $exchangeRate = (float) $params[0];
+        $exchangeRate = (float) $params[1];
         
         if ($exchangeRate <= 0) {
             return "汇率必须大于0";
         }
         
-        $cache = Cache::put('exchange_rate', $exchangeRate);
+        $cache = Cache::put($type[$params[1]], $exchangeRate);
         
         if ($cache) {
-            $exchangeRate = Cache::get('exchange_rate');
+            $exchangeRate = Cache::get($type[$params[1]]);
             return implode("\n", [
-                "*汇率设置成功！！！*",
-                "当前汇率为：`$$exchangeRate`"
+                "*设置成功！！！*",
+                "当前为：`$$exchangeRate`"
             ]);
         }
         
