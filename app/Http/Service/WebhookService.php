@@ -291,6 +291,8 @@ class WebhookService
         }
         
         $messages[] = '';
+        $cny = number_format($cny, 2);
+        $usd = number_format($usd, 2);
         $cny = $cny < 0 ? "\\$cny" : $cny;
         $usd = $usd < 0 ? "\\$usd" : $usd;
         $cny = str_replace('.', "\\.", $cny);
