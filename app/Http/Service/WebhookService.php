@@ -295,7 +295,7 @@ class WebhookService
         $usd = $usd < 0 ? "\\$usd" : $usd;
         $cny = str_replace('.', "\\.", $cny);
         $usd = str_replace('.', "\\.", $usd);
-        $messages[] = "合计进账：[$$usd]  [￥$cny]";
+        $messages[] = "合计进账：\\[`$$usd`\\]  \\[`￥$cny`\\]";
         
         return implode("\n", $messages);
     }
