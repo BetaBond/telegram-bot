@@ -205,7 +205,7 @@ class WebhookService
                     $messages[] = $item;
                 }
                 $messages[] = '';
-                $difference += $items['income']['difference'];
+                $difference += $items['income']['bill'];
             }
         }
         
@@ -220,7 +220,7 @@ class WebhookService
                     $messages[] = $item;
                 }
                 $messages[] = '';
-                $difference -= $items['clearing']['difference'];
+                $difference -= $items['clearing']['bill'];
             }
         }
         
