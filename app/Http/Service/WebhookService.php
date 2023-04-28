@@ -68,7 +68,7 @@ class WebhookService
             '费率' => 'rate_exchange_rate',
         ];
         
-        if (in_array($params[0], array_keys($type))) {
+        if (!in_array($params[0], array_keys($type))) {
             return "第一个参数必须是[进账 | 出账 | 费率]其中之一";
         }
         
