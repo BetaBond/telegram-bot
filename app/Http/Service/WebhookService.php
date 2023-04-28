@@ -220,11 +220,11 @@ class WebhookService
                     $messages[] = $item;
                 }
                 $messages[] = '';
-                $difference -= $items['income']['difference'];
+                $difference -= $items['clearing']['difference'];
             }
         }
     
-        $messages[] = "合计进账：	[`₮$difference`]";
+        $messages[] = "合计进账：	[ `₮$difference` ]";
         
         return implode("\n", $messages);
     }
