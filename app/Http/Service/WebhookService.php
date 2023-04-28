@@ -176,7 +176,7 @@ class WebhookService
             if (!isset($formMessage[$item[BillTrace::T_UID]]['income']['usd'])) {
                 $formMessage[$item[BillTrace::T_UID]]['income']['usd'] = 0;
             }
-    
+            
             if (!isset($formMessage[$item[BillTrace::T_UID]]['income']['cny'])) {
                 $formMessage[$item[BillTrace::T_UID]]['income']['cny'] = 0;
             }
@@ -218,7 +218,7 @@ class WebhookService
             if (!isset($formMessage[$item[BillTrace::T_UID]]['clearing']['usd'])) {
                 $formMessage[$item[BillTrace::T_UID]]['clearing']['usd'] = 0;
             }
-    
+            
             if (!isset($formMessage[$item[BillTrace::T_UID]]['clearing']['cny'])) {
                 $formMessage[$item[BillTrace::T_UID]]['clearing']['cny'] = 0;
             }
@@ -258,14 +258,19 @@ class WebhookService
         $messages[] = '进账（'.count($income).' 笔）：';
         $messages[] = '';
         
+        $cny = 0;
+        $usd = 0;
+        
         // 构建进账字符信息
         foreach ($formMessage as $items) {
             if (isset($items['income']) && !empty($items['income']['messages'])) {
-                $messages[] = '来自 @'.$items['username'].'（'.count($items['income']).' 笔）：';
+                $messages[] = '来自 @'.$items['username'].'（'.count($items['income']['messages']).' 笔）：';
                 foreach ($items['income']['messages'] as $item) {
                     $messages[] = $item;
                 }
                 $messages[] = '';
+                $cny += $items['income']['cny'];
+                $usd += $items['income']['usd'];
             }
         }
         
@@ -275,13 +280,18 @@ class WebhookService
         // 构建出账信息
         foreach ($formMessage as $items) {
             if (isset($items['clearing']) && !empty($items['clearing']['messages'])) {
-                $messages[] = '来自 @'.$items['username'].'（'.count($items['clearing']).' 笔）：';
+                $messages[] = '来自 @'.$items['username'].'（'.count($items['clearing']['messages']).' 笔）：';
                 foreach ($items['clearing']['messages'] as $item) {
                     $messages[] = $item;
                 }
                 $messages[] = '';
+                $cny -= $items['clearing']['cny'];
+                $usd -= $items['clearing']['usd'];
             }
         }
+        
+        $messages[] = '';
+        $messages[] = "合计进账：[$$usd]  [￥$cny]";
         
         return implode("\n", $messages);
     }
