@@ -143,7 +143,7 @@ class WebhookService
         ])->save();
         
         if ($model) {
-        
+            self::dataMessage();
         }
         
         return "失败";
