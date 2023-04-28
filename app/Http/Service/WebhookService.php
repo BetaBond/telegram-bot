@@ -114,7 +114,7 @@ class WebhookService
         }
         
         $money = (float) $params[0];
-        $exchangeRate = Cache::get('exchange_rate', false);
+        $exchangeRate = Cache::get('income_exchange_rate', false);
         
         $model = Bill::query()->create([
             BillTrace::MONEY => $money,
@@ -150,7 +150,7 @@ class WebhookService
         }
         
         $money = (float) $params[0];
-        $exchangeRate = Cache::get('exchange_rate', false);
+        $exchangeRate = Cache::get('clearing_exchange_rate', false);
         
         $model = Bill::query()->create([
             BillTrace::MONEY => $money,
@@ -257,20 +257,18 @@ class WebhookService
             $date = date('H:i:s', (int) $item[BillTrace::CREATED_AT]);
             $money = (float) $item[BillTrace::MONEY];
             $exchangeRate = (float) $item[BillTrace::EXCHANGE_RATE];
-            
-            $incomeExchangeRate = Cache::get('income_exchange_rate', false);
-            $clearingExchangeRate = Cache::get('clearing_exchange_rate', false);
-            
+    
+            $rateExchangeRate = Cache::get('rate_exchange_rate', false);
             $difference = 0;
             
             // 数学计算
             if (!empty($money) && !empty($exchangeRate)) {
                 if ($key === 'income') {
-                    $difference = $money * $incomeExchangeRate / $exchangeRate;
+                    $difference = $money * $rateExchangeRate / $exchangeRate;
                 }
                 
                 if ($key === 'clearing') {
-                    $difference = $money / $clearingExchangeRate - 0.045;
+                    $difference = $money / $exchangeRate - 0.045;
                 }
             }
             
@@ -286,11 +284,11 @@ class WebhookService
             $messageString = "[`$date`]  ";
             
             if ($key === 'income') {
-                $messageString .= "$money\*$incomeExchangeRate/$exchangeRate=$difference  ";
+                $messageString .= "$money\*$rateExchangeRate/$exchangeRate=$difference  ";
             }
             
             if ($key === 'clearing') {
-                $messageString .= "$money/$clearingExchangeRate-0.045=$difference  ";
+                $messageString .= "$money/$exchangeRate-0.045=$difference  ";
             }
             
             $formMessage[$item[BillTrace::T_UID]]['username'] = $username;
