@@ -68,7 +68,7 @@ class WebhookService
             '费率' => 'rate_exchange_rate',
         ];
         
-        if (in_array($params[1], array_keys($type))) {
+        if (in_array($params[0], array_keys($type))) {
             return "第一个参数必须是[进账 | 出账 | 费率]其中之一";
         }
         
@@ -82,7 +82,7 @@ class WebhookService
             return "汇率必须大于0";
         }
         
-        $cache = Cache::put($type[$params[1]], $exchangeRate);
+        $cache = Cache::put($type[$params[0]], $exchangeRate);
         
         if ($cache) {
             $exchangeRate = Cache::get($type[$params[1]]);
