@@ -157,14 +157,13 @@ class WebhookService
                 
                 $messageString = "\\[`$date`\\]  ";
                 $messageString .= "$moneyString/$exchangeRateString\\=$differenceString  ";
-                $messageString .= "@$username";
                 
                 $formMessage[BillTrace::T_UID]['username'] = $username;
                 $formMessage[BillTrace::T_UID]['messages'][] = $messageString;
             }
             
             foreach ($formMessage as $items) {
-                $message[] = '@'.$items['username'];
+                $message[] = '来自 @'.$items['username'].'：';
                 foreach ($items['messages'] as $item) {
                     $message[] = $item;
                 }
