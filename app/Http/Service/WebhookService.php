@@ -286,7 +286,7 @@ class WebhookService
             $messageString = "[`$date`]  ";
             
             if ($key === 'income') {
-                $messageString .= "$money/*$incomeExchangeRate/$exchangeRate=$difference  ";
+                $messageString .= "$money*bold \*text*$incomeExchangeRate/$exchangeRate=$difference  ";
             }
             
             if ($key === 'clearing') {
