@@ -195,6 +195,8 @@ class WebhookService
         $messages[] = '进账（'.count($income).' 笔）：';
         $messages[] = '';
         
+        $difference = 0;
+        
         // 构建进账字符信息
         foreach ($formMessage as $items) {
             if (isset($items['income']) && !empty($items['income']['messages'])) {
@@ -203,6 +205,7 @@ class WebhookService
                     $messages[] = $item;
                 }
                 $messages[] = '';
+                $difference += $items['income']['difference'];
             }
         }
         
@@ -217,8 +220,11 @@ class WebhookService
                     $messages[] = $item;
                 }
                 $messages[] = '';
+                $difference -= $items['income']['difference'];
             }
         }
+    
+        $messages[] = "合计进账：	[`₮$difference`]";
         
         return implode("\n", $messages);
     }
@@ -238,7 +244,7 @@ class WebhookService
             $date = date('H:i:s', (int) $item[BillTrace::CREATED_AT]);
             $money = (float) $item[BillTrace::MONEY];
             $exchangeRate = (float) $item[BillTrace::EXCHANGE_RATE];
-    
+            
             $rateExchangeRate = Cache::get('rate_exchange_rate', false);
             $difference = 0;
             
@@ -271,6 +277,7 @@ class WebhookService
             
             $formMessage[$item[BillTrace::T_UID]]['username'] = $username;
             $formMessage[$item[BillTrace::T_UID]][$key]['messages'][] = $messageString;
+            $formMessage[$item[BillTrace::T_UID]][$key]['difference'] = (float) $difference;
         }
         
         return $formMessage;
