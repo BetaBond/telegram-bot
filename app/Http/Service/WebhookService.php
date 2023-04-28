@@ -195,9 +195,6 @@ class WebhookService
         $messages[] = '进账（'.count($income).' 笔）：';
         $messages[] = '';
         
-        $cny = 0;
-        $usd = 0;
-        
         // 构建进账字符信息
         foreach ($formMessage as $items) {
             if (isset($items['income']) && !empty($items['income']['messages'])) {
@@ -206,8 +203,6 @@ class WebhookService
                     $messages[] = $item;
                 }
                 $messages[] = '';
-                $cny += $items['income']['cny'];
-                $usd += $items['income']['usd'];
             }
         }
         
@@ -222,14 +217,8 @@ class WebhookService
                     $messages[] = $item;
                 }
                 $messages[] = '';
-                $cny -= $items['clearing']['cny'];
-                $usd -= $items['clearing']['usd'];
             }
         }
-        
-        $cny = number_format($cny, 2);
-        $usd = number_format($usd, 2);
-        $messages[] = "合计进账：[`$$usd`]  [`￥$cny`]";
         
         return implode("\n", $messages);
     }
@@ -245,14 +234,6 @@ class WebhookService
     public static function build(array $formMessage, array $data, string $key): array
     {
         foreach ($data as $item) {
-            if (!isset($formMessage[$item[BillTrace::T_UID]][$key]['usd'])) {
-                $formMessage[$item[BillTrace::T_UID]][$key]['usd'] = 0;
-            }
-            
-            if (!isset($formMessage[$item[BillTrace::T_UID]][$key]['cny'])) {
-                $formMessage[$item[BillTrace::T_UID]][$key]['cny'] = 0;
-            }
-            
             $username = $item[BillTrace::USERNAME];
             $date = date('H:i:s', (int) $item[BillTrace::CREATED_AT]);
             $money = (float) $item[BillTrace::MONEY];
@@ -271,9 +252,6 @@ class WebhookService
                     $difference = $money / $exchangeRate - 0.045;
                 }
             }
-            
-            $formMessage[$item[BillTrace::T_UID]][$key]['usd'] += $difference;
-            $formMessage[$item[BillTrace::T_UID]][$key]['cny'] += $money;
             
             // 精度调整
             $money = number_format($money, 2);
