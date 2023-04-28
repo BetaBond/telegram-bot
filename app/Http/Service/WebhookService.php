@@ -173,6 +173,14 @@ class WebhookService
         
         // 统计进账数据
         foreach ($income as $item) {
+            if (!isset($formMessage[$item[BillTrace::T_UID]]['income']['usd'])) {
+                $formMessage[$item[BillTrace::T_UID]]['income']['usd'] = 0;
+            }
+    
+            if (!isset($formMessage[$item[BillTrace::T_UID]]['income']['cny'])) {
+                $formMessage[$item[BillTrace::T_UID]]['income']['cny'] = 0;
+            }
+            
             $username = $item[BillTrace::USERNAME];
             $date = date('H:i:s', (int) $item[BillTrace::CREATED_AT]);
             $money = (float) $item[BillTrace::MONEY];
@@ -207,6 +215,14 @@ class WebhookService
         
         // 统计出账数据
         foreach ($clearing as $item) {
+            if (!isset($formMessage[$item[BillTrace::T_UID]]['clearing']['usd'])) {
+                $formMessage[$item[BillTrace::T_UID]]['clearing']['usd'] = 0;
+            }
+    
+            if (!isset($formMessage[$item[BillTrace::T_UID]]['clearing']['cny'])) {
+                $formMessage[$item[BillTrace::T_UID]]['clearing']['cny'] = 0;
+            }
+            
             $username = $item[BillTrace::USERNAME];
             $date = date('H:i:s', (int) $item[BillTrace::CREATED_AT]);
             $money = (float) $item[BillTrace::MONEY];
