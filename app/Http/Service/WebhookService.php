@@ -233,7 +233,7 @@ class WebhookService
             $formMessage[$item[BillTrace::T_UID]]['clearing'][] = $messageString;
         }
         
-        $messages[] = '今日进账（'.count($income).' 笔）：';
+        $messages[] = '进账（'.count($income).' 笔）：';
         $messages[] = '';
         
         // 构建进账字符信息
@@ -247,7 +247,7 @@ class WebhookService
             }
         }
         
-        $messages[] = '今日出账（'.count($clearing).' 笔）：';
+        $messages[] = '出账（'.count($clearing).' 笔）：';
         $messages[] = '';
         
         // 构建出账信息
