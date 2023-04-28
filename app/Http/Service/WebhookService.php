@@ -124,9 +124,9 @@ class WebhookService
             ])->where('type', 1)->get()->toArray();
             
             $message = ["*进账成功！！！*"];
-            $message[] = "";
+            $message[] = '';
             $number = count($income);
-            $message[] = "*进账（$number 笔）：*";
+            $message[] = "* 今日进账（$number 笔）：*";
             $message[] = "";
             $usd = 0;
             $cny = 0;
@@ -156,7 +156,7 @@ class WebhookService
                 $username = $item[BillTrace::USERNAME];
                 
                 $messageString = "\\[`$date`\\]  ";
-                $messageString .= "$moneyString/$exchangeRateString\\=$differenceString  ";
+                $messageString .= "￥$moneyString/￥$exchangeRateString\\=$$differenceString  ";
                 
                 $formMessage[$item[BillTrace::T_UID]]['username'] = $username;
                 $formMessage[$item[BillTrace::T_UID]]['messages'][] = $messageString;
