@@ -163,7 +163,7 @@ class WebhookService
             }
             
             foreach ($formMessage as $items) {
-                $message[] = '来自 @'.$items['username'].'：';
+                $message[] = '来自 @'.$items['username'].'（'.count($items['messages']).' 笔）：';
                 foreach ($items['messages'] as $item) {
                     $message[] = $item;
                 }
