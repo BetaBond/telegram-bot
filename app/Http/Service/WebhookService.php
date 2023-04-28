@@ -202,11 +202,50 @@ class WebhookService
             $formMessage[$item[BillTrace::T_UID]]['income'][] = $messageString;
         }
         
+        // 统计出账数据
+        foreach ($clearing as $item) {
+            $username = $item[BillTrace::USERNAME];
+            $date = date('H:i:s', (int) $item[BillTrace::CREATED_AT]);
+            $money = (float) $item[BillTrace::MONEY];
+            $exchangeRate = (float) $item[BillTrace::EXCHANGE_RATE];
+            
+            // 数学计算
+            if (empty($money) || empty($exchangeRate)) {
+                $difference = 0;
+            } else {
+                $difference = $money / $exchangeRate;
+            }
+            
+            // 精度调整
+            $money = number_format($money, 2);
+            $exchangeRate = number_format($exchangeRate, 2);
+            $difference = number_format($difference, 2);
+            
+            $moneyString = str_replace('.', "\\.", $money);
+            $differenceString = str_replace('.', "\\.", $difference);
+            $exchangeRateString = str_replace('.', "\\.", $exchangeRate);
+            
+            // 构建字符串
+            $messageString = "\\[`$date`\\]  ";
+            $messageString .= "￥$moneyString/￥$exchangeRateString\\=$$differenceString  ";
+            
+            $formMessage[$item[BillTrace::T_UID]]['username'] = $username;
+            $formMessage[$item[BillTrace::T_UID]]['clearing'][] = $messageString;
+        }
         
         // 构建进账字符信息
         foreach ($formMessage as $items) {
             $messages[] = '来自 @'.$items['username'].'（'.count($items['income']).' 笔）：';
             foreach ($items['income'] as $item) {
+                $messages[] = $item;
+            }
+            $messages[] = '';
+        }
+        
+        // 构建出账信息
+        foreach ($formMessage as $items) {
+            $messages[] = '来自 @'.$items['username'].'（'.count($items['clearing']).' 笔）：';
+            foreach ($items['clearing'] as $item) {
                 $messages[] = $item;
             }
             $messages[] = '';
