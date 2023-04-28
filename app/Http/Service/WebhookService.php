@@ -154,7 +154,7 @@ class WebhookService
                 $exchangeRateString = str_replace('.', "\\.", $exchangeRate);
                 $username = $item[BillTrace::USERNAME];
                 
-                $messageString = "\\[`$date`\\]  \\|  ";
+                $messageString = "\\[`$date`\\]  ";
                 $messageString .= "$moneyString/$exchangeRateString\\=$differenceString  \\|  ";
                 $messageString .= "@$username";
                 
