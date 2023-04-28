@@ -125,7 +125,8 @@ class WebhookService
             
             $message = ["*进账成功！！！*"];
             $message[] = "";
-            $message[] = "*进账：*";
+            $number = count($income);
+            $message[] = "*进账（$number 笔）：*";
             
             foreach ($income as $item) {
                 $date = date('H:i:s', (int) $item[BillTrace::CREATED_AT]);
