@@ -185,6 +185,9 @@ class WebhookService
                 $difference = $money / $exchangeRate;
             }
             
+            $formMessage[$item[BillTrace::T_UID]]['income']['usd'] += $difference;
+            $formMessage[$item[BillTrace::T_UID]]['income']['cny'] += $money;
+            
             // 精度调整
             $money = number_format($money, 2);
             $exchangeRate = number_format($exchangeRate, 2);
@@ -216,6 +219,9 @@ class WebhookService
                 $difference = $money / $exchangeRate;
             }
             
+            $formMessage[$item[BillTrace::T_UID]]['clearing']['usd'] += $difference;
+            $formMessage[$item[BillTrace::T_UID]]['clearing']['cny'] += $money;
+            
             // 精度调整
             $money = number_format($money, 2);
             $exchangeRate = number_format($exchangeRate, 2);
@@ -230,7 +236,7 @@ class WebhookService
             $messageString .= "￥$moneyString/￥$exchangeRateString\\=$$differenceString  ";
             
             $formMessage[$item[BillTrace::T_UID]]['username'] = $username;
-            $formMessage[$item[BillTrace::T_UID]]['clearing'][] = $messageString;
+            $formMessage[$item[BillTrace::T_UID]]['clearing']['messages'][] = $messageString;
         }
         
         $messages[] = '进账（'.count($income).' 笔）：';
