@@ -167,9 +167,9 @@ class WebhookService
                 foreach ($items['messages'] as $item) {
                     $message[] = $item;
                 }
+                $message[] = '';
             }
             
-            $message[] = "";
             $usd = number_format($usd, 2);
             $cny = number_format($cny, 2);
             $message[] = "合计进账：\\[`$$usd`\\]  \\[`￥$cny`\\]";
