@@ -175,81 +175,8 @@ class WebhookService
         $messages = [];
         $formMessage = [];
         
-        // 统计进账数据
-        foreach ($income as $item) {
-            if (!isset($formMessage[$item[BillTrace::T_UID]]['income']['usd'])) {
-                $formMessage[$item[BillTrace::T_UID]]['income']['usd'] = 0;
-            }
-            
-            if (!isset($formMessage[$item[BillTrace::T_UID]]['income']['cny'])) {
-                $formMessage[$item[BillTrace::T_UID]]['income']['cny'] = 0;
-            }
-            
-            $username = $item[BillTrace::USERNAME];
-            $date = date('H:i:s', (int) $item[BillTrace::CREATED_AT]);
-            $money = (float) $item[BillTrace::MONEY];
-            $exchangeRate = (float) $item[BillTrace::EXCHANGE_RATE];
-            
-            // 数学计算
-            if (empty($money) || empty($exchangeRate)) {
-                $difference = 0;
-            } else {
-                $difference = $money / $exchangeRate;
-            }
-            
-            $formMessage[$item[BillTrace::T_UID]]['income']['usd'] += $difference;
-            $formMessage[$item[BillTrace::T_UID]]['income']['cny'] += $money;
-            
-            // 精度调整
-            $money = number_format($money, 2);
-            $exchangeRate = number_format($exchangeRate, 2);
-            $difference = number_format($difference, 2);
-            
-            // 构建字符串
-            $messageString = "[`$date`]  ";
-            $messageString .= "￥$money/￥$exchangeRate=$$difference  ";
-            
-            $formMessage[$item[BillTrace::T_UID]]['username'] = $username;
-            $formMessage[$item[BillTrace::T_UID]]['income']['messages'][] = $messageString;
-        }
-        
-        // 统计出账数据
-        foreach ($clearing as $item) {
-            if (!isset($formMessage[$item[BillTrace::T_UID]]['clearing']['usd'])) {
-                $formMessage[$item[BillTrace::T_UID]]['clearing']['usd'] = 0;
-            }
-            
-            if (!isset($formMessage[$item[BillTrace::T_UID]]['clearing']['cny'])) {
-                $formMessage[$item[BillTrace::T_UID]]['clearing']['cny'] = 0;
-            }
-            
-            $username = $item[BillTrace::USERNAME];
-            $date = date('H:i:s', (int) $item[BillTrace::CREATED_AT]);
-            $money = (float) $item[BillTrace::MONEY];
-            $exchangeRate = (float) $item[BillTrace::EXCHANGE_RATE];
-            
-            // 数学计算
-            if (empty($money) || empty($exchangeRate)) {
-                $difference = 0;
-            } else {
-                $difference = $money / $exchangeRate;
-            }
-            
-            $formMessage[$item[BillTrace::T_UID]]['clearing']['usd'] += $difference;
-            $formMessage[$item[BillTrace::T_UID]]['clearing']['cny'] += $money;
-            
-            // 精度调整
-            $money = number_format($money, 2);
-            $exchangeRate = number_format($exchangeRate, 2);
-            $difference = number_format($difference, 2);
-            
-            // 构建字符串
-            $messageString = "[`$date`]  ";
-            $messageString .= "￥$money/￥$exchangeRate=$$difference  ";
-            
-            $formMessage[$item[BillTrace::T_UID]]['username'] = $username;
-            $formMessage[$item[BillTrace::T_UID]]['clearing']['messages'][] = $messageString;
-        }
+        $formMessage = self::build($formMessage, $income, 'income');
+        $formMessage = self::build($formMessage, $clearing, 'clearing');
         
         $messages[] = '进账（'.count($income).' 笔）：';
         $messages[] = '';
@@ -291,6 +218,56 @@ class WebhookService
         $messages[] = "合计进账：[`$$usd`]  [`￥$cny`]";
         
         return implode("\n", $messages);
+    }
+    
+    /**
+     * 构建数据字符串
+     *
+     * @param  array  $formMessage
+     * @param  array  $data
+     * @param  string  $key
+     * @return array
+     */
+    public static function build(array $formMessage, array $data, string $key): array
+    {
+        foreach ($data as $item) {
+            if (!isset($formMessage[$item[BillTrace::T_UID]][$key]['usd'])) {
+                $formMessage[$item[BillTrace::T_UID]][$key]['usd'] = 0;
+            }
+            
+            if (!isset($formMessage[$item[BillTrace::T_UID]][$key]['cny'])) {
+                $formMessage[$item[BillTrace::T_UID]][$key]['cny'] = 0;
+            }
+            
+            $username = $item[BillTrace::USERNAME];
+            $date = date('H:i:s', (int) $item[BillTrace::CREATED_AT]);
+            $money = (float) $item[BillTrace::MONEY];
+            $exchangeRate = (float) $item[BillTrace::EXCHANGE_RATE];
+            
+            // 数学计算
+            if (empty($money) || empty($exchangeRate)) {
+                $difference = 0;
+            } else {
+                $difference = $money / $exchangeRate;
+            }
+            
+            $formMessage[$item[BillTrace::T_UID]][$key]['usd'] += $difference;
+            $formMessage[$item[BillTrace::T_UID]][$key]['cny'] += $money;
+            
+            // 精度调整
+            $money = number_format($money, 2);
+            $exchangeRate = number_format($exchangeRate, 2);
+            $difference = number_format($difference, 2);
+            
+            // 构建字符串
+            $messageString = "[`$date`]  ";
+            $messageString .= "￥$money/￥$exchangeRate=$$difference  ";
+            
+            $formMessage[$item[BillTrace::T_UID]]['username'] = $username;
+            $formMessage[$item[BillTrace::T_UID]][$key]['messages'][] = $messageString;
+        }
+        
+        return $formMessage;
     }
     
     /**
