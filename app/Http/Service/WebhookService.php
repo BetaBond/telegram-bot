@@ -88,7 +88,7 @@ class WebhookService
             $exchangeRate = Cache::get($type[$params[0]]);
             return implode("\n", [
                 "*设置成功！！！*",
-                "当前为：`$$exchangeRate`"
+                "当前为：`$exchangeRate`"
             ]);
         }
         
@@ -306,9 +306,17 @@ class WebhookService
             return "金额必须大于0";
         }
         
-        $exchangeRate = Cache::get('exchange_rate', false);
-        if ($exchangeRate === false) {
-            return "汇率未设置";
+        $type = [
+            '进账汇率' => 'income_exchange_rate',
+            '出账汇率' => 'clearing_exchange_rate',
+            '费率' => 'rate_exchange_rate',
+        ];
+        
+        foreach ($type as $key => $value) {
+            $exchangeRate = Cache::get($value, false);
+            if ($exchangeRate === false) {
+                return "[$key] 未设置";
+            }
         }
         
         return true;
