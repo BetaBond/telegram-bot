@@ -124,7 +124,7 @@ class WebhookService
             ])->where('type', 1)->get()->toArray();
             
             $message = ["*进账成功！！！*"];
-            $message[] = "================================================";
+            $message[] = "#######################################################";
             $message[] = "*进账：*";
             
             foreach ($income as $item) {
