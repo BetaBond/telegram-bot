@@ -313,13 +313,12 @@ class WebhookService
                     $difference = $money / $exchangeRate - 0.045;
                 }
             }
-            
+    
+            $difference = round($difference, 2);
             $formMessage[$item[BillTrace::T_UID]][$key]['bill'] += $difference;
             
             // 构建字符串
             $messageString = "[`$date`]  ";
-    
-            $difference = round($difference, 2);
             
             if ($key === 'income') {
                 $messageString .= "$money\*$rateExchangeRate/$exchangeRate=$difference  ";
