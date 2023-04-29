@@ -302,7 +302,6 @@ class WebhookService
             // 精度调整
             $money = round($money, 2);
             $exchangeRate = round($exchangeRate, 2);
-            $difference = round($difference, 2);
             
             // 数学计算
             if (!empty($money) && !empty($exchangeRate)) {
@@ -319,6 +318,8 @@ class WebhookService
             
             // 构建字符串
             $messageString = "[`$date`]  ";
+    
+            $difference = round($difference, 2);
             
             if ($key === 'income') {
                 $messageString .= "$money\*$rateExchangeRate/$exchangeRate=$difference  ";
