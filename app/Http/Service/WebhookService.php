@@ -44,8 +44,9 @@ class WebhookService
             "`费率`  |  设置当前的费率 | 费率 [小数]",
             "`进账`  |  设置当前进账金额 | 进账 [小数]",
             "`出账`  |  设置当前出账金额 | 出账 [小数]",
-            "`+`  |  进账的别名用法",
-            "`-`  |  出账的别名用法",
+            "`+`    |  进账的别名用法",
+            "`-`    |  出账的别名用法",
+            "`重置`  |  重置进出账数据",
         ]);
     }
     
@@ -199,6 +200,18 @@ class WebhookService
         }
         
         return "失败";
+    }
+    
+    /**
+     * 重置指令
+     *
+     * @return string
+     */
+    public static function reset(): string
+    {
+        Bill::query()->delete();
+        
+        return "重置成功！";
     }
     
     /**

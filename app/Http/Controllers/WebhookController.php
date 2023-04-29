@@ -132,6 +132,7 @@ class WebhookController
             '费率' => WebhookService::rating($textMessage),
             '进账', '+' => WebhookService::income($textMessage, $formUserName, $formId),
             '出账', '-' => WebhookService::clearing($textMessage, $formUserName, $formId),
+            '重置' => WebhookService::reset(),
             default => false,
         };
         
@@ -147,7 +148,7 @@ class WebhookController
 //            'text' => "($value)接收到消息: $textMessage, 由$formFirstName(@$formUserName|$formId)在$date(Asia/Shanghai)发送"
 //        ]);
         
-        if ($message !== false) {
+        if ($message) {
             $this->telegram->sendMessage([
                 'chat_id' => $chatId,
                 'parse_mode' => 'MarkdownV2',
