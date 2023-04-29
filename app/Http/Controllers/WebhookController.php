@@ -128,9 +128,10 @@ class WebhookController
         $message = match ($command) {
             '说明' => WebhookService::explain(),
             '帮助' => WebhookService::help(),
-            '汇率' => WebhookService::exchangeRate($textMessage),
-            '进账' => WebhookService::income($textMessage, $formUserName, $formId),
-            '出账' => WebhookService::clearing($textMessage, $formUserName, $formId),
+            '汇率' => WebhookService::rate($textMessage),
+            '费率' => WebhookService::rating($textMessage),
+            '进账', '+' => WebhookService::income($textMessage, $formUserName, $formId),
+            '出账', '-' => WebhookService::clearing($textMessage, $formUserName, $formId),
             default => false,
         };
         

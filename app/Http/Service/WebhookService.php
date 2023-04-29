@@ -38,11 +38,14 @@ class WebhookService
     {
         return implode("\n", [
             "*指令使用帮助：*",
-            "`说明`  \\|  在当前版本的使用说明",
-            "`帮助`  \\|  在当前版本的使用帮助（指令列表）",
-            "`汇率`  \\|  设置当前的汇率 \\| 汇率 \\[汇率\\|小数\\]",
-            "`进账`  \\|  设置当前进账金额 \\| 进账 \\[金额\\|小数\\]",
-            "`出账`  \\|  设置当前出账金额 \\| 出账 \\[金额\\|小数\\]",
+            "`说明`  |  在当前版本的使用说明",
+            "`帮助`  |  在当前版本的使用帮助（指令列表）",
+            "`汇率`  |  设置当前的汇率 | 汇率 [出账/进账/费率] [小数]",
+            "`费率`  |  设置当前的费率 | 费率 [小数]",
+            "`进账`  |  设置当前进账金额 | 进账 [小数]",
+            "`出账`  |  设置当前出账金额 | 出账 [小数]",
+            "`+`  |  进账的别名用法",
+            "`-`  |  出账的别名用法",
         ]);
     }
     
@@ -52,7 +55,7 @@ class WebhookService
      * @param  array  $params
      * @return string
      */
-    public static function exchangeRate(array $params): string
+    public static function rate(array $params): string
     {
         if (empty($params)) {
             return "参数错误";
@@ -86,6 +89,37 @@ class WebhookService
         
         if ($cache) {
             $exchangeRate = Cache::get($type[$params[0]]);
+            return implode("\n", [
+                "*设置成功！！！*",
+                "当前为：`$exchangeRate`"
+            ]);
+        }
+        
+        return "失败";
+    }
+    
+    /**
+     * 设置费率
+     *
+     * @param  array  $params
+     * @return string
+     */
+    public static function rating(array $params): string
+    {
+        if (empty($params)) {
+            return "参数错误";
+        }
+        
+        if (!is_numeric($params[0])) {
+            return "参数类型错误";
+        }
+        
+        $exchangeRate = (float) $params[0];
+        
+        $cache = Cache::put('rate_exchange_rate', $exchangeRate);
+        
+        if ($cache) {
+            $exchangeRate = Cache::get('rate_exchange_rate');
             return implode("\n", [
                 "*设置成功！！！*",
                 "当前为：`$exchangeRate`"
