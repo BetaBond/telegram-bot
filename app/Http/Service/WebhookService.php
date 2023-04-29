@@ -300,8 +300,8 @@ class WebhookService
             $difference = 0;
     
             // 精度调整
-            $money = round($money, 2);
-            $exchangeRate = round($exchangeRate, 2);
+            // $money = round($money, 2);
+            // $exchangeRate = round($exchangeRate, 2);
             
             // 数学计算
             if (!empty($money) && !empty($exchangeRate)) {
