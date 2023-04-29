@@ -152,8 +152,8 @@ class WebhookService
         $exchangeRate = Cache::get('income_exchange_rate', false);
         
         $model = Bill::query()->create([
-            BillTrace::MONEY => $money,
-            BillTrace::EXCHANGE_RATE => $exchangeRate,
+            BillTrace::MONEY => (float)$money,
+            BillTrace::EXCHANGE_RATE => (float)$exchangeRate,
             BillTrace::TYPE => 1,
             BillTrace::T_UID => $tUID,
             BillTrace::USERNAME => $formUserName,
@@ -188,8 +188,8 @@ class WebhookService
         $exchangeRate = Cache::get('clearing_exchange_rate', false);
         
         $model = Bill::query()->create([
-            BillTrace::MONEY => $money,
-            BillTrace::EXCHANGE_RATE => $exchangeRate,
+            BillTrace::MONEY => (float)$money,
+            BillTrace::EXCHANGE_RATE => (float)$exchangeRate,
             BillTrace::TYPE => -1,
             BillTrace::T_UID => $tUID,
             BillTrace::USERNAME => $formUserName,
