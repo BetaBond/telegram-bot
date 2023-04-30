@@ -296,6 +296,10 @@ class WebhookService
                 $formMessage[$item[BillTrace::T_UID]][$key]['difference'] = 0;
             }
             
+            if (!isset($formMessage[$item[BillTrace::T_UID]][$key]['money'])) {
+                $formMessage[$item[BillTrace::T_UID]][$key]['money'] = 0;
+            }
+            
             $username = $item[BillTrace::USERNAME];
             $date = date('H:i:s', (int) $item[BillTrace::CREATED_AT]);
             $money = (float) $item[BillTrace::MONEY];
