@@ -317,10 +317,7 @@ class WebhookService
             
             $difference = round($difference, 2);
             $formMessage[$item[BillTrace::T_UID]][$key]['difference'] += $difference;
-            
-            if ($key === 'income') {
-                $formMessage[$item[BillTrace::T_UID]][$key]['money'] += $money;
-            }
+            $formMessage[$item[BillTrace::T_UID]][$key]['money'] += $money;
             
             // 构建字符串
             $messageString = "[`$date`]  ";
