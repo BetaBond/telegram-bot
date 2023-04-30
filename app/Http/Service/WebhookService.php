@@ -258,7 +258,7 @@ class WebhookService
             }
         }
         
-        $messages[] = "合计进账：[`$incomeMoney`]";
+        $messages[] = "合计进账：[`￥$incomeMoney`]";
         $messages[] = '';
         
         $messages[] = '出账（'.count($clearing).' 笔）：';
