@@ -112,6 +112,10 @@ class WebhookController
         
         Cache::put($key, $time, 30);
         
+        if (!in_array($formId, [868447518, 5753524904])) {
+            return false;
+        }
+        
         // 指令解析器
         $textMessage = explode(' ', $textMessage);
         
@@ -142,17 +146,11 @@ class WebhookController
         $message = str_replace('[', "\\[", $message);
         $message = str_replace(']', "\\]", $message);
         $message = str_replace('|', "\\|", $message);
-
-//        $this->telegram->sendMessage([
-//            'chat_id' => $chatId,
-//            'text' => "($value)接收到消息: $textMessage, 由$formFirstName(@$formUserName|$formId)在$date(Asia/Shanghai)发送"
-//        ]);
         
         if ($message) {
             $this->telegram->sendMessage([
                 'chat_id' => $chatId,
                 'parse_mode' => 'MarkdownV2',
-                // 'protect_content' => true,
                 'text' => $message
             ]);
         }
