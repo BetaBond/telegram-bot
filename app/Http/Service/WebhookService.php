@@ -315,7 +315,7 @@ class WebhookService
                 }
                 
                 if ($key === 'clearing') {
-                    $difference = $money / $exchangeRate - 0.045;
+                    $difference = $money / ($exchangeRate - 0.045);
                 }
             }
             
@@ -327,11 +327,11 @@ class WebhookService
             $messageString = "[`$date`]  ";
             
             if ($key === 'income') {
-                $messageString .= "$money\*$rateExchangeRate/$exchangeRate=$difference  ";
+                $messageString .= "$money\*$rateExchangeRate/$exchangeRate=$difference";
             }
             
             if ($key === 'clearing') {
-                $messageString .= "$money/$exchangeRate-0.045=$difference  ";
+                $messageString .= "$money/($exchangeRate-0.045)=$difference";
             }
             
             $formMessage[$item[BillTrace::T_UID]]['username'] = $username;
