@@ -137,6 +137,7 @@ class WebhookController
             '进账', '+' => WebhookService::income($textMessage, $formUserName, $formId),
             '出账', '-' => WebhookService::clearing($textMessage, $formUserName, $formId),
             '重置' => WebhookService::reset(),
+            '数据' => WebhookService::dataMessage(),
             default => false,
         };
         
