@@ -112,8 +112,9 @@ class LeaderRobot
             $robot = $telegram->getMe();
             
             $removeWebhook = $telegram->removeWebhook();
+            $url = "https://robot.southwan.cn/api/telegram/webhook/base_bot/$robot->id";
             $webHook = $telegram->setWebhook([
-                'url' => 'https://robot.southwan.cn/api/telegram/webhook/messages'
+                'url' => $url
             ]);
             
             if (!$webHook || !$removeWebhook) {
