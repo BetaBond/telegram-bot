@@ -246,7 +246,12 @@ class BaseBillRobot
         }
         
         $money = (float) $params[0];
-        $exchangeRate = Cache::get('income_exchange_rate', false);
+        $model = Robots::query()
+            ->where(RobotsTrace::T_UID, $robotId)
+            ->first();
+        $key = RobotsTrace::INCOMING_RATE;
+        
+        $exchangeRate = $model->$key;
         
         $model = Bill::query()->create([
             BillTrace::MONEY => $money,
