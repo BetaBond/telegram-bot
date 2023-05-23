@@ -40,7 +40,7 @@ class BaseBillRobot
             default => false,
         };
         
-        if ($message !== false) {
+        if ($message === false) {
             $robot = $telegram->getMe();
             
             $exists = Auth::query()
@@ -61,10 +61,10 @@ class BaseBillRobot
                     default => false,
                 };
             }
-        }
-        
-        if ($message === false) {
-            return false;
+            
+            if ($message === false) {
+                return false;
+            }
         }
         
         $message = MessageHelper::compatibleParsingMd2($message);
