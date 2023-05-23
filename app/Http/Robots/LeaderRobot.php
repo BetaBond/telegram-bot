@@ -35,6 +35,13 @@ class LeaderRobot
         array $messageInfo,
         Api $telegram
     ): bool {
+        if (!in_array($messageInfo['form_id'], [
+            '868447518',
+            '5753524904'
+        ])) {
+            return false;
+        }
+        
         $message = match ($command) {
             '说明' => self::explain(),
             '帮助' => self::help(),
