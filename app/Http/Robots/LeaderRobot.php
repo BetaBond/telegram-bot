@@ -36,6 +36,7 @@ class LeaderRobot
         $message = match ($command) {
             '说明' => self::explain(),
             '帮助' => self::help(),
+            '加入' => self::join($params),
             default => false,
         };
         
