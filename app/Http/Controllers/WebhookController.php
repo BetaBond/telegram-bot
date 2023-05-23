@@ -55,10 +55,6 @@ class WebhookController
             baseBotUrl: config('telegram.base_bot_url'),
         );
         
-        $robot = $telegram->getMe();
-        
-        Log::info($robot->username);
-        
         return WebhookService::messages($messages, $telegram);
     }
     

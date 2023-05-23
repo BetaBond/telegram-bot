@@ -63,10 +63,13 @@ class WebhookService
             'timestamp' => $message['date'],
         ];
         
+        $robot = $telegram->getMe();
+        
         $preventRepetition = self::preventRepetition(
             $messageInfo['timestamp'],
             $messageInfo['chat_id'],
             $messageInfo['form_id'],
+            $robot->id,
         );
         
         if (!$preventRepetition) {
@@ -120,14 +123,16 @@ class WebhookService
      * @param  string  $time
      * @param  int  $chatId
      * @param  int  $formId
+     * @param  int  $robotId
      * @return bool
      */
     public static function preventRepetition(
         string $time,
         int $chatId,
-        int $formId
+        int $formId,
+        int $robotId
     ): bool {
-        $key = "$time$chatId@$formId";
+        $key = md5("$time|$chatId|$formId|$robotId");
         $value = Cache::get($key);
         
         if ($value == $time) {
