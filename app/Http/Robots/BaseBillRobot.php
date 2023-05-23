@@ -9,7 +9,6 @@ use App\Models\Robots;
 use App\Models\Trace\AuthTrace;
 use App\Models\Trace\BillTrace;
 use App\Models\Trace\RobotsTrace;
-use Illuminate\Support\Facades\Cache;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
@@ -68,8 +67,8 @@ class BaseBillRobot
                         $messageInfo['form_id'],
                         $robot->id
                     ),
-                    '重置' => self::reset(),
-                    '数据' => self::dataMessage(),
+                    '重置' => self::reset($robot->id),
+                    '数据' => self::dataMessage($robot->id),
                     default => false,
                 };
             }
@@ -263,7 +262,7 @@ class BaseBillRobot
         ])->save();
         
         if ($model) {
-            return self::dataMessage();
+            return self::dataMessage($robotId);
         }
         
         return "失败";
@@ -290,7 +289,12 @@ class BaseBillRobot
         }
         
         $money = (float) $params[0];
-        $exchangeRate = Cache::get('clearing_exchange_rate', false);
+        $model = Robots::query()
+            ->where(RobotsTrace::T_UID, $robotId)
+            ->first();
+        $key = RobotsTrace::PAYMENT_EXCHANGE_RATE;
+        
+        $exchangeRate = $model->$key;
         
         $model = Bill::query()->create([
             BillTrace::MONEY => $money,
@@ -302,7 +306,7 @@ class BaseBillRobot
         ])->save();
         
         if ($model) {
-            return self::dataMessage();
+            return self::dataMessage($robotId);
         }
         
         return "失败";
@@ -311,11 +315,14 @@ class BaseBillRobot
     /**
      * 重置指令
      *
+     * @param  int  $robotId
      * @return string
      */
-    public static function reset(): string
+    public static function reset(int $robotId): string
     {
-        Bill::query()->delete();
+        Bill::query()
+            ->where(BillTrace::ROBOT_ID, $robotId)
+            ->delete();
         
         return "重置成功！";
     }
@@ -323,9 +330,10 @@ class BaseBillRobot
     /**
      * 数据消息
      *
+     * @param  int  $robotId
      * @return string
      */
-    public static function dataMessage(): string
+    public static function dataMessage(int $robotId): string
     {
         // 进账数据
         $income = Bill::query()->whereBetween(BillTrace::CREATED_AT, [
@@ -342,8 +350,8 @@ class BaseBillRobot
         $messages = [];
         $formMessage = [];
         
-        $formMessage = self::build($formMessage, $income, 'income');
-        $formMessage = self::build($formMessage, $clearing, 'clearing');
+        $formMessage = self::build($formMessage, $income, 'income', $robotId);
+        $formMessage = self::build($formMessage, $clearing, 'clearing', $robotId);
         
         $messages[] = '进账（'.count($income).' 笔）：';
         $messages[] = '';
@@ -393,10 +401,15 @@ class BaseBillRobot
      * @param  array  $formMessage
      * @param  array  $data
      * @param  string  $key
+     * @param  int  $robotId
      * @return array
      */
-    public static function build(array $formMessage, array $data, string $key): array
-    {
+    public static function build(
+        array $formMessage,
+        array $data,
+        string $key,
+        int $robotId
+    ): array {
         foreach ($data as $item) {
             if (!isset($formMessage[$item[BillTrace::T_UID]][$key]['difference'])) {
                 $formMessage[$item[BillTrace::T_UID]][$key]['difference'] = 0;
@@ -411,7 +424,13 @@ class BaseBillRobot
             $money = (float) $item[BillTrace::MONEY];
             $exchangeRate = (float) $item[BillTrace::EXCHANGE_RATE];
             
-            $rateExchangeRate = Cache::get('rate_exchange_rate', false);
+            $model = Robots::query()
+                ->where(RobotsTrace::T_UID, $robotId)
+                ->first();
+            $key = RobotsTrace::RATING;
+            
+            $rateExchangeRate = $model->$key;
+            
             $difference = 0;
             
             // 数学计算
@@ -467,19 +486,6 @@ class BaseBillRobot
         
         if ($money <= 0) {
             return "金额必须大于0";
-        }
-        
-        $type = [
-            '进账汇率' => 'income_exchange_rate',
-            '出账汇率' => 'clearing_exchange_rate',
-            '费率' => 'rate_exchange_rate',
-        ];
-        
-        foreach ($type as $key => $value) {
-            $exchangeRate = Cache::get($value, false);
-            if ($exchangeRate === false) {
-                return "[$key] 未设置";
-            }
         }
         
         return true;
