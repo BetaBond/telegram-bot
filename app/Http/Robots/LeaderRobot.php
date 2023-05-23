@@ -112,7 +112,7 @@ class LeaderRobot
             $robot = $telegram->getMe();
             
             $removeWebhook = $telegram->removeWebhook();
-            $url = "https://robot.southwan.cn/api/telegram/webhook/base_bot/$robot->id";
+            $url = "https://robot.southwan.cn/api/telegram/webhook/base/$token";
             $webHook = $telegram->setWebhook([
                 'url' => $url
             ]);
@@ -151,7 +151,7 @@ class LeaderRobot
         return implode("\n", [
             "*成功将机器人加入到主网！*",
             "`Telegram UID` :  $robot->id",
-            "`Telegram Username` :  $robot->username"
+            "`Telegram Username` :  @$robot->username"
         ]);
     }
     

@@ -22,7 +22,7 @@ class RobotController
     public function webhook(): array
     {
         $response = Telegram::setWebhook([
-            'url' => 'https://robot.southwan.cn/api/telegram/webhook/leader_bot'
+            'url' => 'https://robot.southwan.cn/api/telegram/webhook/message'
         ]);
         
         return [$response];
