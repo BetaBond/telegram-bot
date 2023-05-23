@@ -111,9 +111,12 @@ class LeaderRobot
             
             $robot = $telegram->getMe();
             
+            $removeWebhook = $telegram->removeWebhook();
             $webHook = $telegram->setWebhook([
                 'https://robot.southwan.cn/api/telegram/webhook/messages'
             ]);
+            
+            Log::info("remove: $removeWebhook");
             
             if (!$webHook) {
                 return '订阅到主网时发生异常！';
