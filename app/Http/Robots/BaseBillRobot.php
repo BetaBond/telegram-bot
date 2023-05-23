@@ -3,7 +3,9 @@
 namespace App\Http\Robots;
 
 use App\Helpers\MessageHelper;
+use App\Models\Auth;
 use App\Models\Bill;
+use App\Models\Trace\AuthTrace;
 use App\Models\Trace\BillTrace;
 use Illuminate\Support\Facades\Cache;
 use Telegram\Bot\Api;
@@ -33,21 +35,33 @@ class BaseBillRobot
         array $messageInfo,
         Api $telegram
     ): bool {
-        if ($command === '我的') {
-            $message = self::mine($messageInfo['form_id'], $messageInfo['form_user_name']);
-        }
-        
         $message = match ($command) {
-            '说明' => self::explain(),
-            '帮助' => self::help(),
-            '汇率' => self::rate($params),
-            '费率' => self::rating($params),
-            '进账', '+' => self::income($params, $messageInfo['form_user_name'], $messageInfo['form_id']),
-            '出账', '-' => self::clearing($params, $messageInfo['form_user_name'], $messageInfo['form_id']),
-            '重置' => self::reset(),
-            '数据' => self::dataMessage(),
+            '我的' => self::mine($messageInfo['form_id'], $messageInfo['form_user_name']),
             default => false,
         };
+        
+        if ($message !== false) {
+            $robot = $telegram->getMe();
+            
+            $exists = Auth::query()
+                ->where(AuthTrace::ROBOT_ID, $robot->id)
+                ->where(AuthTrace::T_UID, $messageInfo['form_id'])
+                ->exists();
+            
+            if (!$exists) {
+                $message = match ($command) {
+                    '说明' => self::explain(),
+                    '帮助' => self::help(),
+                    '汇率' => self::rate($params),
+                    '费率' => self::rating($params),
+                    '进账', '+' => self::income($params, $messageInfo['form_user_name'], $messageInfo['form_id']),
+                    '出账', '-' => self::clearing($params, $messageInfo['form_user_name'], $messageInfo['form_id']),
+                    '重置' => self::reset(),
+                    '数据' => self::dataMessage(),
+                    default => false,
+                };
+            }
+        }
         
         if ($message === false) {
             return false;
