@@ -113,7 +113,7 @@ class LeaderRobot
             
             $removeWebhook = $telegram->removeWebhook();
             $webHook = $telegram->setWebhook([
-                'https://robot.southwan.cn/api/telegram/webhook/messages'
+                'url' => 'https://robot.southwan.cn/api/telegram/webhook/messages'
             ]);
             
             Log::info("remove: $removeWebhook");
