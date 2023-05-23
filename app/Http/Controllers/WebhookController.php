@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\MessageHelper;
 use App\Http\Service\WebhookService;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -52,6 +53,8 @@ class WebhookController
         ]);
         
         $messages = $requestParams['message'];
+    
+        Log::info(json_encode($request->all(), JSON_UNESCAPED_UNICODE));
         
         return WebhookService::messages($messages, $this->telegram);
         
