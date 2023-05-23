@@ -45,13 +45,13 @@ class WebhookService
             return false;
         }
         
-        $message['chat'] = self::chat($message['chat']);
+        $chat = self::chat($message['chat']);
         $chatType = $message['chat']['type'];
         
-        $message['chat'] = match ($chatType) {
+        $message['chat'] = array_merge($chat, match ($chatType) {
             'private' => self::privateChat($message['chat']),
             default => self::groupChat($message['chat']),
-        };
+        });
         
         // 整理需要的信息
         $messageInfo = [
