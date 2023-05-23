@@ -2,6 +2,7 @@
 
 namespace App\Http\Service;
 
+use App\Http\Robots\BaseBillRobot;
 use App\Http\Robots\LeaderRobot;
 use App\Models\Bill;
 use App\Models\Trace\BillTrace;
@@ -74,8 +75,6 @@ class WebhookService
             return false;
         }
         
-        Log::info($telegram->getMe()->username);
-        
         return self::instructionParse($messageInfo, $telegram);
     }
     
@@ -105,9 +104,13 @@ class WebhookService
         
         array_shift($params);
         
-        LeaderRobot::instructionParse($command, $params, $messageInfo, $telegram);
+        $robot = $telegram->getMe();
         
-        return true;
+        // 分发给对应职能的机器人
+        return match ($robot->username) {
+            'jungle_leader_bot' => LeaderRobot::instructionParse($command, $params, $messageInfo, $telegram),
+            default => BaseBillRobot::instructionParse($command, $params, $messageInfo, $telegram),
+        };
     }
     
     
