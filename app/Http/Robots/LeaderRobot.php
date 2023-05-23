@@ -110,6 +110,14 @@ class LeaderRobot
             );
             
             $robot = $telegram->getMe();
+            
+            $webHook = $telegram->setWebhook([
+                'https://robot.southwan.cn/api/telegram/webhook/messages'
+            ]);
+            
+            if (!$webHook) {
+                return '订阅到主网时发生异常！';
+            }
         } catch (TelegramSDKException $e) {
             Log::warning($e->getMessage());
             return '失败！';

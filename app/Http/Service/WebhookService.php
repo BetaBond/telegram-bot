@@ -4,10 +4,7 @@ namespace App\Http\Service;
 
 use App\Http\Robots\BaseBillRobot;
 use App\Http\Robots\LeaderRobot;
-use App\Models\Bill;
-use App\Models\Trace\BillTrace;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Telegram\Bot\Api;
