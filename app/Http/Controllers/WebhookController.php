@@ -40,7 +40,7 @@ class WebhookController
      * @return bool|string
      * @throws TelegramSDKException
      */
-    public function messages(Request $request): bool|string
+    public function leaderBot(Request $request): bool|string
     {
         $requestParams = $request::validate([
             'update_id' => ['required', 'integer'],
@@ -52,6 +52,11 @@ class WebhookController
         Log::info(json_encode($request::all(), JSON_UNESCAPED_UNICODE));
         
         return WebhookService::messages($messages, $this->telegram);
+    }
+    
+    public function baseBot(Request $request, int $id)
+    {
+        Log::info($id);
     }
     
 }

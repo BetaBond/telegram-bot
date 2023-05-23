@@ -24,7 +24,8 @@ Route::prefix('/telegram')->group(function () {
         'webhook'
     )->group(function () {
         
-        Route::any('messages', 'messages');
+        Route::any('leader_bot', 'leaderBot');
+        Route::any('base_bot/{id}', 'baseBot');
         
     });
     
