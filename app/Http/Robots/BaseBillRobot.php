@@ -68,7 +68,7 @@ class BaseBillRobot
                         $robot->id
                     ),
                     '重置' => self::reset($params, $robot->id),
-                    '数据' => self::dataMessage($robot->id),
+                    '数据' => self::dataMessage($params, $robot->id),
                     default => false,
                 };
             }
@@ -263,7 +263,7 @@ class BaseBillRobot
         ])->save();
         
         if ($model) {
-            return self::dataMessage($robotId);
+            return self::dataMessage([], $robotId);
         }
         
         return "失败";
@@ -307,7 +307,7 @@ class BaseBillRobot
         ])->save();
         
         if ($model) {
-            return self::dataMessage($robotId);
+            return self::dataMessage([], $robotId);
         }
         
         return "失败";
@@ -326,7 +326,7 @@ class BaseBillRobot
             ->where(BillTrace::ROBOT_ID, $robotId);
         
         if (count($params) === 1) {
-            $username = $params[1];
+            $username = $params[0];
             $username = str_replace('@', '', $username);
             $model->where(BillTrace::USERNAME, $username);
         }
@@ -339,10 +339,11 @@ class BaseBillRobot
     /**
      * 数据消息
      *
+     * @param  array  $params
      * @param  int  $robotId
      * @return string
      */
-    public static function dataMessage(int $robotId): string
+    public static function dataMessage(array $params, int $robotId): string
     {
         // 进账数据
         $income = Bill::query()->whereBetween(BillTrace::CREATED_AT, [
@@ -354,7 +355,7 @@ class BaseBillRobot
         )->where(
             'type',
             1
-        )->get()->toArray();
+        );
         
         // 出账数据
         $clearing = Bill::query()->whereBetween(BillTrace::CREATED_AT, [
@@ -366,7 +367,18 @@ class BaseBillRobot
         )->where(
             'type',
             -1
-        )->get()->toArray();
+        );
+        
+        if (count($params) === 1) {
+            $username = $params[0];
+            $username = str_replace('@', '', $username);
+            
+            $income = $income->where(BillTrace::USERNAME, $username);
+            $clearing = $clearing->where(BillTrace::USERNAME, $username);
+        }
+        
+        $income = $income->get()->toArray();
+        $clearing = $clearing->get()->toArray();
         
         $messages = [];
         $formMessage = [];
