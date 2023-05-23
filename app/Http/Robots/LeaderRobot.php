@@ -116,11 +116,10 @@ class LeaderRobot
                 'url' => 'https://robot.southwan.cn/api/telegram/webhook/messages'
             ]);
             
-            Log::info("remove: $removeWebhook");
-            
-            if (!$webHook) {
+            if (!$webHook || !$removeWebhook) {
                 return '订阅到主网时发生异常！';
             }
+            
         } catch (TelegramSDKException $e) {
             Log::warning($e->getMessage());
             return '失败！';
