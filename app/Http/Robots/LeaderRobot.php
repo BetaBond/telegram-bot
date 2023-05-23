@@ -37,7 +37,7 @@ class LeaderRobot
             '说明' => self::explain(),
             '帮助' => self::help(),
             '加入' => self::join($params),
-            '授权' => self::auth($params, $telegram),
+            '授权' => self::auth($params),
             default => false,
         };
         
@@ -157,15 +157,10 @@ class LeaderRobot
     }
     
     /**
-     * @throws TelegramSDKException
+     *
      */
-    public static function auth(array $params, Api $telegram): bool|string
+    public static function auth(array $params): void
     {
-        $chatMember = $telegram->getChat([
-            'chat_id' => $params[0]
-        ]);
-        
-        return json_encode([$chatMember]);
     }
     
 }

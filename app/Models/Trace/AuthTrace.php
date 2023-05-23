@@ -34,11 +34,11 @@ class AuthTrace extends TraceEloquent
     const T_UID = 't_uid';
     
     /**
-     * Telegram 用户名
+     * 机器人 ID
      *
      * @var string
      */
-    const USERNAME = 'username';
+    const ROBOT_ID = 'robot_id';
     
     /**
      * 创建时间
