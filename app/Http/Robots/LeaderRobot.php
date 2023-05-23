@@ -115,6 +115,14 @@ class LeaderRobot
             return '失败！';
         }
         
+        $exists = Robots::query()
+            ->where(RobotsTrace::T_UID, $robot->id)
+            ->exists();
+        
+        if ($exists) {
+            return '该机器人已经加入主网，请勿重复加入！';
+        }
+        
         $model = Robots::query()->create([
             RobotsTrace::TOKEN => $token,
             RobotsTrace::T_UID => $robot->id,
@@ -130,7 +138,7 @@ class LeaderRobot
         }
         
         return implode("\n", [
-            "*成功将机器人加入到主网!*",
+            "*成功将机器人加入到主网！*",
             "`Telegram UID` :  $robot->id",
             "`Telegram Username` :  $robot->username"
         ]);
