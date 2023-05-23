@@ -161,7 +161,9 @@ class LeaderRobot
      */
     public static function auth(array $params, Api $telegram): bool|string
     {
-        $chatMember = $telegram->getChatMember([$params[0]]);
+        $chatMember = $telegram->getChatMember([
+            'user_id' => $params[0]
+        ]);
         return json_encode($chatMember);
     }
     
