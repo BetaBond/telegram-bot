@@ -26,6 +26,7 @@ class MessageHelper
         $message = str_replace('|', "\\|", $message);
         $message = str_replace('(', "\\(", $message);
         $message = str_replace('!', "\\!", $message);
+        $message = str_replace('_', "\\_", $message);
         
         return str_replace(')', "\\)", $message);
     }
