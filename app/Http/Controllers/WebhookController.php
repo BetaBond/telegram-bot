@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\MessageHelper;
 use App\Http\Service\WebhookService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
@@ -140,15 +141,8 @@ class WebhookController
             '数据' => WebhookService::dataMessage(),
             default => false,
         };
-        
-        $message = str_replace('.', "\\.", $message);
-        $message = str_replace('-', "\\-", $message);
-        $message = str_replace('=', "\\=", $message);
-        $message = str_replace('[', "\\[", $message);
-        $message = str_replace(']', "\\]", $message);
-        $message = str_replace('|', "\\|", $message);
-        $message = str_replace('(', "\\(", $message);
-        $message = str_replace(')', "\\)", $message);
+    
+        $message = MessageHelper::compatible_parsing_md2($message);
         
         if ($message) {
             $this->telegram->sendMessage([
