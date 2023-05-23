@@ -3,7 +3,9 @@
 namespace App\Http\Robots;
 
 use App\Helpers\MessageHelper;
+use App\Models\Auth;
 use App\Models\Robots;
+use App\Models\Trace\AuthTrace;
 use App\Models\Trace\RobotsTrace;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api;
@@ -84,7 +86,7 @@ class LeaderRobot
             "`说明`  |  在当前版本的使用说明",
             "`帮助`  |  在当前版本的使用帮助（指令列表）",
             "`加入`  |  添加一个新的机器人进入主网 | 加入 [token]",
-            "`授权`  |  授权用户使用此机器人 | 授权 [username]"
+            "`授权`  |  授权用户使用此机器人 | 授权 [用户ID] [机器人ID]"
         ]);
     }
     
@@ -157,10 +159,37 @@ class LeaderRobot
     }
     
     /**
+     * 授权机器人
      *
+     * @param  array  $params
+     * @return string
      */
-    public static function auth(array $params): void
+    public static function auth(array $params): string
     {
+        $parameterCalibration = MessageHelper::parameterCalibration($params, 2);
+        
+        if ($parameterCalibration !== true) {
+            return $parameterCalibration;
+        }
+        
+        $t_uid = $params[0];
+        $robot_id = $params[1];
+        
+        $exists = Auth::query()
+            ->where(AuthTrace::T_UID, $t_uid)
+            ->where(AuthTrace::ROBOT_ID, $robot_id)
+            ->exists();
+        
+        if ($exists) {
+            return '该账号已授权此机器人，请勿重复授权！';
+        }
+        
+        $model = Auth::query()->create([
+            AuthTrace::T_UID => $t_uid,
+            AuthTrace::ROBOT_ID => $robot_id,
+        ]);
+        
+        return $model ? '授权成功' : '授权失败';
     }
     
 }

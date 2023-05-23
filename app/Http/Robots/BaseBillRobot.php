@@ -33,8 +33,11 @@ class BaseBillRobot
         array $messageInfo,
         Api $telegram
     ): bool {
+        if ($command === '我的') {
+            $message = self::mine($messageInfo['form_id'], $messageInfo['form_user_name']);
+        }
+        
         $message = match ($command) {
-            '我的' => self::mine($messageInfo['form_id'], $messageInfo['form_user_name']),
             '说明' => self::explain(),
             '帮助' => self::help(),
             '汇率' => self::rate($params),
