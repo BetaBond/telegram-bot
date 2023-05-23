@@ -153,8 +153,8 @@ class LeaderRobot
         
         return implode("\n", [
             "*成功将机器人加入到主网！*",
-            "`Telegram UID` :  $robot->id",
-            "`Telegram Username` :  @$robot->username"
+            "Telegram UID :  `$robot->id`",
+            "Telegram Username :  `$robot->username`"
         ]);
     }
     
