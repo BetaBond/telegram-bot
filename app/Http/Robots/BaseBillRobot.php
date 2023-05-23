@@ -48,7 +48,7 @@ class BaseBillRobot
                 ->where(AuthTrace::T_UID, $messageInfo['form_id'])
                 ->exists();
             
-            if (!$exists) {
+            if ($exists) {
                 $message = match ($command) {
                     '说明' => self::explain(),
                     '帮助' => self::help(),
@@ -61,7 +61,7 @@ class BaseBillRobot
                     default => false,
                 };
             }
-            
+    
             if ($message === false) {
                 return false;
             }
