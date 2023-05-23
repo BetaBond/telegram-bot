@@ -51,7 +51,9 @@ class WebhookController
             'message' => ['required', 'array'],
         ]);
         
-        $message = $requestParams['message'];
+        $messages = $requestParams['message'];
+        
+        return WebhookService::messages($messages, $this->telegram);
         
         Validator::validate($message, [
             'message_id' => ['required', 'integer'],
@@ -141,7 +143,7 @@ class WebhookController
             '数据' => WebhookService::dataMessage(),
             default => false,
         };
-    
+        
         $message = MessageHelper::compatible_parsing_md2($message);
         
         if ($message) {
