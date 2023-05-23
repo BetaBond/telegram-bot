@@ -67,7 +67,7 @@ class BaseBillRobot
                         $messageInfo['form_id'],
                         $robot->id
                     ),
-                    '重置' => self::reset($robot->id),
+                    '重置' => self::reset($params, $robot->id),
                     '数据' => self::dataMessage($robot->id),
                     default => false,
                 };
@@ -139,9 +139,8 @@ class BaseBillRobot
             "`出账`  |  设置当前出账金额 | 出账 [小数]",
             "`+`\t\t\t\t\t\t\t\t|  进账的别名用法",
             "`-`\t\t\t\t\t\t\t\t|  出账的别名用法",
-            "`重置`  |  重置进出账数据",
+            "`重置`  |  重置进出账数据 | 重置 [用户名:可选]",
             "`数据`  |  获取当日所有进出账数据",
-            "`!重置` |  仅重置自己的进出账数据"
         ]);
     }
     
@@ -317,14 +316,22 @@ class BaseBillRobot
     /**
      * 重置指令
      *
+     * @param  array  $params
      * @param  int  $robotId
      * @return string
      */
-    public static function reset(int $robotId): string
+    public static function reset(array $params, int $robotId): string
     {
-        Bill::query()
-            ->where(BillTrace::ROBOT_ID, $robotId)
-            ->delete();
+        $model = Bill::query()
+            ->where(BillTrace::ROBOT_ID, $robotId);
+        
+        if (count($params) === 1) {
+            $username = $params[1];
+            $username = str_replace('@', '', $username);
+            $model->where(BillTrace::USERNAME, $username);
+        }
+        
+        $model->delete();
         
         return "重置成功！";
     }
