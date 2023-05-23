@@ -54,7 +54,7 @@ class WebhookController
         
         $messages = $requestParams['message'];
     
-        Log::info(json_encode($request->all(), JSON_UNESCAPED_UNICODE));
+        Log::info(json_encode($request::all(), JSON_UNESCAPED_UNICODE));
         
         return WebhookService::messages($messages, $this->telegram);
         
