@@ -2,6 +2,7 @@
 
 namespace App\Http\Service;
 
+use App\Http\Robots\LeaderRobot;
 use App\Models\Bill;
 use App\Models\Trace\BillTrace;
 use Illuminate\Support\Facades\Cache;
@@ -100,6 +101,8 @@ class WebhookService
         $params = $textMessage;
         
         array_shift($params);
+        
+        LeaderRobot::instructionParse($command, $params, $messageInfo, $telegram);
         
         return true;
     }
