@@ -27,6 +27,20 @@ class RobotsTrace extends TraceEloquent
     const ID = 'id';
     
     /**
+     * Telegram UID
+     *
+     * @var string
+     */
+    const T_UID = 't_uid';
+    
+    /**
+     * Telegram 用户名
+     *
+     * @var string
+     */
+    const USERNAME = 'username';
+    
+    /**
      * 机器人凭证
      *
      * @var string
