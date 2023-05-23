@@ -74,8 +74,8 @@ class BaseBillRobot
     {
         return implode("\n", [
             "*您的信息：*",
-            "`UID`      : $uid",
-            "`UserName` : $username",
+            "UID\t\t\t\t\t\t\t\t: `$uid`",
+            "`User Name` : `$username`",
         ]);
     }
     
