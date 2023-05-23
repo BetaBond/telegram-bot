@@ -43,7 +43,7 @@ class WebhookController
      * @return bool|string
      * @throws TelegramSDKException
      */
-    public function message(Request $request): bool|string
+    public function messages(Request $request): bool|string
     {
         $requestParams = $request::validate([
             'update_id' => ['required', 'integer'],

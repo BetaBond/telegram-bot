@@ -31,18 +31,11 @@ return [
     */
     'bots' => [
         
-        'mybot' => [
-            'token' => env('TELEGRAM_BOT_TOKEN', 'YOUR-BOT-TOKEN'),
-            'certificate_path' => env('TELEGRAM_CERTIFICATE_PATH', 'YOUR-CERTIFICATE-PATH'),
-            'webhook_url' => env('TELEGRAM_WEBHOOK_URL', 'YOUR-BOT-WEBHOOK-URL'),
-            'commands' => [],
-        ],
-        
         // 控制机器人
         'jungle_leader_bot' => [
             'token' => '5633755818:AAGMWla-Pk96w97X_uDv9_7ZVQcH7l6v45I',
             'certificate_path' => env('TELEGRAM_CERTIFICATE_PATH', 'YOUR-CERTIFICATE-PATH'),
-            'webhook_url' => env('TELEGRAM_WEBHOOK_URL', 'YOUR-BOT-WEBHOOK-URL'),
+            'webhook_url' => 'https://robot.southwan.cn/telegram/webhook',
         ],
     
     ],
@@ -56,7 +49,7 @@ return [
     | your default bot for regular use.
     |
     */
-    'default' => 'mybot',
+    'default' => 'jungle_leader_bot',
     
     /*
     |--------------------------------------------------------------------------
