@@ -439,9 +439,9 @@ class BaseBillRobot
             $model = Robots::query()
                 ->where(RobotsTrace::T_UID, $robotId)
                 ->first();
-            $key = RobotsTrace::RATING;
+            $modelKey = RobotsTrace::RATING;
             
-            $rateExchangeRate = $model->$key;
+            $rateExchangeRate = $model->$modelKey;
             
             $difference = 0;
             
