@@ -55,14 +55,24 @@ class BaseBillRobot
                     '帮助' => self::help(),
                     '汇率' => self::rate($params),
                     '费率' => self::rating($params),
-                    '进账', '+' => self::income($params, $messageInfo['form_user_name'], $messageInfo['form_id']),
-                    '出账', '-' => self::clearing($params, $messageInfo['form_user_name'], $messageInfo['form_id']),
+                    '进账', '+' => self::income(
+                        $params,
+                        $messageInfo['form_user_name'],
+                        $messageInfo['form_id'],
+                        $robot->id
+                    ),
+                    '出账', '-' => self::clearing(
+                        $params,
+                        $messageInfo['form_user_name'],
+                        $messageInfo['form_id'],
+                        $robot->id
+                    ),
                     '重置' => self::reset(),
                     '数据' => self::dataMessage(),
                     default => false,
                 };
             }
-    
+            
             if ($message === false) {
                 return false;
             }
@@ -220,12 +230,14 @@ class BaseBillRobot
      * @param  array  $params
      * @param  string  $formUserName
      * @param  int  $tUID
+     * @param  int  $robotId
      * @return string
      */
     public static function income(
         array $params,
         string $formUserName,
-        int $tUID
+        int $tUID,
+        int $robotId
     ): string {
         $billValidate = self::billValidate($params);
         if ($billValidate !== true) {
@@ -241,6 +253,7 @@ class BaseBillRobot
             BillTrace::TYPE => 1,
             BillTrace::T_UID => $tUID,
             BillTrace::USERNAME => $formUserName,
+            BillTrace::ROBOT_ID => $robotId,
         ])->save();
         
         if ($model) {
@@ -256,12 +269,14 @@ class BaseBillRobot
      * @param  array  $params
      * @param  string  $formUserName
      * @param  int  $tUID
+     * @param  int  $robotId
      * @return string
      */
     public static function clearing(
         array $params,
         string $formUserName,
-        int $tUID
+        int $tUID,
+        int $robotId
     ): string {
         $billValidate = self::billValidate($params);
         if ($billValidate !== true) {
@@ -277,6 +292,7 @@ class BaseBillRobot
             BillTrace::TYPE => -1,
             BillTrace::T_UID => $tUID,
             BillTrace::USERNAME => $formUserName,
+            BillTrace::ROBOT_ID => $robotId,
         ])->save();
         
         if ($model) {
