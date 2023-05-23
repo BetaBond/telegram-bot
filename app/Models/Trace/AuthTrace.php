@@ -17,7 +17,7 @@ class AuthTrace extends TraceEloquent
      *
      * @var string
      */
-    const TABLE = 'robots';
+    const TABLE = 'auth';
     
     /**
      * 授权 ID
