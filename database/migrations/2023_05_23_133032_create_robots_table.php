@@ -20,7 +20,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create(Trace::TABLE, function (Blueprint $table) {
-            $table->bigInteger(Trace::ID)->primary()->unique()->comment('账单ID');
+            $table->bigInteger(Trace::ID)->primary()->unique()->comment('机器人ID');
             $table->bigInteger(Trace::T_UID)->comment('Telegram UID');
             $table->string(Trace::USERNAME, 64)->comment('Telegram 用户名');
             $table->string(Trace::TOKEN, 64)->comment('机器人凭证');
