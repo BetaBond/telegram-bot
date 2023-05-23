@@ -41,6 +41,13 @@ class BillTrace extends TraceEloquent
     const T_UID = 't_uid';
     
     /**
+     * 机器人 ID
+     *
+     * @var string
+     */
+    const ROBOT_ID = 'robot_id';
+    
+    /**
      * 用户名
      *
      * @var string
