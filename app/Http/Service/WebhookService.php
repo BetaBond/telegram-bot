@@ -44,8 +44,8 @@ class WebhookService
         if ($message['from']['is_bot'] !== false) {
             return false;
         }
-        
-        $message = self::chat($message['chat']);
+    
+        $message['chat'] = self::chat($message['chat']);
         $chatType = $message['chat']['type'];
         
         $message['chat'] = match ($chatType) {
