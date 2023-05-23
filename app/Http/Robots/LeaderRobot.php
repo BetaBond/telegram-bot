@@ -37,6 +37,7 @@ class LeaderRobot
             '说明' => self::explain(),
             '帮助' => self::help(),
             '加入' => self::join($params),
+            '授权' => self::auth($params),
             default => false,
         };
         
@@ -153,6 +154,11 @@ class LeaderRobot
             "`Telegram UID` :  $robot->id",
             "`Telegram Username` :  @$robot->username"
         ]);
+    }
+    
+    public static function auth(array $params)
+    {
+        return $params[0];
     }
     
 }
