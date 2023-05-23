@@ -49,7 +49,7 @@ class BaseBillRobot
                 ->where(AuthTrace::T_UID, $messageInfo['form_id'])
                 ->exists();
             
-            Log::info("r:$robot->id".'|'.$messageInfo['form_id']);
+            Log::info("r:$robot->id|$robot->username".'|'.$messageInfo['form_id']);
             
             if ($exists) {
                 $message = match ($command) {

@@ -107,8 +107,6 @@ class WebhookService
         
         $robot = $telegram->getMe();
         
-        Log::info($robot->username);
-        
         // 分发给对应职能的机器人
         return match ($robot->username) {
             'jungle_leader_bot' => LeaderRobot::instructionParse($command, $params, $messageInfo, $telegram),
