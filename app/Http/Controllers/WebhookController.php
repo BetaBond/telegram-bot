@@ -37,30 +37,11 @@ class WebhookController
      * 消息处理中心
      *
      * @param  Request  $request
-     * @return bool|string
-     * @throws TelegramSDKException
-     */
-    public function message(Request $request): bool|string
-    {
-        $requestParams = $request::validate([
-            'update_id' => ['required', 'integer'],
-            'message' => ['required', 'array'],
-        ]);
-        
-        $messages = $requestParams['message'];
-        
-        return WebhookService::messages($messages, $this->telegram);
-    }
-    
-    /**
-     * 消息处理中心
-     *
-     * @param  Request  $request
      * @param  string  $token
      * @return bool|string
      * @throws TelegramSDKException
      */
-    public function base(Request $request, string $token): bool|string
+    public function message(Request $request, string $token): bool|string
     {
         $requestParams = $request::validate([
             'update_id' => ['required', 'integer'],
@@ -68,13 +49,17 @@ class WebhookController
         ]);
         
         $messages = $requestParams['message'];
-    
+        
         $telegram = new Api(
             $token,
             baseBotUrl: config('telegram.base_bot_url'),
         );
-    
-        return WebhookService::messages($messages, $this->telegram);
+        
+        $robot = $telegram->getMe();
+        
+        Log::info($robot->username);
+        
+        return WebhookService::messages($messages, $telegram);
     }
     
 }

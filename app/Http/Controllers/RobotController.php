@@ -21,8 +21,11 @@ class RobotController
      */
     public function webhook(): array
     {
+        $key = config('telegram.default');
+        $token = config("telegram.bots.$key.token");
+        
         $response = Telegram::setWebhook([
-            'url' => 'https://robot.southwan.cn/api/telegram/webhook/message'
+            'url' => "https://robot.southwan.cn/api/telegram/webhook/message/$token"
         ]);
         
         return [$response];
