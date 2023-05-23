@@ -44,12 +44,12 @@ class WebhookService
         if ($message['from']['is_bot'] !== false) {
             return false;
         }
-    
+        
         $message['chat'] = self::chat($message['chat']);
         $chatType = $message['chat']['type'];
         
         $message['chat'] = match ($chatType) {
-            'privateChat' => self::privateChat($message['chat']),
+            'private' => self::privateChat($message['chat']),
             default => self::groupChat($message['chat']),
         };
         
@@ -78,9 +78,12 @@ class WebhookService
     /**
      * 指令解析器
      *
+     * @param  array  $messageInfo
+     * @param  Api  $telegram
+     * @return bool
      * @throws TelegramSDKException
      */
-    public static function instructionParse(array $messageInfo, Api $telegram)
+    public static function instructionParse(array $messageInfo, Api $telegram): bool
     {
         $textMessage = explode(' ', $messageInfo['text_message']);
         
