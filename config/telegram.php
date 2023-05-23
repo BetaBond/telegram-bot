@@ -34,7 +34,7 @@ return [
         // 控制机器人
         'jungle_leader_bot' => [
             'token' => '5633755818:AAGMWla-Pk96w97X_uDv9_7ZVQcH7l6v45I',
-            'certificate_path' => env('TELEGRAM_CERTIFICATE_PATH', 'YOUR-CERTIFICATE-PATH'),
+            'certificate_path' => '',
             'webhook_url' => 'https://robot.southwan.cn/telegram/webhook',
         ],
     

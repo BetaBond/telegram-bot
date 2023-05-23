@@ -33,7 +33,11 @@ class RobotController
      */
     public function getMe(): array
     {
-        $telegram = new Api('YOUR BOT TOKEN');
+        $telegram = new Api(
+            '5633755818:AAGMWla-Pk96w97X_uDv9_7ZVQcH7l6v45I',
+            baseBotUrl: config('telegram.base_bot_url'),
+        );
+        
         $response = $telegram->getMe();
         
         return [$response];
