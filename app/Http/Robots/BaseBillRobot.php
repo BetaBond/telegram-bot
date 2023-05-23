@@ -339,13 +339,25 @@ class BaseBillRobot
         $income = Bill::query()->whereBetween(BillTrace::CREATED_AT, [
             strtotime(date('Y-m-d').'00:00:00'),
             strtotime(date('Y-m-d').'23:59:59'),
-        ])->where('type', 1)->get()->toArray();
+        ])->where(
+            BillTrace::ROBOT_ID,
+            $robotId
+        )->where(
+            'type',
+            1
+        )->get()->toArray();
         
         // 出账数据
         $clearing = Bill::query()->whereBetween(BillTrace::CREATED_AT, [
             strtotime(date('Y-m-d').'00:00:00'),
             strtotime(date('Y-m-d').'23:59:59'),
-        ])->where('type', -1)->get()->toArray();
+        ])->where(
+            BillTrace::ROBOT_ID,
+            $robotId
+        )->where(
+            'type',
+            -1
+        )->get()->toArray();
         
         $messages = [];
         $formMessage = [];
