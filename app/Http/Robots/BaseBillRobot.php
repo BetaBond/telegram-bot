@@ -34,6 +34,7 @@ class BaseBillRobot
         Api $telegram
     ): bool {
         $message = match ($command) {
+            '我的' => self::mine($messageInfo['form_id'], $messageInfo['form_user_name']),
             '说明' => self::explain(),
             '帮助' => self::help(),
             '汇率' => self::rate($params),
@@ -60,6 +61,22 @@ class BaseBillRobot
         }
         
         return true;
+    }
+    
+    /**
+     * 获取关于我的所有信息
+     *
+     * @param  int  $uid
+     * @param  string  $username
+     * @return string
+     */
+    public static function mine(int $uid, string $username): string
+    {
+        return implode("\n", [
+            "*您的信息：*",
+            "`UID`      : $uid",
+            "`UserName` : $username",
+        ]);
     }
     
     /**
