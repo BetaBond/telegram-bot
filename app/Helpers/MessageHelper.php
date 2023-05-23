@@ -16,7 +16,7 @@ class MessageHelper
      * @param  string  $message
      * @return string
      */
-    public static function compatible_parsing_md2(string $message): string
+    public static function compatibleParsingMd2(string $message): string
     {
         $message = str_replace('.', "\\.", $message);
         $message = str_replace('-', "\\-", $message);
@@ -28,5 +28,28 @@ class MessageHelper
         
         return str_replace(')', "\\)", $message);
     }
+    
+    /**
+     * 验证参数是否符合
+     *
+     * @param  array  $params
+     * @param  int  $num
+     * @return bool|string
+     */
+    public static function parameterCalibration(
+        array $params,
+        int $num
+    ): bool|string {
+        if (empty($params)) {
+            return '参数错误';
+        }
+        
+        if (count($params) !== $num) {
+            return '参数不足';
+        }
+        
+        return true;
+    }
+    
     
 }

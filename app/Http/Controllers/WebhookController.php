@@ -147,7 +147,7 @@ class WebhookController
             default => false,
         };
         
-        $message = MessageHelper::compatible_parsing_md2($message);
+        $message = MessageHelper::compatibleParsingMd2($message);
         
         if ($message) {
             $this->telegram->sendMessage([

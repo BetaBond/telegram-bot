@@ -3,6 +3,9 @@
 namespace App\Http\Robots;
 
 use App\Helpers\MessageHelper;
+use App\Models\Robots;
+use App\Models\Trace\RobotsTrace;
+use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
@@ -40,7 +43,7 @@ class LeaderRobot
             return false;
         }
         
-        $message = MessageHelper::compatible_parsing_md2($message);
+        $message = MessageHelper::compatibleParsingMd2($message);
         
         if ($message) {
             $telegram->sendMessage([
@@ -87,10 +90,49 @@ class LeaderRobot
      * 添加机器人信息
      *
      * @param  array  $params
+     * @return string
      */
-    public static function join(array $params): void
+    public static function join(array $params): string
     {
-    
+        $parameterCalibration = MessageHelper::parameterCalibration($params, 1);
+        
+        if ($parameterCalibration !== true) {
+            return $parameterCalibration;
+        }
+        
+        $token = $params[0];
+        
+        try {
+            $telegram = new Api(
+                $token,
+                baseBotUrl: config('telegram.base_bot_url'),
+            );
+            
+            $robot = $telegram->getMe();
+        } catch (TelegramSDKException $e) {
+            Log::warning($e->getMessage());
+            return '失败！';
+        }
+        
+        $model = Robots::query()->create([
+            RobotsTrace::TOKEN => $token,
+            RobotsTrace::T_UID => $robot->id,
+            RobotsTrace::USERNAME => $robot->username,
+            RobotsTrace::EXPIRE_AT => time(),
+            RobotsTrace::INCOMING_RATE => 0,
+            RobotsTrace::PAYMENT_EXCHANGE_RATE => 0,
+            RobotsTrace::RATING => 0,
+        ]);
+        
+        if (!$model->save()) {
+            return '创建失败！';
+        }
+        
+        return implode("\n", [
+            "*成功将机器人加入到主网!*",
+            "`Telegram UID` :  $robot->id",
+            "`Telegram Username` :  $robot->username"
+        ]);
     }
     
 }
