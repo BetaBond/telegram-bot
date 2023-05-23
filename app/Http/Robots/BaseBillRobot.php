@@ -8,6 +8,7 @@ use App\Models\Bill;
 use App\Models\Trace\AuthTrace;
 use App\Models\Trace\BillTrace;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
@@ -47,6 +48,8 @@ class BaseBillRobot
                 ->where(AuthTrace::ROBOT_ID, $robot->id)
                 ->where(AuthTrace::T_UID, $messageInfo['form_id'])
                 ->exists();
+            
+            Log::info("r:$robot->id".'|'.$messageInfo['form_id']);
             
             if ($exists) {
                 $message = match ($command) {
