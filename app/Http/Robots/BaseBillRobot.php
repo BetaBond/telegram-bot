@@ -5,10 +5,11 @@ namespace App\Http\Robots;
 use App\Helpers\MessageHelper;
 use App\Models\Auth;
 use App\Models\Bill;
+use App\Models\Robots;
 use App\Models\Trace\AuthTrace;
 use App\Models\Trace\BillTrace;
+use App\Models\Trace\RobotsTrace;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
@@ -53,8 +54,8 @@ class BaseBillRobot
                 $message = match ($command) {
                     '说明' => self::explain(),
                     '帮助' => self::help(),
-                    '汇率' => self::rate($params),
-                    '费率' => self::rating($params),
+                    '汇率' => self::rate($params, $robot->id),
+                    '费率' => self::rating($params, $robot->id),
                     '进账', '+' => self::income(
                         $params,
                         $messageInfo['form_user_name'],
@@ -148,9 +149,10 @@ class BaseBillRobot
      * 设置汇率信息
      *
      * @param  array  $params
+     * @param  int  $robotId
      * @return string
      */
-    public static function rate(array $params): string
+    public static function rate(array $params, int $robotId): string
     {
         if (empty($params)) {
             return "参数错误";
@@ -161,9 +163,9 @@ class BaseBillRobot
         }
         
         $type = [
-            '进账' => 'income_exchange_rate',
-            '出账' => 'clearing_exchange_rate',
-            '费率' => 'rate_exchange_rate',
+            '进账' => RobotsTrace::INCOMING_RATE,
+            '出账' => RobotsTrace::PAYMENT_EXCHANGE_RATE,
+            '费率' => RobotsTrace::RATING,
         ];
         
         if (!in_array($params[0], array_keys($type))) {
@@ -180,26 +182,26 @@ class BaseBillRobot
             return "汇率必须大于0";
         }
         
-        $cache = Cache::put($type[$params[0]], $exchangeRate);
-        
-        if ($cache) {
-            $exchangeRate = Cache::get($type[$params[0]]);
-            return implode("\n", [
-                "*设置成功！！！*",
-                "当前为：`$exchangeRate`"
+        Robots::query()
+            ->where(RobotsTrace::T_UID, $robotId)
+            ->update([
+                $type[$params[0]] => $exchangeRate
             ]);
-        }
         
-        return "失败";
+        return implode("\n", [
+            "*设置成功！！！*",
+            "当前为：`$exchangeRate`"
+        ]);
     }
     
     /**
      * 设置费率
      *
      * @param  array  $params
+     * @param $robotId
      * @return string
      */
-    public static function rating(array $params): string
+    public static function rating(array $params, $robotId): string
     {
         if (empty($params)) {
             return "参数错误";
@@ -211,17 +213,16 @@ class BaseBillRobot
         
         $exchangeRate = (float) $params[0];
         
-        $cache = Cache::put('rate_exchange_rate', $exchangeRate);
-        
-        if ($cache) {
-            $exchangeRate = Cache::get('rate_exchange_rate');
-            return implode("\n", [
-                "*设置成功！！！*",
-                "当前为：`$exchangeRate`"
+        Robots::query()
+            ->where(RobotsTrace::T_UID, $robotId)
+            ->update([
+                RobotsTrace::RATING => $exchangeRate,
             ]);
-        }
         
-        return "失败";
+        return implode("\n", [
+            "*设置成功！！！*",
+            "当前为：`$exchangeRate`"
+        ]);
     }
     
     /**
