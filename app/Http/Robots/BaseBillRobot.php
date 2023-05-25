@@ -9,6 +9,7 @@ use App\Models\Robots;
 use App\Models\Trace\AuthTrace;
 use App\Models\Trace\BillTrace;
 use App\Models\Trace\RobotsTrace;
+use Illuminate\Support\Facades\Http;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
@@ -69,6 +70,7 @@ class BaseBillRobot
                     ),
                     '重置' => self::reset($params, $robot->id),
                     '数据' => self::dataMessage($params, $robot->id),
+                    '价格' => self::price(),
                     default => false,
                 };
             }
@@ -141,6 +143,7 @@ class BaseBillRobot
             "`-`\t\t\t\t\t\t\t\t|  出账的别名用法",
             "`重置`  |  重置进出账数据 | 重置 [用户名:可选]",
             "`数据`  |  获取当日所有进出账数据 | 数据 [用户名:可选]",
+            "`价格`  |  获取来自欧易的实时`USDT`兑换`CNY(人民币)`价格"
         ]);
     }
     
@@ -334,6 +337,25 @@ class BaseBillRobot
         $model->delete();
         
         return "重置成功！";
+    }
+    
+    public static function price()
+    {
+        $response = Http::get(
+            'https://www.okx.com/v3/c2c/tradingOrders/mostUsedPaymentAndBestPriceAds',
+            [
+                't' => time().'000',
+                'cryptoCurrency' => 'USDT',
+                'fiatCurrency' => 'CNY',
+                'side' => 'buy',
+            ]
+        );
+        
+        if (!$response->successful()){
+            return '获取失败！';
+        }
+        
+        return $response->json();
     }
     
     /**
