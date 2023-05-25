@@ -460,16 +460,23 @@ class BaseBillRobot
             $model = Robots::query()
                 ->where(RobotsTrace::T_UID, $robotId)
                 ->first();
-            $modelKey = RobotsTrace::RATING;
+            $ratingKey = RobotsTrace::RATING;
+            $paymentExchangeRateKey = RobotsTrace::PAYMENT_EXCHANGE_RATE;
             
-            $rateExchangeRate = $model->$modelKey;
+            $rating = (float) $model->$ratingKey;
+            $paymentExchangeRate = (float) $model->$paymentExchangeRateKey;
+            
+            // 出账数据修正
+            if ($key === 'clearing') {
+                $exchangeRate = $paymentExchangeRate;
+            }
             
             $difference = 0;
             
             // 数学计算
             if (!empty($money) && !empty($exchangeRate)) {
                 if ($key === 'income') {
-                    $difference = $money * $rateExchangeRate / $exchangeRate;
+                    $difference = $money * $rating / $exchangeRate;
                 }
                 
                 if ($key === 'clearing') {
@@ -485,7 +492,7 @@ class BaseBillRobot
             $messageString = "[`$date`]  ";
             
             if ($key === 'income') {
-                $messageString .= "$money\*$rateExchangeRate/$exchangeRate=$difference";
+                $messageString .= "$money\*$rating/$exchangeRate=$difference";
             }
             
             if ($key === 'clearing') {
