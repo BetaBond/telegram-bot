@@ -464,7 +464,7 @@ class BaseBillRobot
         $file_id = time().'_'.mt_rand(100, 999);
         
         $save = $exportData->store(
-            "/$robotId/excel/$file_id.csv",
+            "$directory/$file_id.csv",
             'local',
             ExcelType::CSV
         );
