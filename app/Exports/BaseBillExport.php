@@ -2,42 +2,26 @@
 
 namespace App\Exports;
 
-use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromArray;
 
 /**
  * 基础记账机器人数据导出
  *
  * @author southwan
  */
-class BaseBillExport implements FromCollection
+class BaseBillExport implements FromArray
 {
     
-    /**
-     * 导出数据
-     *
-     * @var Collection
-     */
-    protected Collection $data;
+    protected array $data;
     
-    /**
-     * 构造导出
-     *
-     * @param  Collection  $data
-     */
-    public function __construct(Collection $data)
+    public function __construct(array $data)
     {
         $this->data = $data;
     }
     
-    /**
-     * 导出集合
-     *
-     * @return array
-     */
-    public function collection(): array
+    public function array(): array
     {
-        return $this->data->all();
+        return $this->data;
     }
     
 }

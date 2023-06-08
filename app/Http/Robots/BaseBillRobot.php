@@ -442,11 +442,11 @@ class BaseBillRobot
     public static function export(int $robotId): string
     {
         $exportData = new BaseBillExport(
-            collect([
+            [
                 'ID',
                 '11',
                 '11',
-            ])
+            ]
         );
         
         mt_srand();
