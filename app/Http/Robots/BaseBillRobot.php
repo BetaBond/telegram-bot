@@ -10,6 +10,7 @@ use App\Models\Robots;
 use App\Models\Trace\AuthTrace;
 use App\Models\Trace\BillTrace;
 use App\Models\Trace\RobotsTrace;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use \Maatwebsite\Excel\Excel as ExcelType;
 use Telegram\Bot\Api;
@@ -448,6 +449,16 @@ class BaseBillRobot
                 ['ID',],
             ]
         );
+        
+        $type = 'excel';
+        $directory = "/$robotId/$type/";
+        $files = Storage::files($directory);
+        
+        if (count($files) === 0) {
+            if (!Storage::makeDirectory($directory)) {
+                return '导出失败！';
+            }
+        }
         
         mt_srand();
         $file_id = time().'_'.mt_rand(100, 999);
