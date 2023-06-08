@@ -478,13 +478,13 @@ class BaseBillRobot
         );
         
         $contents = Storage::readStream($file);
-        
+
 //        $telegram->sendDocument([
 //            'chat_id' => $chatId,
 //            'document' => InputFile::create($contents)->getFilename(),
 //        ]);
         
-        return $save ? '导出成功'.InputFile::create($contents)->getFilename() : '导出失败';
+        return $save ? '导出成功'.InputFile::create($contents, 'test')->getFilename() : '导出失败';
     }
     
     /**
