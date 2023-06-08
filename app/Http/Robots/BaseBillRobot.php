@@ -10,6 +10,7 @@ use App\Models\Robots;
 use App\Models\Trace\AuthTrace;
 use App\Models\Trace\BillTrace;
 use App\Models\Trace\RobotsTrace;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use \Maatwebsite\Excel\Excel as ExcelType;
@@ -451,10 +452,10 @@ class BaseBillRobot
         );
         
         $directory = "/$robotId";
-        $files = Storage::files($directory);
+        $path = public_path($directory);
         
-        if (count($files) === 0) {
-            if (!Storage::makeDirectory($directory)) {
+        if (File::isDirectory($path)) {
+            if (!File::makeDirectory($directory, 0777, true, true)) {
                 return '导出失败！';
             }
         }
