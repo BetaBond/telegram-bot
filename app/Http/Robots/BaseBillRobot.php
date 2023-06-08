@@ -462,14 +462,17 @@ class BaseBillRobot
         
         mt_srand();
         $file_id = time().'_'.mt_rand(100, 999);
+        $file = "$directory/$file_id.csv";
         
         $save = $exportData->store(
-            "$directory/$file_id.csv",
+            $file,
             'public',
             ExcelType::CSV
         );
         
-        return $save ? '导出成功' : '导出失败';
+        $url = Storage::url($file);
+        
+        return $save ? '导出成功'.$url : '导出失败';
     }
     
     /**
