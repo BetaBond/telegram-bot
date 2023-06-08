@@ -477,12 +477,15 @@ class BaseBillRobot
             ExcelType::CSV
         );
         
-        $contents = Storage::readStream($file);
+        $inputFile = InputFile::create(
+            Storage::readStream($file),
+            "导出文件"
+        );
         
         try {
             $telegram->sendDocument([
                 'chat_id' => $chatId,
-                'document' => InputFile::create($contents),
+                'document' => $inputFile,
             ]);
         } catch (TelegramSDKException $e) {
             Log::error($e->getMessage());
