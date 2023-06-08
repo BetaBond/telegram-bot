@@ -33,11 +33,11 @@ class BaseBillExport implements FromCollection
     /**
      * 导出集合
      *
-     * @return Collection
+     * @return array
      */
-    public function collection(): Collection
+    public function collection(): array
     {
-        return $this->data;
+        return $this->data->all();
     }
     
 }
