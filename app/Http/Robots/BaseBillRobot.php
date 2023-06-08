@@ -470,7 +470,7 @@ class BaseBillRobot
             ExcelType::CSV
         );
         
-        $url = Storage::url($file);
+        $url = asset($file);
         
         return $save ? '导出成功'.$url : '导出失败';
     }
