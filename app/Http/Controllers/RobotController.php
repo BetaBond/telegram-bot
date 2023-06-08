@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Telegram\Bot\Api;
-use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
 /**

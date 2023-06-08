@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Excel as ExcelType;
 use Telegram\Bot\Api;
-use Telegram\Bot\Exceptions\CouldNotUploadInputFile;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\FileUpload\InputFile;
 
@@ -153,7 +152,6 @@ class BaseBillRobot
             "`-`\t\t\t\t\t\t\t\t|  出账的别名用法",
             "`重置`  |  重置进出账数据 | 重置 [用户名:可选]",
             "`数据`  |  获取当日所有进出账数据 | 数据 [用户名:可选]",
-            "`价格`  |  获取来自欧易的实时 `USDT` 兑换 `CNY(人民币)` 价格"
         ]);
     }
     
@@ -448,10 +446,10 @@ class BaseBillRobot
      * @param  int  $chatId
      * @param  int  $robotId
      * @return string
-     * @throws CouldNotUploadInputFile
      */
     public static function export(Api $telegram, int $chatId, int $robotId): string
     {
+        $exportRow = [''];
         $exportData = new BaseBillExport(
             [
                 ['ID',],
