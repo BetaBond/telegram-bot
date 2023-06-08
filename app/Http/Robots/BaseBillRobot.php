@@ -452,8 +452,7 @@ class BaseBillRobot
         mt_srand();
         $file_id = time().'_'.mt_rand(100, 999);
         
-        $save = Excel::store(
-            $exportData,
+        $save = $exportData->store(
             "/$robotId/excel/$file_id.csv",
             'local',
             ExcelType::CSV

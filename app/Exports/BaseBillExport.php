@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromArray;
 
 /**
@@ -11,6 +12,8 @@ use Maatwebsite\Excel\Concerns\FromArray;
  */
 class BaseBillExport implements FromArray
 {
+    
+    use Exportable;
     
     protected array $data;
     
