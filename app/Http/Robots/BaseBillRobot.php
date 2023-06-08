@@ -491,7 +491,7 @@ class BaseBillRobot
             ]);
         } catch (TelegramSDKException $e) {
             Log::error($e->getMessage());
-            Log::info($inputFile->getContents()->getSize());
+            Log::info((string)is_null(Storage::readStream($file)));
             return "导出失败";
         }
         
