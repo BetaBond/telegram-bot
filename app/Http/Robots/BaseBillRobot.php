@@ -477,7 +477,7 @@ class BaseBillRobot
             ExcelType::CSV
         );
         
-        $contents = Storage::get($file);
+        $contents = Storage::readStream($file);
         
         $telegram->sendDocument([
             'chat_id' => $chatId,
