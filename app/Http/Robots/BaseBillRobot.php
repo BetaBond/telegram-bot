@@ -443,9 +443,9 @@ class BaseBillRobot
     {
         $exportData = new BaseBillExport(
             [
-                'ID',
-                '11',
-                '11',
+                ['ID',],
+                ['ID',],
+                ['ID',],
             ]
         );
         
