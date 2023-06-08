@@ -11,6 +11,7 @@ use App\Models\Trace\AuthTrace;
 use App\Models\Trace\BillTrace;
 use App\Models\Trace\RobotsTrace;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Excel as ExcelType;
 use Telegram\Bot\Api;
@@ -446,7 +447,6 @@ class BaseBillRobot
      * @param  int  $chatId
      * @param  int  $robotId
      * @return string
-     * @throws TelegramSDKException
      */
     public static function export(Api $telegram, int $chatId, int $robotId): string
     {
@@ -478,13 +478,18 @@ class BaseBillRobot
         );
         
         $contents = Storage::readStream($file);
-
-//        $telegram->sendDocument([
-//            'chat_id' => $chatId,
-//            'document' => InputFile::create($contents)->getFilename(),
-//        ]);
         
-        return $save ? '导出成功'.InputFile::create($contents, 'test')->getFilename() : '导出失败';
+        try {
+            $telegram->sendDocument([
+                'chat_id' => $chatId,
+                'document' => InputFile::create($contents),
+            ]);
+        } catch (TelegramSDKException $e) {
+            Log::error($e->getMessage());
+            return "导出失败";
+        }
+        
+        return $save ? '导出成功' : '导出失败';
     }
     
     /**
