@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Excel as ExcelType;
 use Telegram\Bot\Api;
+use Telegram\Bot\Exceptions\CouldNotUploadInputFile;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\FileUpload\InputFile;
 
@@ -447,6 +448,7 @@ class BaseBillRobot
      * @param  int  $chatId
      * @param  int  $robotId
      * @return string
+     * @throws CouldNotUploadInputFile
      */
     public static function export(Api $telegram, int $chatId, int $robotId): string
     {
@@ -489,6 +491,7 @@ class BaseBillRobot
             ]);
         } catch (TelegramSDKException $e) {
             Log::error($e->getMessage());
+            Log::info($inputFile->getContents()->getSize());
             return "导出失败";
         }
         
