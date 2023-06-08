@@ -2,6 +2,7 @@
 
 namespace App\Http\Robots;
 
+use App\Exports\BaseBillExport;
 use App\Helpers\MessageHelper;
 use App\Models\Auth;
 use App\Models\Bill;
@@ -9,7 +10,8 @@ use App\Models\Robots;
 use App\Models\Trace\AuthTrace;
 use App\Models\Trace\BillTrace;
 use App\Models\Trace\RobotsTrace;
-use Illuminate\Support\Facades\Http;
+use Maatwebsite\Excel\Facades\Excel;
+use \Maatwebsite\Excel\Excel as ExcelType;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
@@ -70,7 +72,7 @@ class BaseBillRobot
                     ),
                     '重置' => self::reset($params, $robot->id),
                     '数据' => self::dataMessage($params, $robot->id),
-                    '价格' => self::price(),
+                    '导出' => self::export($robot->id),
                     default => false,
                 };
             }
@@ -339,25 +341,6 @@ class BaseBillRobot
         return "重置成功！";
     }
     
-    public static function price()
-    {
-        $response = Http::get(
-            'https://www.okx.com/v3/c2c/tradingOrders/mostUsedPaymentAndBestPriceAds',
-            [
-                't' => time().'000',
-                'cryptoCurrency' => 'USDT',
-                'fiatCurrency' => 'CNY',
-                'side' => 'buy',
-            ]
-        );
-        
-        if (!$response->successful()){
-            return '获取失败！';
-        }
-        
-        return $response->json();
-    }
-    
     /**
      * 数据消息
      *
@@ -448,6 +431,35 @@ class BaseBillRobot
         $messages[] = '合计差额：	[ `₮'.round((float) $bill, 2).'` ]';
         
         return implode("\n", $messages);
+    }
+    
+    /**
+     * 导出数据
+     *
+     * @param  int  $robotId
+     * @return string
+     */
+    public static function export(int $robotId): string
+    {
+        $exportData = new BaseBillExport(
+            collect([
+                'ID',
+                '11',
+                '11',
+            ])
+        );
+        
+        mt_srand();
+        $file_id = time().'_'.mt_rand(100, 999);
+        
+        $save = Excel::store(
+            $exportData,
+            "/$robotId/excel/$file_id.csv",
+            'local',
+            ExcelType::CSV
+        );
+        
+        return $save ? '导出成功' : '导出失败';
     }
     
     /**
