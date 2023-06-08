@@ -471,7 +471,8 @@ class BaseBillRobot
         
         mt_srand();
         $file_id = time().'_'.mt_rand(100, 999);
-        $file = "$directory/$file_id.csv";
+        $fileName = "$file_id.csv";
+        $file = "$directory/$fileName";
         
         $save = $exportData->store(
             $file,
@@ -481,7 +482,7 @@ class BaseBillRobot
         
         $inputFile = InputFile::create(
             Storage::disk('public')->readStream($file),
-            "导出文件"
+            $fileName,
         );
         
         try {
