@@ -11,9 +11,11 @@ use App\Models\Trace\AuthTrace;
 use App\Models\Trace\BillTrace;
 use App\Models\Trace\RobotsTrace;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Excel as ExcelType;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
+use Telegram\Bot\FileUpload\InputFile;
 
 /**
  * 基础型账本机器人
@@ -475,11 +477,11 @@ class BaseBillRobot
             ExcelType::CSV
         );
         
-        $url = asset("/storage/$file");
+        $contents = Storage::get($file);
         
         $telegram->sendDocument([
             'chat_id' => $chatId,
-            'document' => $url,
+            'document' => InputFile::create($contents),
         ]);
         
         return $save ? '导出成功' : '导出失败';
