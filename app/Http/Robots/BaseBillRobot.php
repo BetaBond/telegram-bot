@@ -480,7 +480,7 @@ class BaseBillRobot
         );
         
         $inputFile = InputFile::create(
-            Storage::readStream($file),
+            Storage::disk('public')->readStream($file),
             "导出文件"
         );
         
@@ -491,7 +491,6 @@ class BaseBillRobot
             ]);
         } catch (TelegramSDKException $e) {
             Log::error($e->getMessage());
-            Log::info(Storage::disk('public')->exists($file) ? '存在' : '不存在');
             return "导出失败";
         }
         
