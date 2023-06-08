@@ -450,8 +450,7 @@ class BaseBillRobot
             ]
         );
         
-        $type = 'excel';
-        $directory = "/$robotId/$type/";
+        $directory = "/$robotId";
         $files = Storage::files($directory);
         
         if (count($files) === 0) {
