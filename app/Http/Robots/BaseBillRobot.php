@@ -11,9 +11,7 @@ use App\Models\Trace\AuthTrace;
 use App\Models\Trace\BillTrace;
 use App\Models\Trace\RobotsTrace;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Facades\Excel;
-use \Maatwebsite\Excel\Excel as ExcelType;
+use Maatwebsite\Excel\Excel as ExcelType;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 
@@ -74,7 +72,11 @@ class BaseBillRobot
                     ),
                     '重置' => self::reset($params, $robot->id),
                     '数据' => self::dataMessage($params, $robot->id),
-                    '导出' => self::export($robot->id),
+                    '导出' => self::export(
+                        $telegram,
+                        $messageInfo['chat_id'],
+                        $robot->id
+                    ),
                     default => false,
                 };
             }
@@ -438,10 +440,13 @@ class BaseBillRobot
     /**
      * 导出数据
      *
+     * @param  Api  $telegram
+     * @param  int  $chatId
      * @param  int  $robotId
      * @return string
+     * @throws TelegramSDKException
      */
-    public static function export(int $robotId): string
+    public static function export(Api $telegram, int $chatId, int $robotId): string
     {
         $exportData = new BaseBillExport(
             [
@@ -472,7 +477,12 @@ class BaseBillRobot
         
         $url = asset("/storage/$file");
         
-        return $save ? '导出成功'.$url : '导出失败';
+        $telegram->sendDocument([
+            'chat_id' => $chatId,
+            'document' => $url,
+        ]);
+        
+        return $save ? '导出成功' : '导出失败';
     }
     
     /**
