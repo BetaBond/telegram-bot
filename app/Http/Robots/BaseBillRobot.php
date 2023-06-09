@@ -403,7 +403,6 @@ class BaseBillRobot
         $messages[] = '进账（'.count($income).' 笔）：';
         $messages[] = '';
         
-        $bill = 0;
         $incomeMoney = 0;
         $clearingMoney = 0;
         
@@ -415,7 +414,6 @@ class BaseBillRobot
                     $messages[] = $item;
                 }
                 $messages[] = '';
-                $bill += $items['income']['difference'];
                 $incomeMoney += $items['income']['money'];
             }
         }
@@ -434,7 +432,6 @@ class BaseBillRobot
                     $messages[] = $item;
                 }
                 $messages[] = '';
-                $bill -= $items['clearing']['difference'];
                 $clearingMoney += $items['clearing']['money'];
             }
         }
@@ -442,7 +439,7 @@ class BaseBillRobot
         $messages[] = "合计出账：[`￥$clearingMoney`]";
         $messages[] = '';
         
-        $messages[] = '合计差额：	[ `₮'.round((float) $bill, 2).'` ]';
+        $messages[] = '合计差额：	[ `￥'.($incomeMoney - $clearingMoney).'` ]';
         
         return implode("\n", $messages);
     }
@@ -575,10 +572,6 @@ class BaseBillRobot
         int $robotId
     ): array {
         foreach ($data as $item) {
-            if (!isset($formMessage[$item[BillTrace::T_UID]][$key]['difference'])) {
-                $formMessage[$item[BillTrace::T_UID]][$key]['difference'] = 0;
-            }
-            
             if (!isset($formMessage[$item[BillTrace::T_UID]][$key]['money'])) {
                 $formMessage[$item[BillTrace::T_UID]][$key]['money'] = 0;
             }
@@ -616,7 +609,6 @@ class BaseBillRobot
             }
             
             $difference = round($difference, 2);
-            $formMessage[$item[BillTrace::T_UID]][$key]['difference'] += $difference;
             $formMessage[$item[BillTrace::T_UID]][$key]['money'] += $money;
             
             $uuid = $item[BillTrace::ID];
