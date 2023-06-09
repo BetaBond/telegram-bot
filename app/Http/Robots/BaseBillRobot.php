@@ -579,8 +579,9 @@ class BaseBillRobot
             $formMessage[$item[BillTrace::T_UID]][$key]['difference'] += $difference;
             $formMessage[$item[BillTrace::T_UID]][$key]['money'] += $money;
             
+            $uuid = $item[BillTrace::ID];
             // 构建字符串
-            $messageString = "[`$date`]  ";
+            $messageString = "[`$uuid`] [`$date`]  ";
             
             if ($key === 'income') {
                 $messageString .= "$money\*$rating/$exchangeRate=$difference";
