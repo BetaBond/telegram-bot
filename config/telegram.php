@@ -35,7 +35,6 @@ return [
         'jungle_leader_bot' => [
             'token' => '5633755818:AAGMWla-Pk96w97X_uDv9_7ZVQcH7l6v45I',
             'certificate_path' => '',
-            'webhook_url' => 'https://robot.southwan.cn/telegram/webhook',
         ],
     
     ],
@@ -88,7 +87,7 @@ return [
     | Default: https://api.telegram.org/bot
     |
     */
-    'base_bot_url' => 'telegram.southwan.cn/bot',
+    'base_bot_url' => 'https://api.telegram.org/bot',
     
     /*
     |--------------------------------------------------------------------------
