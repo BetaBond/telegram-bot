@@ -580,6 +580,12 @@ class BaseBillRobot
             $formMessage[$item[BillTrace::T_UID]][$key]['money'] += $money;
             
             $uuid = $item[BillTrace::ID];
+            
+            $uuidEnd = substr($uuid, -3, 3);
+            $uuidMain = substr($uuid, 0, strlen($uuid) - 3);
+            $uuidMain = date('His',(int)$uuidMain);
+            $uuid = $uuidEnd.$uuidMain;
+            
             // 构建字符串
             $messageString = "[`$uuid`] [`$date`]  ";
             
