@@ -81,6 +81,12 @@ class BaseBillRobot
                         $robot->id
                     ),
                     '信息' => self::info($telegram),
+                    '回撤' => self::repeal(
+                        $telegram,
+                        $messageInfo['chat_id'],
+                        $robot->id,
+                        $params
+                    ),
                     default => false,
                 };
             }
@@ -153,6 +159,7 @@ class BaseBillRobot
             "`-`\t\t\t\t\t\t\t\t|  出账的别名用法",
             "`重置`  |  重置进出账数据 | 重置 [用户名:可选]",
             "`数据`  |  获取当日所有进出账数据 | 数据 [用户名:可选]",
+            "`回撤`  |  回撤填写错误的数据 | 回撤 [SID]"
         ]);
     }
     
@@ -520,6 +527,39 @@ class BaseBillRobot
     }
     
     /**
+     * 回撤数据
+     *
+     * @param  Api  $telegram
+     * @param  int  $chatId
+     * @param  int  $robotId
+     * @param  array  $params
+     * @return string
+     */
+    public static function repeal(
+        Api $telegram,
+        int $chatId,
+        int $robotId,
+        array $params
+    )
+    {
+        $parameterCalibration = MessageHelper::parameterCalibration($params, 1);
+        
+        if ($parameterCalibration !== true) {
+            return $parameterCalibration;
+        }
+        
+        $sid = $params[0];
+        
+        $sidEnd = substr($sid, 0, 3);
+        $sidMain = substr($sid,3, strlen($sid) - 3);
+        $sidMain = strtotime(date('Ymd ') . $sidMain);
+        
+        $sid = $sidMain.$sidEnd;
+        
+        return $sid;
+    }
+    
+    /**
      * 构建数据字符串
      *
      * @param  array  $formMessage
@@ -581,7 +621,7 @@ class BaseBillRobot
             
             $uuid = $item[BillTrace::ID];
             
-            $uuidEnd = substr($uuid, -3, 1);
+            $uuidEnd = substr($uuid, -3, 3);
             $uuidMain = substr($uuid, 0, strlen($uuid) - 3);
             $uuidMain = date('His',(int)$uuidMain);
             $uuid = $uuidEnd.$uuidMain;
