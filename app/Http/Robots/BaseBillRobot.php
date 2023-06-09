@@ -500,6 +500,7 @@ class BaseBillRobot
     {
         try {
             $robot = $telegram->getMe();
+            $telegram->getWebhookInfo();
         } catch (TelegramSDKException $e) {
             Log::error($e->getMessage());
             return '获取失败';
