@@ -405,6 +405,7 @@ class BaseBillRobot
         
         $bill = 0;
         $incomeMoney = 0;
+        $clearingMoney = 0;
         
         // 构建进账字符信息
         foreach ($formMessage as $items) {
@@ -434,8 +435,12 @@ class BaseBillRobot
                 }
                 $messages[] = '';
                 $bill -= $items['clearing']['difference'];
+                $clearingMoney += $items['clearing']['money'];
             }
         }
+        
+        $messages[] = "合计出账：[`￥$clearingMoney`]";
+        $messages[] = '';
         
         $messages[] = '合计差额：	[ `₮'.round((float) $bill, 2).'` ]';
         
