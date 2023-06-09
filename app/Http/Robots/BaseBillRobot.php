@@ -581,7 +581,7 @@ class BaseBillRobot
             
             $uuid = $item[BillTrace::ID];
             
-            $uuidEnd = substr($uuid, -3, 3);
+            $uuidEnd = substr($uuid, -3, 1);
             $uuidMain = substr($uuid, 0, strlen($uuid) - 3);
             $uuidMain = date('His',(int)$uuidMain);
             $uuid = $uuidEnd.$uuidMain;
