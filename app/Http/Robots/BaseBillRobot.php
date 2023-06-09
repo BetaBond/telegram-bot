@@ -81,12 +81,7 @@ class BaseBillRobot
                         $robot->id
                     ),
                     '信息' => self::info($telegram),
-                    '回撤' => self::repeal(
-                        $telegram,
-                        $messageInfo['chat_id'],
-                        $robot->id,
-                        $params
-                    ),
+                    '回撤' => self::repeal($params),
                     default => false,
                 };
             }
@@ -529,18 +524,10 @@ class BaseBillRobot
     /**
      * 回撤数据
      *
-     * @param  Api  $telegram
-     * @param  int  $chatId
-     * @param  int  $robotId
      * @param  array  $params
      * @return string
      */
-    public static function repeal(
-        Api $telegram,
-        int $chatId,
-        int $robotId,
-        array $params
-    )
+    public static function repeal(array $params): string
     {
         $parameterCalibration = MessageHelper::parameterCalibration($params, 1);
         
@@ -556,7 +543,15 @@ class BaseBillRobot
         
         $sid = $sidMain.$sidEnd;
         
-        return $sid;
+        $exists = Bill::query()->where('id', $sid)->exists();
+        
+        if (!$exists){
+            return '记录不存在！';
+        }
+        
+        $model = Bill::query()->where('id', $sid)->delete();
+        
+        return $model === 1 ? '回撤成功！' : '回撤失败';
     }
     
     /**
