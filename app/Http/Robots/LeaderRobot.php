@@ -233,9 +233,9 @@ class LeaderRobot
             } catch (TelegramSDKException $e) {
                 Log::error($e->getMessage());
                 Log::info(json_encode([
-                    'url' => $url,
                     'robot' => $robot,
                 ]));
+                
                 return "订阅失败";
             }
         }
