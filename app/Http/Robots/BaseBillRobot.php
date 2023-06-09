@@ -80,6 +80,7 @@ class BaseBillRobot
                         $messageInfo['chat_id'],
                         $robot->id
                     ),
+                    '信息' => self::info($telegram),
                     default => false,
                 };
             }
@@ -449,7 +450,6 @@ class BaseBillRobot
      */
     public static function export(Api $telegram, int $chatId, int $robotId): string
     {
-        $exportRow = [''];
         $exportData = new BaseBillExport(
             [
                 ['ID',],
@@ -494,6 +494,23 @@ class BaseBillRobot
         }
         
         return $save ? '导出成功' : '导出失败';
+    }
+    
+    public static function info(Api $telegram): string
+    {
+        try {
+            $robot = $telegram->getMe();
+        } catch (TelegramSDKException $e) {
+            Log::error($e->getMessage());
+            return '获取失败';
+        }
+        
+        $messages = [
+            '机器人信息：',
+            json_encode([$robot])
+        ];
+        
+        return implode("\n", $messages);
     }
     
     /**
