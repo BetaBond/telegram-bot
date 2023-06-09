@@ -124,7 +124,7 @@ class LeaderRobot
             $robot = $telegram->getMe();
             
             $removeWebhook = $telegram->removeWebhook();
-            $url = config_path('telegram.webhook_url');
+            $url = config('telegram.webhook_url');
             $url = "$url/$token";
             $webHook = $telegram->setWebhook([
                 'url' => $url
@@ -210,6 +210,7 @@ class LeaderRobot
     public static function subscription(): string
     {
         $robots = Robots::query()->get();
+        $base_url = config('telegram.webhook_url');
         
         foreach ($robots as $robot) {
             try {
@@ -219,8 +220,8 @@ class LeaderRobot
                 );
                 
                 $removeWebhook = $telegram->removeWebhook();
-                $url = config_path('telegram.webhook_url');
-                $url = "$url/$robot->token";
+                $url = "$base_url/$robot->token";
+                
                 $webHook = $telegram->setWebhook([
                     'url' => $url
                 ]);
@@ -231,6 +232,10 @@ class LeaderRobot
                 
             } catch (TelegramSDKException $e) {
                 Log::error($e->getMessage());
+                Log::info(json_encode([
+                    'url' => $url,
+                    'robot' => $robot,
+                ]));
                 return "订阅失败";
             }
         }
