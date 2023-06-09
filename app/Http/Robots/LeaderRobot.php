@@ -47,6 +47,7 @@ class LeaderRobot
             '帮助' => self::help(),
             '加入' => self::join($params),
             '授权' => self::auth($params),
+            '订阅' => self::subscription(),
             default => false,
         };
         
@@ -93,7 +94,8 @@ class LeaderRobot
             "`说明`  |  在当前版本的使用说明",
             "`帮助`  |  在当前版本的使用帮助（指令列表）",
             "`加入`  |  添加一个新的机器人进入主网 | 加入 [token]",
-            "`授权`  |  授权用户使用此机器人 | 授权 [用户ID] [机器人ID]"
+            "`授权`  |  授权用户使用此机器人 | 授权 [用户ID] [机器人ID]",
+            "`订阅`  |  更新所有机器人的订阅地址"
         ]);
     }
     
@@ -122,7 +124,8 @@ class LeaderRobot
             $robot = $telegram->getMe();
             
             $removeWebhook = $telegram->removeWebhook();
-            $url = "https://robot.southwan.cn/api/telegram/webhook/message/$token";
+            $url = config_path('telegram.webhook_url');
+            $url = "$url/$token";
             $webHook = $telegram->setWebhook([
                 'url' => $url
             ]);
@@ -197,6 +200,42 @@ class LeaderRobot
         ]);
         
         return $model ? '授权成功' : '授权失败';
+    }
+    
+    /**
+     * 订阅 WebHook
+     *
+     * @return string
+     */
+    public static function subscription(): string
+    {
+        $robots = Robots::query()->get();
+        
+        foreach ($robots as $robot) {
+            try {
+                $telegram = new Api(
+                    $robot->token,
+                    baseBotUrl: config('telegram.base_bot_url'),
+                );
+                
+                $removeWebhook = $telegram->removeWebhook();
+                $url = config_path('telegram.webhook_url');
+                $url = "$url/$robot->token";
+                $webHook = $telegram->setWebhook([
+                    'url' => $url
+                ]);
+                
+                if (!$webHook || !$removeWebhook) {
+                    return '订阅失败！';
+                }
+                
+            } catch (TelegramSDKException $e) {
+                Log::error($e->getMessage());
+                return "订阅失败";
+            }
+        }
+        
+        return '订阅成功';
     }
     
 }

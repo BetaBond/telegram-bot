@@ -2,6 +2,8 @@
 
 return [
     
+    'webhook_url' => 'https://telegram.post-man.org/api/telegram/webhook/message',
+    
     /*
     |--------------------------------------------------------------------------
     | Your Telegram Bots
