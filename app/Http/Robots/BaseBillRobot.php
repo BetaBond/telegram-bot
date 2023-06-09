@@ -511,9 +511,9 @@ class BaseBillRobot
             "名称  :  [`$robot->firstName`]",
             "唯一标识  :  [`$robot->id`]",
             "账号  :  [`$robot->username`]",
-            '是否允许加入群组  :  '.($robot->canJoinGroups ? '允许' : '不允许'),
-            '是否可以阅读所有的群组信息  :  '.($robot->canReadAllGroupMessages ? '允许' : '不允许'),
-            '支持内联查询  :  '.($robot->supportsInlineQueries ? '支持' : '不支持'),
+            '加入群组  :  '.($robot->canJoinGroups ? '允许' : '不允许'),
+            '阅读所有的群组信息  :  '.($robot->canReadAllGroupMessages ? '允许' : '不允许'),
+            '内联查询  :  '.($robot->supportsInlineQueries ? '支持' : '不支持'),
         ];
         
         return implode("\n", $messages);
