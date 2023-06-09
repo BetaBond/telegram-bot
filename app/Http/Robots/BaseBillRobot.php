@@ -514,7 +514,6 @@ class BaseBillRobot
             '是否允许加入群组 : '.$robot->canJoinGroups ? '允许' : '不允许',
             '是否可以阅读所有的群组信息 : '.$robot->canReadAllGroupMessages ? '允许' : '不允许',
             '支持内联查询 : '.$robot->supportsInlineQueries ? '支持' : '不支持',
-            json_encode([$robot])
         ];
         
         return implode("\n", $messages);
