@@ -441,6 +441,7 @@ class BaseBillRobot
         $incomeMoneyInfo = [];
         $incomeMoneyInfo['cny'] = $incomeMoney;
         $incomeMoneyInfo['usdt'] = $incomeMoney / $rate['income'];
+        $incomeMoneyInfo['usdt'] = round($incomeMoneyInfo['usdt'], 2);
         $incomeMoneyInfo['string'] = "[`￥".$incomeMoneyInfo['cny']."` | ";
         $incomeMoneyInfo['string'] .= "`₮".$incomeMoneyInfo['usdt']."`]";
         $messages[] = "合计入款：".$incomeMoneyInfo['string'];
