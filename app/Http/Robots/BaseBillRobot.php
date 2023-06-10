@@ -442,7 +442,7 @@ class BaseBillRobot
         $incomeMoneyInfo['cny'] = $incomeMoney;
         $incomeMoneyInfo['usdt'] = $incomeMoney / $rate['income'];
         $incomeMoneyInfo['usdt'] = round($incomeMoneyInfo['usdt'], 2);
-        $incomeMoneyInfo['string'] = "[`￥".$incomeMoneyInfo['cny']."` | ";
+        $incomeMoneyInfo['string'] = "[`￥".$incomeMoneyInfo['cny']."` / ";
         $incomeMoneyInfo['string'] .= "`₮".$incomeMoneyInfo['usdt']."`]";
         $messages[] = "合计入款：".$incomeMoneyInfo['string'];
         $messages[] = '';
@@ -468,7 +468,13 @@ class BaseBillRobot
             }
         }
         
-        $messages[] = "合计下发：[`￥$clearingMoney`]";
+        $clearingMoneyInfo = [];
+        $clearingMoneyInfo['cny'] = $clearingMoney;
+        $clearingMoneyInfo['usdt'] = $clearingMoney / $rate['clearing'];
+        $clearingMoneyInfo['usdt'] = round($clearingMoneyInfo['usdt'], 2);
+        $clearingMoneyInfo['string'] = "[`￥".$clearingMoneyInfo['cny']."` / ";
+        $clearingMoneyInfo['string'] .= "`₮".$clearingMoneyInfo['usdt']."`]";
+        $messages[] = "合计下发：".$clearingMoneyInfo['string'];
         $messages[] = '';
         
         $messages[] = '总计：	[ `￥'.($incomeMoney - $clearingMoney).'` ]';
