@@ -33,6 +33,7 @@ class BaseBillRobot
      * @param  array  $params
      * @param  array  $messageInfo
      * @param  Api  $telegram
+     *
      * @return bool
      * @throws TelegramSDKException
      */
@@ -43,7 +44,8 @@ class BaseBillRobot
         Api $telegram
     ): bool {
         $message = match ($command) {
-            '我的' => self::mine($messageInfo['form_id'], $messageInfo['form_user_name']),
+            '我的' => self::mine($messageInfo['form_id'],
+                $messageInfo['form_user_name']),
             default => false,
         };
         
@@ -95,9 +97,9 @@ class BaseBillRobot
         
         if ($message) {
             $telegram->sendMessage([
-                'chat_id' => $messageInfo['chat_id'],
+                'chat_id'    => $messageInfo['chat_id'],
                 'parse_mode' => 'MarkdownV2',
-                'text' => $message
+                'text'       => $message
             ]);
         }
         
@@ -109,6 +111,7 @@ class BaseBillRobot
      *
      * @param  int  $uid
      * @param  string  $username
+     *
      * @return string
      */
     public static function mine(int $uid, string $username): string
@@ -164,6 +167,7 @@ class BaseBillRobot
      *
      * @param  array  $params
      * @param  int  $robotId
+     *
      * @return string
      */
     public static function rate(array $params, int $robotId): string
@@ -213,6 +217,7 @@ class BaseBillRobot
      *
      * @param  array  $params
      * @param $robotId
+     *
      * @return string
      */
     public static function rating(array $params, $robotId): string
@@ -246,6 +251,7 @@ class BaseBillRobot
      * @param  string  $formUserName
      * @param  int  $tUID
      * @param  int  $robotId
+     *
      * @return string
      */
     public static function income(
@@ -268,12 +274,12 @@ class BaseBillRobot
         $exchangeRate = $model->$key;
         
         $model = Bill::query()->create([
-            BillTrace::MONEY => $money,
+            BillTrace::MONEY         => $money,
             BillTrace::EXCHANGE_RATE => (float) $exchangeRate,
-            BillTrace::TYPE => 1,
-            BillTrace::T_UID => $tUID,
-            BillTrace::USERNAME => $formUserName,
-            BillTrace::ROBOT_ID => $robotId,
+            BillTrace::TYPE          => 1,
+            BillTrace::T_UID         => $tUID,
+            BillTrace::USERNAME      => $formUserName,
+            BillTrace::ROBOT_ID      => $robotId,
         ])->save();
         
         if ($model) {
@@ -290,6 +296,7 @@ class BaseBillRobot
      * @param  string  $formUserName
      * @param  int  $tUID
      * @param  int  $robotId
+     *
      * @return string
      */
     public static function clearing(
@@ -312,12 +319,12 @@ class BaseBillRobot
         $exchangeRate = $model->$key;
         
         $model = Bill::query()->create([
-            BillTrace::MONEY => $money,
+            BillTrace::MONEY         => $money,
             BillTrace::EXCHANGE_RATE => (float) $exchangeRate,
-            BillTrace::TYPE => -1,
-            BillTrace::T_UID => $tUID,
-            BillTrace::USERNAME => $formUserName,
-            BillTrace::ROBOT_ID => $robotId,
+            BillTrace::TYPE          => -1,
+            BillTrace::T_UID         => $tUID,
+            BillTrace::USERNAME      => $formUserName,
+            BillTrace::ROBOT_ID      => $robotId,
         ])->save();
         
         if ($model) {
@@ -332,6 +339,7 @@ class BaseBillRobot
      *
      * @param  array  $params
      * @param  int  $robotId
+     *
      * @return string
      */
     public static function reset(array $params, int $robotId): string
@@ -355,6 +363,7 @@ class BaseBillRobot
      *
      * @param  array  $params
      * @param  int  $robotId
+     *
      * @return string
      */
     public static function dataMessage(array $params, int $robotId): string
@@ -398,18 +407,29 @@ class BaseBillRobot
         $formMessage = [];
         
         $formMessage = self::build($formMessage, $income, 'income', $robotId);
-        $formMessage = self::build($formMessage, $clearing, 'clearing', $robotId);
+        $formMessage = self::build($formMessage, $clearing, 'clearing',
+            $robotId);
         
-        $messages[] = '进账（'.count($income).' 笔）：';
+        $messages[] = '入款（'.count($income).' 笔）：';
         $messages[] = '';
         
         $incomeMoney = 0;
         $clearingMoney = 0;
+        $rate = [
+            'income'   => 1,
+            'clearing' => 1,
+        ];
         
         // 构建进账字符信息
         foreach ($formMessage as $items) {
-            if (isset($items['income']) && !empty($items['income']['messages'])) {
-                $messages[] = '来自 @'.$items['username'].'（'.count($items['income']['messages']).' 笔）：';
+            if (isset($items['income'])
+                && !empty($items['income']['messages'])
+            ) {
+                $messages[] = '来自 @'.$items['username'].'（'
+                    .count($items['income']['messages']).' 笔）：';
+                
+                $rate['income'] = $items['income']['rate'];
+                
                 foreach ($items['income']['messages'] as $item) {
                     $messages[] = $item;
                 }
@@ -418,16 +438,26 @@ class BaseBillRobot
             }
         }
         
-        $messages[] = "合计进账：[`￥$incomeMoney`]";
+        $incomeMoney['cny'] = $incomeMoney;
+        $incomeMoney['usdt'] = $incomeMoney / $rate['income'];
+        $incomeMoney['string'] = "[`￥".$incomeMoney['cny']."` | ";
+        $incomeMoney['string'] .= "`₮".$incomeMoney['usdt']."`]";
+        $messages[] = "合计入款：".$incomeMoney['string'];
         $messages[] = '';
         
-        $messages[] = '出账（'.count($clearing).' 笔）：';
+        $messages[] = '下发（'.count($clearing).' 笔）：';
         $messages[] = '';
         
         // 构建出账信息
         foreach ($formMessage as $items) {
-            if (isset($items['clearing']) && !empty($items['clearing']['messages'])) {
-                $messages[] = '来自 @'.$items['username'].'（'.count($items['clearing']['messages']).' 笔）：';
+            if (isset($items['clearing'])
+                && !empty($items['clearing']['messages'])
+            ) {
+                $messages[] = '来自 @'.$items['username'].'（'
+                    .count($items['clearing']['messages']).' 笔）：';
+                
+                $rate['clearing'] = $items['clearing']['rate'];
+                
                 foreach ($items['clearing']['messages'] as $item) {
                     $messages[] = $item;
                 }
@@ -436,10 +466,10 @@ class BaseBillRobot
             }
         }
         
-        $messages[] = "合计出账：[`￥$clearingMoney`]";
+        $messages[] = "合计下发：[`￥$clearingMoney`]";
         $messages[] = '';
         
-        $messages[] = '合计差额：	[ `￥'.($incomeMoney - $clearingMoney).'` ]';
+        $messages[] = '总计：	[ `￥'.($incomeMoney - $clearingMoney).'` ]';
         
         return implode("\n", $messages);
     }
@@ -450,10 +480,14 @@ class BaseBillRobot
      * @param  Api  $telegram
      * @param  int  $chatId
      * @param  int  $robotId
+     *
      * @return string
      */
-    public static function export(Api $telegram, int $chatId, int $robotId): string
-    {
+    public static function export(
+        Api $telegram,
+        int $chatId,
+        int $robotId
+    ): string {
         $exportData = new BaseBillExport(
             [
                 ['ID',],
@@ -489,7 +523,7 @@ class BaseBillRobot
         
         try {
             $telegram->sendDocument([
-                'chat_id' => $chatId,
+                'chat_id'  => $chatId,
                 'document' => $inputFile,
             ]);
         } catch (TelegramSDKException $e) {
@@ -516,7 +550,8 @@ class BaseBillRobot
             "唯一标识  :  [ `$robot->id` ]",
             "账号  :  [ `$robot->username` ]",
             '加入群组  :  '.($robot->canJoinGroups ? '允许' : '不允许'),
-            '阅读所有的群组信息  :  '.($robot->canReadAllGroupMessages ? '允许' : '不允许'),
+            '阅读所有的群组信息  :  '.($robot->canReadAllGroupMessages ? '允许'
+                : '不允许'),
             '内联查询  :  '.($robot->supportsInlineQueries ? '支持' : '不支持'),
         ];
         
@@ -527,6 +562,7 @@ class BaseBillRobot
      * 回撤数据
      *
      * @param  array  $params
+     *
      * @return string
      */
     public static function repeal(array $params): string
@@ -540,14 +576,14 @@ class BaseBillRobot
         $sid = $params[0];
         
         $sidEnd = substr($sid, 0, 3);
-        $sidMain = substr($sid,3, strlen($sid) - 3);
-        $sidMain = strtotime(date('Ymd ') . $sidMain);
+        $sidMain = substr($sid, 3, strlen($sid) - 3);
+        $sidMain = strtotime(date('Ymd ').$sidMain);
         
         $sid = $sidMain.$sidEnd;
         
         $exists = Bill::query()->where('id', $sid)->exists();
         
-        if (!$exists){
+        if (!$exists) {
             return '记录不存在！';
         }
         
@@ -563,6 +599,7 @@ class BaseBillRobot
      * @param  array  $data
      * @param  string  $key
      * @param  int  $robotId
+     *
      * @return array
      */
     public static function build(
@@ -615,7 +652,7 @@ class BaseBillRobot
             
             $uuidEnd = substr($uuid, -3, 3);
             $uuidMain = substr($uuid, 0, strlen($uuid) - 3);
-            $uuidMain = date('His',(int)$uuidMain);
+            $uuidMain = date('His', (int) $uuidMain);
             $uuid = $uuidEnd.$uuidMain;
             
             // 构建字符串
@@ -630,7 +667,9 @@ class BaseBillRobot
             }
             
             $formMessage[$item[BillTrace::T_UID]]['username'] = $username;
-            $formMessage[$item[BillTrace::T_UID]][$key]['messages'][] = $messageString;
+            $formMessage[$item[BillTrace::T_UID]][$key]['rate'] = $exchangeRate;
+            $formMessage[$item[BillTrace::T_UID]][$key]['messages'][]
+                = $messageString;
         }
         
         return $formMessage;
@@ -640,6 +679,7 @@ class BaseBillRobot
      * 账单参数验证
      *
      * @param  array  $params
+     *
      * @return bool|string
      */
     public static function billValidate(array $params): bool|string
