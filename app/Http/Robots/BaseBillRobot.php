@@ -149,7 +149,7 @@ class BaseBillRobot
             "`我的`  |  获取关于我的账号信息",
             "`说明`  |  在当前版本的使用说明",
             "`帮助`  |  在当前版本的使用帮助（指令列表）",
-            "`汇率`  |  设置当前的汇率 | 汇率 [出账/进账/费率] [小数]",
+            "`汇率`  |  设置当前的汇率 | 汇率 [下发/入款/费率] [小数]",
             "`费率`  |  设置当前的费率 | 费率 [小数]",
             "`入款`  |  设置当前进账金额 | 入款 [小数]",
             "`下发`  |  设置当前出账金额 | 下发 [小数]",
@@ -181,13 +181,13 @@ class BaseBillRobot
         }
         
         $type = [
-            '进账' => RobotsTrace::INCOMING_RATE,
-            '出账' => RobotsTrace::PAYMENT_EXCHANGE_RATE,
+            '入款' => RobotsTrace::INCOMING_RATE,
+            '下发' => RobotsTrace::PAYMENT_EXCHANGE_RATE,
             '费率' => RobotsTrace::RATING,
         ];
         
         if (!in_array($params[0], array_keys($type))) {
-            return "第一个参数必须是[进账 | 出账 | 费率]其中之一";
+            return "第一个参数必须是[入款 | 下发 | 费率]其中之一";
         }
         
         if (!is_numeric($params[1])) {
