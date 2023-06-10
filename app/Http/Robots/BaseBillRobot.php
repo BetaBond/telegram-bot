@@ -438,11 +438,12 @@ class BaseBillRobot
             }
         }
         
-        $incomeMoney['cny'] = $incomeMoney;
-        $incomeMoney['usdt'] = $incomeMoney / $rate['income'];
-        $incomeMoney['string'] = "[`￥".$incomeMoney['cny']."` | ";
-        $incomeMoney['string'] .= "`₮".$incomeMoney['usdt']."`]";
-        $messages[] = "合计入款：".$incomeMoney['string'];
+        $incomeMoneyInfo = [];
+        $incomeMoneyInfo['cny'] = $incomeMoney;
+        $incomeMoneyInfo['usdt'] = $incomeMoney / $rate['income'];
+        $incomeMoneyInfo['string'] = "[`￥".$incomeMoneyInfo['cny']."` | ";
+        $incomeMoneyInfo['string'] .= "`₮".$incomeMoneyInfo['usdt']."`]";
+        $messages[] = "合计入款：".$incomeMoneyInfo['string'];
         $messages[] = '';
         
         $messages[] = '下发（'.count($clearing).' 笔）：';
