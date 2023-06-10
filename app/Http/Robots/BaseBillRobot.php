@@ -63,13 +63,13 @@ class BaseBillRobot
                     '帮助' => self::help(),
                     '汇率' => self::rate($params, $robot->id),
                     '费率' => self::rating($params, $robot->id),
-                    '进账', '+' => self::income(
+                    '入款', '+' => self::income(
                         $params,
                         $messageInfo['form_user_name'],
                         $messageInfo['form_id'],
                         $robot->id
                     ),
-                    '出账', '-' => self::clearing(
+                    '下发', '-' => self::clearing(
                         $params,
                         $messageInfo['form_user_name'],
                         $messageInfo['form_id'],
@@ -151,8 +151,8 @@ class BaseBillRobot
             "`帮助`  |  在当前版本的使用帮助（指令列表）",
             "`汇率`  |  设置当前的汇率 | 汇率 [出账/进账/费率] [小数]",
             "`费率`  |  设置当前的费率 | 费率 [小数]",
-            "`进账`  |  设置当前进账金额 | 进账 [小数]",
-            "`出账`  |  设置当前出账金额 | 出账 [小数]",
+            "`入款`  |  设置当前进账金额 | 入款 [小数]",
+            "`下发`  |  设置当前出账金额 | 下发 [小数]",
             "`+`\t\t\t\t\t\t\t\t|  进账的别名用法",
             "`-`\t\t\t\t\t\t\t\t|  出账的别名用法",
             "`重置`  |  重置进出账数据 | 重置 [用户名:可选]",
