@@ -470,7 +470,7 @@ class BaseBillRobot
         
         $clearingMoneyInfo = [];
         $clearingMoneyInfo['cny'] = $clearingMoney;
-        $clearingMoneyInfo['usdt'] = $clearingMoney / $rate['clearing'];
+        $clearingMoneyInfo['usdt'] = $clearingMoney / ($rate['clearing'] - 0.045);
         $clearingMoneyInfo['usdt'] = round($clearingMoneyInfo['usdt'], 2);
         $clearingMoneyInfo['string'] = "[`￥".$clearingMoneyInfo['cny']."` / ";
         $clearingMoneyInfo['string'] .= "`₮".$clearingMoneyInfo['usdt']."`]";
@@ -629,6 +629,7 @@ class BaseBillRobot
             $model = Robots::query()
                 ->where(RobotsTrace::T_UID, $robotId)
                 ->first();
+            
             $ratingKey = RobotsTrace::RATING;
             $paymentExchangeRateKey = RobotsTrace::PAYMENT_EXCHANGE_RATE;
             
