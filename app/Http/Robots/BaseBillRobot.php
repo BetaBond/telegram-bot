@@ -418,6 +418,7 @@ class BaseBillRobot
         $rate = [
             'income'   => 1,
             'clearing' => 1,
+            'rating'   => 1,
         ];
         
         // 构建进账字符信息
@@ -429,10 +430,12 @@ class BaseBillRobot
                     .count($items['income']['messages']).' 笔）：';
                 
                 $rate['income'] = $items['income']['rate'];
+                $rate['rating'] = $items['income']['rating'];
                 
                 foreach ($items['income']['messages'] as $item) {
                     $messages[] = $item;
                 }
+                
                 $messages[] = '';
                 $incomeMoney += $items['income']['money'];
             }
@@ -440,7 +443,8 @@ class BaseBillRobot
         
         $incomeMoneyInfo = [];
         $incomeMoneyInfo['cny'] = $incomeMoney;
-        $incomeMoneyInfo['usdt'] = $incomeMoney / $rate['income'];
+        $incomeMoneyInfo['usdt'] = ($incomeMoney * $rate['rating'])
+            / $rate['income'];
         $incomeMoneyInfo['usdt'] = round($incomeMoneyInfo['usdt'], 2);
         $incomeMoneyInfo['string'] = "[`￥".$incomeMoneyInfo['cny']."` / ";
         $incomeMoneyInfo['string'] .= "`₮".$incomeMoneyInfo['usdt']."`]";
@@ -470,7 +474,8 @@ class BaseBillRobot
         
         $clearingMoneyInfo = [];
         $clearingMoneyInfo['cny'] = $clearingMoney;
-        $clearingMoneyInfo['usdt'] = $clearingMoney / ($rate['clearing'] - 0.045);
+        $clearingMoneyInfo['usdt'] = $clearingMoney / ($rate['clearing']
+                - 0.045);
         $clearingMoneyInfo['usdt'] = round($clearingMoneyInfo['usdt'], 2);
         $clearingMoneyInfo['string'] = "[`￥".$clearingMoneyInfo['cny']."` / ";
         $clearingMoneyInfo['string'] .= "`₮".$clearingMoneyInfo['usdt']."`]";
@@ -675,10 +680,11 @@ class BaseBillRobot
                 $messageString .= "$money/($exchangeRate-0.045)=$difference";
             }
             
-            $formMessage[$item[BillTrace::T_UID]]['username'] = $username;
-            $formMessage[$item[BillTrace::T_UID]][$key]['rate'] = $exchangeRate;
-            $formMessage[$item[BillTrace::T_UID]][$key]['messages'][]
-                = $messageString;
+            $t_uid_key = $item[BillTrace::T_UID];
+            $formMessage[$t_uid_key]['username'] = $username;
+            $formMessage[$t_uid_key][$key]['rate'] = $exchangeRate;
+            $formMessage[$t_uid_key][$key]['rating'] = $rating;
+            $formMessage[$t_uid_key][$key]['messages'][] = $messageString;
         }
         
         return $formMessage;
