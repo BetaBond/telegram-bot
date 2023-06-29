@@ -52,21 +52,28 @@ class RobotsTrace extends TraceEloquent
      *
      * @var string
      */
-    const INCOMING_RATE = 'incoming_rate';
+    const INCOME_EXCHANGE_RATE = 'income_exchange_rate';
     
     /**
      * 出账汇率
      *
      * @var string
      */
-    const PAYMENT_EXCHANGE_RATE = 'payment_exchange_rate';
+    const CLEARING_EXCHANGE_RATE = 'clearing_exchange_rate';
     
     /**
-     * 费率
+     * 进账费率
      *
      * @var string
      */
-    const RATING = 'rating';
+    const INCOMING_RATE = 'income_rate';
+    
+    /**
+     * 出账费率
+     *
+     * @var string
+     */
+    const CLEARING_RATE = 'clearing_rate';
     
     /**
      * 创建时间

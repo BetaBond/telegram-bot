@@ -27,6 +27,52 @@ class BaseBillRobot
 {
     
     /**
+     * 处理汇率/费率信息
+     *
+     * @param  array  $params
+     * @param  int  $robotId
+     * @param  array  $types
+     *
+     * @return string
+     */
+    private static function rate(
+        array $params,
+        int $robotId,
+        array $types
+    ): string {
+        $parameterCalibration = MessageHelper::parameterCalibration($params, 2);
+        
+        if ($parameterCalibration !== true) {
+            return $parameterCalibration;
+        }
+        
+        if (!in_array($params[0], array_keys($types))) {
+            return "第一个参数必须是[入款 | 下发]其中之一";
+        }
+        
+        if (!is_numeric($params[1])) {
+            return "参数类型错误";
+        }
+        
+        $exchangeRate = (float) $params[1];
+        
+        if ($exchangeRate <= 0) {
+            return "参数必须大于0";
+        }
+        
+        Robots::query()
+            ->where(RobotsTrace::T_UID, $robotId)
+            ->update([
+                $types[$params[0]] => $exchangeRate
+            ]);
+        
+        return implode("\n", [
+            "*设置成功！！！*",
+            "当前为：`$exchangeRate`"
+        ]);
+    }
+    
+    /**
      * 指令解析器
      *
      * @param  string  $command
@@ -61,7 +107,7 @@ class BaseBillRobot
                 $message = match ($command) {
                     '说明' => self::explain(),
                     '帮助' => self::help(),
-                    '汇率' => self::rate($params, $robot->id),
+                    '汇率' => self::exchange_rate($params, $robot->id),
                     '费率' => self::rating($params, $robot->id),
                     '入款', '+' => self::income(
                         $params,
@@ -161,6 +207,21 @@ class BaseBillRobot
         ]);
     }
     
+    /**
+     * 设置汇率信息
+     *
+     * @param  array  $params
+     * @param  int  $robotId
+     *
+     * @return string
+     */
+    public static function exchange_rate(array $params, int $robotId): string
+    {
+        return self::rate($params, $robotId, [
+            '入款' => RobotsTrace::INCOME_EXCHANGE_RATE,
+            '下发' => RobotsTrace::CLEARING_EXCHANGE_RATE,
+        ]);
+    }
     
     /**
      * 设置汇率信息
@@ -170,77 +231,11 @@ class BaseBillRobot
      *
      * @return string
      */
-    public static function rate(array $params, int $robotId): string
+    public static function rating(array $params, int $robotId): string
     {
-        if (empty($params)) {
-            return "参数错误";
-        }
-        
-        if (count($params) !== 2) {
-            return "参数不足";
-        }
-        
-        $type = [
+        return self::rate($params, $robotId, [
             '入款' => RobotsTrace::INCOMING_RATE,
-            '下发' => RobotsTrace::PAYMENT_EXCHANGE_RATE,
-            '费率' => RobotsTrace::RATING,
-        ];
-        
-        if (!in_array($params[0], array_keys($type))) {
-            return "第一个参数必须是[入款 | 下发 | 费率]其中之一";
-        }
-        
-        if (!is_numeric($params[1])) {
-            return "参数类型错误";
-        }
-        
-        $exchangeRate = (float) $params[1];
-        
-        if ($exchangeRate <= 0) {
-            return "汇率必须大于0";
-        }
-        
-        Robots::query()
-            ->where(RobotsTrace::T_UID, $robotId)
-            ->update([
-                $type[$params[0]] => $exchangeRate
-            ]);
-        
-        return implode("\n", [
-            "*设置成功！！！*",
-            "当前为：`$exchangeRate`"
-        ]);
-    }
-    
-    /**
-     * 设置费率
-     *
-     * @param  array  $params
-     * @param $robotId
-     *
-     * @return string
-     */
-    public static function rating(array $params, $robotId): string
-    {
-        if (empty($params)) {
-            return "参数错误";
-        }
-        
-        if (!is_numeric($params[0])) {
-            return "参数类型错误";
-        }
-        
-        $exchangeRate = (float) $params[0];
-        
-        Robots::query()
-            ->where(RobotsTrace::T_UID, $robotId)
-            ->update([
-                RobotsTrace::RATING => $exchangeRate,
-            ]);
-        
-        return implode("\n", [
-            "*设置成功！！！*",
-            "当前为：`$exchangeRate`"
+            '下发' => RobotsTrace::CLEARING_RATE,
         ]);
     }
     
@@ -269,7 +264,7 @@ class BaseBillRobot
         $model = Robots::query()
             ->where(RobotsTrace::T_UID, $robotId)
             ->first();
-        $key = RobotsTrace::INCOMING_RATE;
+        $key = RobotsTrace::INCOME_EXCHANGE_RATE;
         
         $exchangeRate = $model->$key;
         
@@ -314,7 +309,7 @@ class BaseBillRobot
         $model = Robots::query()
             ->where(RobotsTrace::T_UID, $robotId)
             ->first();
-        $key = RobotsTrace::PAYMENT_EXCHANGE_RATE;
+        $key = RobotsTrace::CLEARING_EXCHANGE_RATE;
         
         $exchangeRate = $model->$key;
         
@@ -635,8 +630,8 @@ class BaseBillRobot
                 ->where(RobotsTrace::T_UID, $robotId)
                 ->first();
             
-            $ratingKey = RobotsTrace::RATING;
-            $paymentExchangeRateKey = RobotsTrace::PAYMENT_EXCHANGE_RATE;
+            $ratingKey = RobotsTrace::INCOMING_RATE;
+            $paymentExchangeRateKey = RobotsTrace::CLEARING_EXCHANGE_RATE;
             
             $rating = (float) $model->$ratingKey;
             $paymentExchangeRate = (float) $model->$paymentExchangeRateKey;

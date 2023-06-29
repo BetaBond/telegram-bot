@@ -26,6 +26,7 @@ class LeaderRobot
      * @param  array  $params
      * @param  array  $messageInfo
      * @param  Api  $telegram
+     *
      * @return bool
      * @throws TelegramSDKException
      */
@@ -38,7 +39,8 @@ class LeaderRobot
         if (!in_array($messageInfo['form_id'], [
             '868447518',
             '5753524904'
-        ])) {
+        ])
+        ) {
             return false;
         }
         
@@ -59,9 +61,9 @@ class LeaderRobot
         
         if ($message) {
             $telegram->sendMessage([
-                'chat_id' => $messageInfo['chat_id'],
+                'chat_id'    => $messageInfo['chat_id'],
                 'parse_mode' => 'MarkdownV2',
-                'text' => $message
+                'text'       => $message
             ]);
         }
         
@@ -103,6 +105,7 @@ class LeaderRobot
      * 添加机器人信息
      *
      * @param  array  $params
+     *
      * @return string
      */
     public static function join(array $params): string
@@ -148,13 +151,14 @@ class LeaderRobot
         }
         
         $model = Robots::query()->create([
-            RobotsTrace::TOKEN => $token,
-            RobotsTrace::T_UID => $robot->id,
-            RobotsTrace::USERNAME => $robot->username,
-            RobotsTrace::EXPIRE_AT => time(),
-            RobotsTrace::INCOMING_RATE => 0,
-            RobotsTrace::PAYMENT_EXCHANGE_RATE => 0,
-            RobotsTrace::RATING => 0,
+            RobotsTrace::TOKEN                  => $token,
+            RobotsTrace::T_UID                  => $robot->id,
+            RobotsTrace::USERNAME               => $robot->username,
+            RobotsTrace::EXPIRE_AT              => time(),
+            RobotsTrace::INCOME_EXCHANGE_RATE   => 0,
+            RobotsTrace::CLEARING_EXCHANGE_RATE => 0,
+            RobotsTrace::INCOMING_RATE          => 0,
+            RobotsTrace::CLEARING_RATE          => 0,
         ]);
         
         if (!$model->save()) {
@@ -172,6 +176,7 @@ class LeaderRobot
      * 授权机器人
      *
      * @param  array  $params
+     *
      * @return string
      */
     public static function auth(array $params): string
@@ -195,7 +200,7 @@ class LeaderRobot
         }
         
         $model = Auth::query()->create([
-            AuthTrace::T_UID => $t_uid,
+            AuthTrace::T_UID    => $t_uid,
             AuthTrace::ROBOT_ID => $robot_id,
         ]);
         
