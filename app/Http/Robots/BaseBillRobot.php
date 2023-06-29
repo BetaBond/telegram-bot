@@ -440,7 +440,7 @@ class BaseBillRobot
                 float $result,
                 float $money
             ) {
-                $dataArray[$username]['strings'][] = $msgString;
+                $dataArray[$username]['strings'][] = $msgString.'111';
                 
                 if (!isset($dataArray[$username]['total'])) {
                     $dataArray[$username]['total'] = 0;
