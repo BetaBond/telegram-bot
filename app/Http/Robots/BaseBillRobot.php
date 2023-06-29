@@ -488,8 +488,6 @@ class BaseBillRobot
             
         }
         
-        Log::info(json_encode($clearingDataArray));
-        
         // 计算合计数量
         $totalNumber = function (array $dataArray) {
             $total = 0;
@@ -507,6 +505,7 @@ class BaseBillRobot
                 $formSting = '来自 @'.$username.'（';
                 $formSting .= count($value['strings'])." 笔）：\n";
                 $messages[] = $formSting;
+                Log::info(json_encode($value['strings']));
                 $messages = array_merge($messages, $value['strings']);
             }
         };
