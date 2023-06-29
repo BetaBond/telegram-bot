@@ -436,6 +436,7 @@ class BaseBillRobot
             $buildDataArray = function (
                 array $dataArray,
                 string $username,
+                string $msgString,
                 float $result,
                 float $money
             ) {
@@ -458,11 +459,11 @@ class BaseBillRobot
                 $result = ($money * $rate) / $exchangeRate;
                 $result = round($result, 2);
                 $msgString .= "[`($money \* $rate) / $exchangeRate = $result`]\n";
-                $incomeDataArray[$username]['strings'][] = 111;
                 
                 $incomeDataArray = $buildDataArray(
                     $incomeDataArray,
                     $username,
+                    $msgString,
                     $result,
                     $money
                 );
@@ -473,17 +474,19 @@ class BaseBillRobot
                 $result = $money / ($exchangeRate - $rate);
                 $result = round($result, 2);
                 $msgString .= "[`$money / ($exchangeRate - $rate) = $result`]\n";
-                $clearingDataArray[$username]['strings'][] = 111;
                 
                 $clearingDataArray = $buildDataArray(
                     $clearingDataArray,
                     $username,
+                    $msgString,
                     $result,
                     $money
                 );
             }
             
         }
+        
+        Log::info(json_encode($clearingDataArray));
         
         // 计算合计数量
         $totalNumber = function (array $dataArray) {
