@@ -507,7 +507,7 @@ class BaseBillRobot
         }
         
         $messages[] = '';
-        $messages[] = '合计入款：[`'.$totalMoney($incomeDataArray).'`]';
+        $messages[] = '合计入款：'.$totalMoney($incomeDataArray);
         $messages[] = '';
         $messages[] = '下发（'.$totalNumber($clearingDataArray).' 笔）：';
         $messages[] = '';
