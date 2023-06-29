@@ -491,7 +491,7 @@ class BaseBillRobot
                 $money += $item['money'];
             }
             
-            return "[`￥$money` \ '₮$total']";
+            return "[`￥$money` \ `₮$total`]";
         };
         
         // 构造输出字符
