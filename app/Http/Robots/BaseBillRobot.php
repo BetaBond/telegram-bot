@@ -458,7 +458,7 @@ class BaseBillRobot
                 $result = ($money * $rate) / $exchangeRate;
                 $result = round($result, 2);
                 $msgString .= "[`($money \* $rate) / $exchangeRate = $result`]\n";
-                $incomeDataArray[$username]['strings'][] = $msgString;
+                $incomeDataArray[$username]['strings'][] = 111;
                 
                 $incomeDataArray = $buildDataArray(
                     $incomeDataArray,
@@ -473,7 +473,7 @@ class BaseBillRobot
                 $result = $money / ($exchangeRate - $rate);
                 $result = round($result, 2);
                 $msgString .= "[`$money / ($exchangeRate - $rate) = $result`]\n";
-                $clearingDataArray[$username]['strings'][] = $msgString;
+                $clearingDataArray[$username]['strings'][] = 111;
                 
                 $clearingDataArray = $buildDataArray(
                     $clearingDataArray,
