@@ -479,7 +479,7 @@ class BaseBillRobot
         // 构建进账字符信息
         foreach ($incomeDataArray as $username => $value) {
             $formSting = '来自 @'.$username.'（';
-            $formSting .= count($value['strings']).' 笔）：';
+            $formSting .= count($value['strings'])." 笔）：\n";
             $messages[] = $formSting;
             $messages = array_merge($messages, $value['strings']);
         }
@@ -491,7 +491,7 @@ class BaseBillRobot
         // 构建出账字符信息
         foreach ($clearingDataArray as $username => $value) {
             $formSting = '来自 @'.$username.'（';
-            $formSting .= count($value['strings']).' 笔）：';
+            $formSting .= count($value['strings'])." 笔）：\n";
             $messages[] = $formSting;
             $messages = array_merge($messages, $value['strings']);
         }
