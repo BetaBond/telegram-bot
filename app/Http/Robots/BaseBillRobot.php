@@ -432,23 +432,43 @@ class BaseBillRobot
             // 添加唯一ID和日期
             $msgString = "[`$uuid`] [`$date`]\n";
             
+            // 构建数据数组
+            $buildDataArray = function (
+                array $dataArray,
+                string $username,
+                string $msgString,
+                float $result,
+                float $money
+            ) {
+                $dataArray[$username]['strings'][] = $msgString;
+                
+                if (!isset($dataArray[$username]['total'])) {
+                    $dataArray[$username]['total'] = 0;
+                }
+                
+                if (!isset($dataArray[$username]['money'])) {
+                    $dataArray[$username]['money'] = 0;
+                }
+                
+                $dataArray[$username]['total'] += $result;
+                $dataArray[$username]['money'] += $money;
+                
+                return $dataArray;
+            };
+            
             // 进账的构造
             if ($type === 1) {
                 $result = ($money * $rate) / $exchangeRate;
                 $result = round($result, 2);
                 $msgString .= "[`($money \* $rate) / $exchangeRate = $result`]\n";
-                $incomeDataArray[$username]['strings'][] = $msgString;
                 
-                if (!isset($incomeDataArray[$username]['total'])) {
-                    $incomeDataArray[$username]['total'] = 0;
-                }
-                
-                if (!isset($incomeDataArray[$username]['money'])) {
-                    $incomeDataArray[$username]['money'] = 0;
-                }
-                
-                $incomeDataArray[$username]['total'] += $result;
-                $incomeDataArray[$username]['money'] += $money;
+                $incomeDataArray = $buildDataArray(
+                    $incomeDataArray,
+                    $username,
+                    $msgString,
+                    $result,
+                    $money
+                );
             }
             
             // 出账的构造
@@ -456,22 +476,19 @@ class BaseBillRobot
                 $result = $money / ($exchangeRate - $rate);
                 $result = round($result, 2);
                 $msgString .= "[`$money / ($exchangeRate - $rate) = $result`]\n";
-                $clearingDataArray[$username]['strings'][] = $msgString;
                 
-                if (!isset($clearingDataArray[$username]['total'])) {
-                    $clearingDataArray[$username]['total'] = 0;
-                }
-                
-                if (!isset($clearingDataArray[$username]['money'])) {
-                    $clearingDataArray[$username]['money'] = 0;
-                }
-                
-                $clearingDataArray[$username]['total'] += $result;
-                $clearingDataArray[$username]['money'] += $money;
+                $clearingDataArray = $buildDataArray(
+                    $clearingDataArray,
+                    $username,
+                    $msgString,
+                    $result,
+                    $money
+                );
             }
             
         }
         
+        // 计算合计数量
         $totalNumber = function (array $dataArray) {
             $total = 0;
             
@@ -482,6 +499,17 @@ class BaseBillRobot
             return $total;
         };
         
+        // 构建账本消息
+        $buildMessage = function (array $dataArray) {
+            foreach ($dataArray as $username => $value) {
+                $formSting = '来自 @'.$username.'（';
+                $formSting .= count($value['strings'])." 笔）：\n";
+                $messages[] = $formSting;
+                $messages = array_merge($messages, $value['strings']);
+            }
+        };
+        
+        // 计算合计金额
         $totalMoney = function (array $dataArray) {
             $total = 0;
             $money = 0;
@@ -499,12 +527,7 @@ class BaseBillRobot
         $messages[] = '';
         
         // 构建进账字符信息
-        foreach ($incomeDataArray as $username => $value) {
-            $formSting = '来自 @'.$username.'（';
-            $formSting .= count($value['strings'])." 笔）：\n";
-            $messages[] = $formSting;
-            $messages = array_merge($messages, $value['strings']);
-        }
+        $buildMessage($incomeDataArray);
         
         $messages[] = '';
         $messages[] = '合计入款：'.$totalMoney($incomeDataArray);
@@ -513,12 +536,7 @@ class BaseBillRobot
         $messages[] = '';
         
         // 构建出账字符信息
-        foreach ($clearingDataArray as $username => $value) {
-            $formSting = '来自 @'.$username.'（';
-            $formSting .= count($value['strings'])." 笔）：\n";
-            $messages[] = $formSting;
-            $messages = array_merge($messages, $value['strings']);
-        }
+        $buildMessage($clearingDataArray);
         
         $messages[] = '';
         $messages[] = '合计下发：'.$totalMoney($clearingDataArray);
