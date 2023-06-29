@@ -462,8 +462,18 @@ class BaseBillRobot
             
         }
         
+        $totalNumber = function (array $dataArray) {
+            $total = 0;
+            
+            foreach ($dataArray as $item) {
+                $total += count($item['strings']);
+            }
+            
+            return $total;
+        };
+        
         // 构造输出字符
-        $messages[] = '入款（'.count($incomeDataArray).' 笔）：';
+        $messages[] = '入款（'.$totalNumber($incomeDataArray).' 笔）：';
         $messages[] = '';
         
         // 构建进账字符信息
@@ -475,7 +485,7 @@ class BaseBillRobot
         }
         
         $messages[] = '';
-        $messages[] = '下发（'.count($incomeDataArray).' 笔）：';
+        $messages[] = '下发（'.$totalNumber($clearingDataArray).' 笔）：';
         $messages[] = '';
         
         // 构建出账字符信息
