@@ -436,12 +436,9 @@ class BaseBillRobot
             $buildDataArray = function (
                 array $dataArray,
                 string $username,
-                string $msgString,
                 float $result,
                 float $money
             ) {
-                $dataArray[$username]['strings'][] = $msgString.'111';
-                
                 if (!isset($dataArray[$username]['total'])) {
                     $dataArray[$username]['total'] = 0;
                 }
@@ -461,11 +458,11 @@ class BaseBillRobot
                 $result = ($money * $rate) / $exchangeRate;
                 $result = round($result, 2);
                 $msgString .= "[`($money \* $rate) / $exchangeRate = $result`]\n";
+                $incomeDataArray[$username]['strings'][] = $msgString;
                 
                 $incomeDataArray = $buildDataArray(
                     $incomeDataArray,
                     $username,
-                    $msgString,
                     $result,
                     $money
                 );
@@ -476,11 +473,11 @@ class BaseBillRobot
                 $result = $money / ($exchangeRate - $rate);
                 $result = round($result, 2);
                 $msgString .= "[`$money / ($exchangeRate - $rate) = $result`]\n";
+                $clearingDataArray[$username]['strings'][] = $msgString;
                 
                 $clearingDataArray = $buildDataArray(
                     $clearingDataArray,
                     $username,
-                    $msgString,
                     $result,
                     $money
                 );
