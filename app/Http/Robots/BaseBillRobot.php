@@ -501,13 +501,16 @@ class BaseBillRobot
         
         // 构建账本消息
         $buildMessage = function (array $dataArray) {
+            $messages = [];
+            
             foreach ($dataArray as $username => $value) {
                 $formSting = '来自 @'.$username.'（';
                 $formSting .= count($value['strings'])." 笔）：\n";
                 $messages[] = $formSting;
-                Log::info(json_encode($value['strings']));
                 $messages = array_merge($messages, $value['strings']);
             }
+            
+            return $messages;
         };
         
         // 计算合计金额
@@ -528,7 +531,10 @@ class BaseBillRobot
         $messages[] = '';
         
         // 构建进账字符信息
-        $buildMessage($incomeDataArray);
+        $messages = array_merge(
+            $messages,
+            $buildMessage($incomeDataArray)
+        );
         
         $messages[] = '';
         $messages[] = '合计入款：'.$totalMoney($incomeDataArray);
@@ -537,7 +543,10 @@ class BaseBillRobot
         $messages[] = '';
         
         // 构建出账字符信息
-        $buildMessage($clearingDataArray);
+        $messages = array_merge(
+            $messages,
+            $buildMessage($clearingDataArray)
+        );
         
         $messages[] = '';
         $messages[] = '合计下发：'.$totalMoney($clearingDataArray);
