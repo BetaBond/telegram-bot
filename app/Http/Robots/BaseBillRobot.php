@@ -472,6 +472,16 @@ class BaseBillRobot
             return $total;
         };
         
+        $totalMoney = function (array $dataArray){
+            $total = 0;
+            
+            foreach ($dataArray as $item) {
+                $total += $item['total'];
+            }
+            
+            return $total;
+        };
+        
         // 构造输出字符
         $messages[] = '入款（'.$totalNumber($incomeDataArray).' 笔）：';
         $messages[] = '';
@@ -485,6 +495,8 @@ class BaseBillRobot
         }
         
         $messages[] = '';
+        $messages[] = '合计入款：[`'.$totalMoney($incomeDataArray).'`]';
+        $messages[] = '';
         $messages[] = '下发（'.$totalNumber($clearingDataArray).' 笔）：';
         $messages[] = '';
         
@@ -495,6 +507,9 @@ class BaseBillRobot
             $messages[] = $formSting;
             $messages = array_merge($messages, $value['strings']);
         }
+        
+        $messages[] = '';
+        $messages[] = '合计下发：[`'.$totalMoney($clearingDataArray).'`]';
         
         return implode("\n", $messages);
     }
