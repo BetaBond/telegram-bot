@@ -380,6 +380,95 @@ class BaseBillRobot
         return "重置成功！";
     }
     
+    public static function data(array $params, int $robotId)
+    {
+        // 查询所有数据
+        $books = Book::query()->whereBetween(BillTrace::CREATED_AT, [
+            strtotime(date('Y-m-d').'00:00:00'),
+            strtotime(date('Y-m-d').'23:59:59'),
+        ])->where(
+            BillTrace::ROBOT_ID,
+            $robotId
+        );
+        
+        // 条件筛选
+        if (count($params) === 1) {
+            $username = $params[0];
+            $username = str_replace('@', '', $username);
+            
+            $books = $books->where(BillTrace::USERNAME, $username);
+        }
+        
+        // 取出数据
+        $books = $books->get()->toArray();
+        
+        $incomeDataArray = [];
+        $clearingDataArray = [];
+        
+        // 遍历筛选计算
+        foreach ($books as $book) {
+            // 取出参数并加工
+            $money = (float) $book[BookTrace::MONEY];
+            $rate = (float) $book[BookTrace::RATE];
+            $exchangeRate = (float) $book[BookTrace::EXCHANGE_RATE];
+            $date = date('H:i:s', (int) $book[BookTrace::CREATED_AT]);
+            $uuid = $book[BookTrace::ID];
+            $username = $book[BookTrace::USERNAME];
+            $type = $book[BookTrace::TYPE];
+            
+            $uuidEnd = substr($uuid, -3, 3);
+            $uuidMain = substr($uuid, 0, strlen($uuid) - 3);
+            $uuidMain = date('His', (int) $uuidMain);
+            $uuid = $uuidEnd.$uuidMain;
+            
+            // 添加唯一ID和日期
+            $msgString = "[`$uuid`] [`$date`]  ";
+            
+            // 进账的构造
+            if ($type === 1) {
+                $result = ($money * $rate) / $exchangeRate;
+                $msgString .= "($money * $rate) / $exchangeRate = $result";
+                $incomeDataArray[$username]['strings'][] = $msgString;
+                $incomeDataArray[$username]['total'] += $result;
+            }
+            
+            // 出账的构造
+            if ($type === -1) {
+                $result = $money / ($exchangeRate - $rate);
+                $msgString .= "$money / ($exchangeRate - $rate) = $result";
+                $clearingDataArray[$username]['strings'][] = $msgString;
+                $clearingDataArray[$username]['total'] += $result;
+            }
+            
+        }
+        
+        // 构造输出字符
+        $messages[] = '入款（'.count($incomeDataArray).' 笔）：';
+        $messages[] = '';
+        
+        // 构建进账字符信息
+        foreach ($incomeDataArray as $username => $value) {
+            $formSting = '来自 @'.$username.'（';
+            $formSting .= count($value['strings']).' 笔）：';
+            $messages[] = $formSting;
+            $messages = array_merge($messages, $value['strings']);
+        }
+        
+        $messages[] = '';
+        $messages[] = '下发（'.count($incomeDataArray).' 笔）：';
+        $messages[] = '';
+        
+        // 构建出账字符信息
+        foreach ($clearingDataArray as $username => $value) {
+            $formSting = '来自 @'.$username.'（';
+            $formSting .= count($value['strings']).' 笔）：';
+            $messages[] = $formSting;
+            $messages = array_merge($messages, $value['strings']);
+        }
+        
+        return implode("\n", $messages);
+    }
+    
     /**
      * 数据消息
      *
