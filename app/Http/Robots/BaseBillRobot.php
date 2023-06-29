@@ -98,17 +98,16 @@ class BaseBillRobot
             return $parameterCalibration;
         }
         
-        if (!is_numeric($params[1])) {
+        if (!is_numeric($params[0])) {
             return "参数类型错误";
         }
         
-        $exchangeRate = (float) $params[1];
+        $money = (float) $params[0];
         
-        if ($exchangeRate <= 0) {
+        if ($money <= 0) {
             return "参数必须大于0";
         }
         
-        $money = (float) $params[0];
         $model = Robots::query()
             ->where(RobotsTrace::T_UID, $robotId)
             ->first();
