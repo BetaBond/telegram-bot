@@ -436,7 +436,7 @@ class BaseBillRobot
             if ($type === 1) {
                 $result = ($money * $rate) / $exchangeRate;
                 $result = round($result, 2);
-                $msgString .= "($money*$rate)/$exchangeRate=$result";
+                $msgString .= "($money \* $rate ) / $exchangeRate = $result";
                 $incomeDataArray[$username]['strings'][] = $msgString;
                 
                 if (!isset($incomeDataArray[$username]['total'])) {
