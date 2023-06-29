@@ -435,7 +435,8 @@ class BaseBillRobot
             // 进账的构造
             if ($type === 1) {
                 $result = ($money * $rate) / $exchangeRate;
-                $msgString .= "($money * $rate) / $exchangeRate = $result";
+                $result = round($result, 2);
+                $msgString .= "($money*$rate)/$exchangeRate=$result";
                 $incomeDataArray[$username]['strings'][] = $msgString;
                 
                 if (!isset($incomeDataArray[$username]['total'])) {
@@ -448,7 +449,8 @@ class BaseBillRobot
             // 出账的构造
             if ($type === -1) {
                 $result = $money / ($exchangeRate - $rate);
-                $msgString .= "$money / ($exchangeRate - $rate) = $result";
+                $result = round($result, 2);
+                $msgString .= "$money/($exchangeRate-$rate)=$result";
                 $clearingDataArray[$username]['strings'][] = $msgString;
                 
                 if (!isset($clearingDataArray[$username]['total'])) {
