@@ -134,7 +134,7 @@ class BaseBillRobot
         ])->save();
         
         if ($model) {
-            return self::dataMessage([], $robotId);
+            return self::data([], $robotId);
         }
         
         return "失败";
@@ -380,7 +380,15 @@ class BaseBillRobot
         return "重置成功！";
     }
     
-    public static function data(array $params, int $robotId)
+    /**
+     * 数据消息
+     *
+     * @param  array  $params
+     * @param  int  $robotId
+     *
+     * @return string
+     */
+    public static function data(array $params, int $robotId): string
     {
         // 查询所有数据
         $books = Book::query()->whereBetween(BillTrace::CREATED_AT, [
