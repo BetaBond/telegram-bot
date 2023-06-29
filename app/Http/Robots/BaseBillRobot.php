@@ -6,9 +6,11 @@ use App\Exports\BaseBillExport;
 use App\Helpers\MessageHelper;
 use App\Models\Auth;
 use App\Models\Bill;
+use App\Models\Book;
 use App\Models\Robots;
 use App\Models\Trace\AuthTrace;
 use App\Models\Trace\BillTrace;
+use App\Models\Trace\BookTrace;
 use App\Models\Trace\RobotsTrace;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -70,6 +72,73 @@ class BaseBillRobot
             "*设置成功！！！*",
             "当前为：`$exchangeRate`"
         ]);
+    }
+    
+    /**
+     * 记录账本信息
+     *
+     * @param  array  $params
+     * @param  string  $formUserName
+     * @param  int  $tUID
+     * @param  int  $robotId
+     * @param  bool  $income
+     *
+     * @return string
+     */
+    private static function record(
+        array $params,
+        string $formUserName,
+        int $tUID,
+        int $robotId,
+        bool $income = true
+    ): string {
+        $parameterCalibration = MessageHelper::parameterCalibration($params, 1);
+        
+        if ($parameterCalibration !== true) {
+            return $parameterCalibration;
+        }
+        
+        if (!is_numeric($params[1])) {
+            return "参数类型错误";
+        }
+        
+        $exchangeRate = (float) $params[1];
+        
+        if ($exchangeRate <= 0) {
+            return "参数必须大于0";
+        }
+        
+        $money = (float) $params[0];
+        $model = Robots::query()
+            ->where(RobotsTrace::T_UID, $robotId)
+            ->first();
+        
+        $rateKey = RobotsTrace::INCOMING_RATE;
+        $exchangeRateKey = RobotsTrace::INCOME_EXCHANGE_RATE;
+        
+        if (!$income) {
+            $rateKey = RobotsTrace::CLEARING_RATE;
+            $exchangeRateKey = RobotsTrace::CLEARING_EXCHANGE_RATE;
+        }
+        
+        $rate = $model->$rateKey;
+        $exchangeRate = $model->$exchangeRateKey;
+        
+        $model = Book::query()->create([
+            BookTrace::MONEY         => $money,
+            BookTrace::EXCHANGE_RATE => (float) $exchangeRate,
+            BookTrace::RATE          => (float) $rate,
+            BookTrace::TYPE          => 1,
+            BookTrace::T_UID         => $tUID,
+            BookTrace::USERNAME      => $formUserName,
+            BookTrace::ROBOT_ID      => $robotId,
+        ])->save();
+        
+        if ($model) {
+            return self::dataMessage([], $robotId);
+        }
+        
+        return "失败";
     }
     
     /**
@@ -195,8 +264,8 @@ class BaseBillRobot
             "`我的`  |  获取关于我的账号信息",
             "`说明`  |  在当前版本的使用说明",
             "`帮助`  |  在当前版本的使用帮助（指令列表）",
-            "`汇率`  |  设置当前的汇率 | 汇率 [下发/入款/费率] [小数]",
-            "`费率`  |  设置当前的费率 | 费率 [小数]",
+            "`汇率`  |  设置当前的汇率 | 汇率 [下发/入款] [小数]",
+            "`费率`  |  设置当前的费率 | 费率 [下发/入款] [小数]",
             "`入款`  |  设置当前进账金额 | 入款 [小数]",
             "`下发`  |  设置当前出账金额 | 下发 [小数]",
             "`+`\t\t\t\t\t\t\t\t|  进账的别名用法",
@@ -255,33 +324,12 @@ class BaseBillRobot
         int $tUID,
         int $robotId
     ): string {
-        $billValidate = self::billValidate($params);
-        if ($billValidate !== true) {
-            return $billValidate;
-        }
-        
-        $money = (float) $params[0];
-        $model = Robots::query()
-            ->where(RobotsTrace::T_UID, $robotId)
-            ->first();
-        $key = RobotsTrace::INCOME_EXCHANGE_RATE;
-        
-        $exchangeRate = $model->$key;
-        
-        $model = Bill::query()->create([
-            BillTrace::MONEY         => $money,
-            BillTrace::EXCHANGE_RATE => (float) $exchangeRate,
-            BillTrace::TYPE          => 1,
-            BillTrace::T_UID         => $tUID,
-            BillTrace::USERNAME      => $formUserName,
-            BillTrace::ROBOT_ID      => $robotId,
-        ])->save();
-        
-        if ($model) {
-            return self::dataMessage([], $robotId);
-        }
-        
-        return "失败";
+        return self::record(
+            $params,
+            $formUserName,
+            $tUID,
+            $robotId
+        );
     }
     
     /**
@@ -300,33 +348,13 @@ class BaseBillRobot
         int $tUID,
         int $robotId
     ): string {
-        $billValidate = self::billValidate($params);
-        if ($billValidate !== true) {
-            return $billValidate;
-        }
-        
-        $money = (float) $params[0];
-        $model = Robots::query()
-            ->where(RobotsTrace::T_UID, $robotId)
-            ->first();
-        $key = RobotsTrace::CLEARING_EXCHANGE_RATE;
-        
-        $exchangeRate = $model->$key;
-        
-        $model = Bill::query()->create([
-            BillTrace::MONEY         => $money,
-            BillTrace::EXCHANGE_RATE => (float) $exchangeRate,
-            BillTrace::TYPE          => -1,
-            BillTrace::T_UID         => $tUID,
-            BillTrace::USERNAME      => $formUserName,
-            BillTrace::ROBOT_ID      => $robotId,
-        ])->save();
-        
-        if ($model) {
-            return self::dataMessage([], $robotId);
-        }
-        
-        return "失败";
+        return self::record(
+            $params,
+            $formUserName,
+            $tUID,
+            $robotId,
+            false
+        );
     }
     
     /**
@@ -683,32 +711,6 @@ class BaseBillRobot
         }
         
         return $formMessage;
-    }
-    
-    /**
-     * 账单参数验证
-     *
-     * @param  array  $params
-     *
-     * @return bool|string
-     */
-    public static function billValidate(array $params): bool|string
-    {
-        if (empty($params)) {
-            return "参数错误";
-        }
-        
-        if (!is_numeric($params[0])) {
-            return "参数类型错误";
-        }
-        
-        $money = (float) $params[0];
-        
-        if ($money <= 0) {
-            return "金额必须大于0";
-        }
-        
-        return true;
     }
     
 }
