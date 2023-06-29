@@ -521,7 +521,7 @@ class BaseBillRobot
         }
         
         $messages[] = '';
-        $messages[] = '合计下发：[`'.$totalMoney($clearingDataArray).'`]';
+        $messages[] = '合计下发：'.$totalMoney($clearingDataArray);
         
         return implode("\n", $messages);
     }
