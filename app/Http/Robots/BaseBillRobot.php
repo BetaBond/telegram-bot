@@ -127,7 +127,7 @@ class BaseBillRobot
             BookTrace::MONEY         => $money,
             BookTrace::EXCHANGE_RATE => (float) $exchangeRate,
             BookTrace::RATE          => (float) $rate,
-            BookTrace::TYPE          => 1,
+            BookTrace::TYPE          => $income ? 1 : -1,
             BookTrace::T_UID         => $tUID,
             BookTrace::USERNAME      => $formUserName,
             BookTrace::ROBOT_ID      => $robotId,
@@ -436,7 +436,7 @@ class BaseBillRobot
             if ($type === 1) {
                 $result = ($money * $rate) / $exchangeRate;
                 $result = round($result, 2);
-                $msgString .= "($money\*$rate) / $exchangeRate=$result";
+                $msgString .= "($money \* $rate) / $exchangeRate=$result";
                 $incomeDataArray[$username]['strings'][] = $msgString;
                 
                 if (!isset($incomeDataArray[$username]['total'])) {
@@ -450,7 +450,7 @@ class BaseBillRobot
             if ($type === -1) {
                 $result = $money / ($exchangeRate - $rate);
                 $result = round($result, 2);
-                $msgString .= "$money / ($exchangeRate-$rate)=$result";
+                $msgString .= "$money / ($exchangeRate - $rate)=$result";
                 $clearingDataArray[$username]['strings'][] = $msgString;
                 
                 if (!isset($clearingDataArray[$username]['total'])) {
