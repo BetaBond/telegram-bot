@@ -444,6 +444,7 @@ class BaseBillRobot
                 }
                 
                 $incomeDataArray[$username]['total'] += $result;
+                $incomeDataArray[$username]['money'] += $money;
             }
             
             // 出账的构造
@@ -458,6 +459,7 @@ class BaseBillRobot
                 }
                 
                 $clearingDataArray[$username]['total'] += $result;
+                $clearingDataArray[$username]['money'] += $money;
             }
             
         }
@@ -472,14 +474,16 @@ class BaseBillRobot
             return $total;
         };
         
-        $totalMoney = function (array $dataArray){
+        $totalMoney = function (array $dataArray) {
             $total = 0;
+            $money = 0;
             
             foreach ($dataArray as $item) {
                 $total += $item['total'];
+                $money += $item['money'];
             }
             
-            return $total;
+            return "[`￥$money` \ '₮$total']";
         };
         
         // 构造输出字符
