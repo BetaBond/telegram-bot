@@ -430,13 +430,13 @@ class BaseBillRobot
             $uuid = $uuidEnd.$uuidMain;
             
             // 添加唯一ID和日期
-            $msgString = "[`$uuid`] / [`$date`]  ";
+            $msgString = "[`$uuid`] [`$date`]  ";
             
             // 进账的构造
             if ($type === 1) {
                 $result = ($money * $rate) / $exchangeRate;
                 $result = round($result, 2);
-                $msgString .= "($money\*$rate)/$exchangeRate=$result";
+                $msgString .= "($money\*$rate) / $exchangeRate=$result";
                 $incomeDataArray[$username]['strings'][] = $msgString;
                 
                 if (!isset($incomeDataArray[$username]['total'])) {
@@ -450,7 +450,7 @@ class BaseBillRobot
             if ($type === -1) {
                 $result = $money / ($exchangeRate - $rate);
                 $result = round($result, 2);
-                $msgString .= "$money/($exchangeRate-$rate)=$result";
+                $msgString .= "$money / ($exchangeRate-$rate)=$result";
                 $clearingDataArray[$username]['strings'][] = $msgString;
                 
                 if (!isset($clearingDataArray[$username]['total'])) {
