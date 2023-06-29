@@ -5,11 +5,9 @@ namespace App\Http\Robots;
 use App\Exports\BaseBillExport;
 use App\Helpers\MessageHelper;
 use App\Models\Auth;
-use App\Models\Bill;
 use App\Models\Book;
 use App\Models\Robots;
 use App\Models\Trace\AuthTrace;
-use App\Models\Trace\BillTrace;
 use App\Models\Trace\BookTrace;
 use App\Models\Trace\RobotsTrace;
 use Illuminate\Support\Facades\File;
@@ -134,7 +132,7 @@ class BaseBillRobot
         ])->save();
         
         if ($model) {
-            return self::data([], $robotId);
+            return self::dataMessage([], $robotId);
         }
         
         return "失败";
@@ -366,13 +364,13 @@ class BaseBillRobot
      */
     public static function reset(array $params, int $robotId): string
     {
-        $model = Bill::query()
-            ->where(BillTrace::ROBOT_ID, $robotId);
+        $model = Book::query()
+            ->where(BookTrace::ROBOT_ID, $robotId);
         
         if (count($params) === 1) {
             $username = $params[0];
             $username = str_replace('@', '', $username);
-            $model->where(BillTrace::USERNAME, $username);
+            $model->where(BookTrace::USERNAME, $username);
         }
         
         $model->delete();
@@ -388,14 +386,14 @@ class BaseBillRobot
      *
      * @return string
      */
-    public static function data(array $params, int $robotId): string
+    public static function dataMessage(array $params, int $robotId): string
     {
         // 查询所有数据
-        $books = Book::query()->whereBetween(BillTrace::CREATED_AT, [
+        $books = Book::query()->whereBetween(BookTrace::CREATED_AT, [
             strtotime(date('Y-m-d').'00:00:00'),
             strtotime(date('Y-m-d').'23:59:59'),
         ])->where(
-            BillTrace::ROBOT_ID,
+            BookTrace::ROBOT_ID,
             $robotId
         );
         
@@ -404,7 +402,7 @@ class BaseBillRobot
             $username = $params[0];
             $username = str_replace('@', '', $username);
             
-            $books = $books->where(BillTrace::USERNAME, $username);
+            $books = $books->where(BookTrace::USERNAME, $username);
         }
         
         // 取出数据
@@ -555,135 +553,6 @@ class BaseBillRobot
     }
     
     /**
-     * 数据消息
-     *
-     * @param  array  $params
-     * @param  int  $robotId
-     *
-     * @return string
-     */
-    public static function dataMessage(array $params, int $robotId): string
-    {
-        // 进账数据
-        $income = Bill::query()->whereBetween(BillTrace::CREATED_AT, [
-            strtotime(date('Y-m-d').'00:00:00'),
-            strtotime(date('Y-m-d').'23:59:59'),
-        ])->where(
-            BillTrace::ROBOT_ID,
-            $robotId
-        )->where(
-            'type',
-            1
-        );
-        
-        // 出账数据
-        $clearing = Bill::query()->whereBetween(BillTrace::CREATED_AT, [
-            strtotime(date('Y-m-d').'00:00:00'),
-            strtotime(date('Y-m-d').'23:59:59'),
-        ])->where(
-            BillTrace::ROBOT_ID,
-            $robotId
-        )->where(
-            'type',
-            -1
-        );
-        
-        if (count($params) === 1) {
-            $username = $params[0];
-            $username = str_replace('@', '', $username);
-            
-            $income = $income->where(BillTrace::USERNAME, $username);
-            $clearing = $clearing->where(BillTrace::USERNAME, $username);
-        }
-        
-        $income = $income->get()->toArray();
-        $clearing = $clearing->get()->toArray();
-        
-        $messages = [];
-        $formMessage = [];
-        
-        $formMessage = self::build($formMessage, $income, 'income', $robotId);
-        $formMessage = self::build($formMessage, $clearing, 'clearing',
-            $robotId);
-        
-        $messages[] = '入款（'.count($income).' 笔）：';
-        $messages[] = '';
-        
-        $incomeMoney = 0;
-        $clearingMoney = 0;
-        $rate = [
-            'income'   => 1,
-            'clearing' => 1,
-            'rating'   => 1,
-        ];
-        
-        // 构建进账字符信息
-        foreach ($formMessage as $items) {
-            if (isset($items['income'])
-                && !empty($items['income']['messages'])
-            ) {
-                $messages[] = '来自 @'.$items['username'].'（'
-                    .count($items['income']['messages']).' 笔）：';
-                
-                $rate['income'] = $items['income']['rate'];
-                $rate['rating'] = $items['income']['rating'];
-                
-                foreach ($items['income']['messages'] as $item) {
-                    $messages[] = $item;
-                }
-                
-                $messages[] = '';
-                $incomeMoney += $items['income']['money'];
-            }
-        }
-        
-        $incomeMoneyInfo = [];
-        $incomeMoneyInfo['cny'] = $incomeMoney;
-        $incomeMoneyInfo['usdt'] = ($incomeMoney * $rate['rating'])
-            / $rate['income'];
-        $incomeMoneyInfo['usdt'] = round($incomeMoneyInfo['usdt'], 2);
-        $incomeMoneyInfo['string'] = "[`￥".$incomeMoneyInfo['cny']."` / ";
-        $incomeMoneyInfo['string'] .= "`₮".$incomeMoneyInfo['usdt']."`]";
-        $messages[] = "合计入款：".$incomeMoneyInfo['string'];
-        $messages[] = '';
-        
-        $messages[] = '下发（'.count($clearing).' 笔）：';
-        $messages[] = '';
-        
-        // 构建出账信息
-        foreach ($formMessage as $items) {
-            if (isset($items['clearing'])
-                && !empty($items['clearing']['messages'])
-            ) {
-                $messages[] = '来自 @'.$items['username'].'（'
-                    .count($items['clearing']['messages']).' 笔）：';
-                
-                $rate['clearing'] = $items['clearing']['rate'];
-                
-                foreach ($items['clearing']['messages'] as $item) {
-                    $messages[] = $item;
-                }
-                $messages[] = '';
-                $clearingMoney += $items['clearing']['money'];
-            }
-        }
-        
-        $clearingMoneyInfo = [];
-        $clearingMoneyInfo['cny'] = $clearingMoney;
-        $clearingMoneyInfo['usdt'] = $clearingMoney / ($rate['clearing']
-                - 0.045);
-        $clearingMoneyInfo['usdt'] = round($clearingMoneyInfo['usdt'], 2);
-        $clearingMoneyInfo['string'] = "[`￥".$clearingMoneyInfo['cny']."` / ";
-        $clearingMoneyInfo['string'] .= "`₮".$clearingMoneyInfo['usdt']."`]";
-        $messages[] = "合计下发：".$clearingMoneyInfo['string'];
-        $messages[] = '';
-        
-        $messages[] = '总计：	[ `￥'.($incomeMoney - $clearingMoney).'` ]';
-        
-        return implode("\n", $messages);
-    }
-    
-    /**
      * 导出数据
      *
      * @param  Api  $telegram
@@ -790,100 +659,15 @@ class BaseBillRobot
         
         $sid = $sidMain.$sidEnd;
         
-        $exists = Bill::query()->where('id', $sid)->exists();
+        $exists = Book::query()->where('id', $sid)->exists();
         
         if (!$exists) {
             return '记录不存在！';
         }
         
-        $model = Bill::query()->where('id', $sid)->delete();
+        $model = Book::query()->where('id', $sid)->delete();
         
         return $model === 1 ? '回撤成功！' : '回撤失败';
-    }
-    
-    /**
-     * 构建数据字符串
-     *
-     * @param  array  $formMessage
-     * @param  array  $data
-     * @param  string  $key
-     * @param  int  $robotId
-     *
-     * @return array
-     */
-    public static function build(
-        array $formMessage,
-        array $data,
-        string $key,
-        int $robotId
-    ): array {
-        foreach ($data as $item) {
-            if (!isset($formMessage[$item[BillTrace::T_UID]][$key]['money'])) {
-                $formMessage[$item[BillTrace::T_UID]][$key]['money'] = 0;
-            }
-            
-            $username = $item[BillTrace::USERNAME];
-            $date = date('H:i:s', (int) $item[BillTrace::CREATED_AT]);
-            $money = (float) $item[BillTrace::MONEY];
-            $exchangeRate = (float) $item[BillTrace::EXCHANGE_RATE];
-            
-            $model = Robots::query()
-                ->where(RobotsTrace::T_UID, $robotId)
-                ->first();
-            
-            $ratingKey = RobotsTrace::INCOMING_RATE;
-            $paymentExchangeRateKey = RobotsTrace::CLEARING_EXCHANGE_RATE;
-            
-            $rating = (float) $model->$ratingKey;
-            $paymentExchangeRate = (float) $model->$paymentExchangeRateKey;
-            
-            // 出账数据修正
-            if ($key === 'clearing') {
-                $exchangeRate = $paymentExchangeRate;
-            }
-            
-            $difference = 0;
-            
-            // 数学计算
-            if (!empty($money) && !empty($exchangeRate)) {
-                if ($key === 'income') {
-                    $difference = $money * $rating / $exchangeRate;
-                }
-                
-                if ($key === 'clearing') {
-                    $difference = $money / ($exchangeRate - 0.045);
-                }
-            }
-            
-            $difference = round($difference, 2);
-            $formMessage[$item[BillTrace::T_UID]][$key]['money'] += $money;
-            
-            $uuid = $item[BillTrace::ID];
-            
-            $uuidEnd = substr($uuid, -3, 3);
-            $uuidMain = substr($uuid, 0, strlen($uuid) - 3);
-            $uuidMain = date('His', (int) $uuidMain);
-            $uuid = $uuidEnd.$uuidMain;
-            
-            // 构建字符串
-            $messageString = "[`$uuid`] [`$date`]  ";
-            
-            if ($key === 'income') {
-                $messageString .= "$money\*$rating/$exchangeRate=$difference";
-            }
-            
-            if ($key === 'clearing') {
-                $messageString .= "$money/($exchangeRate-0.045)=$difference";
-            }
-            
-            $t_uid_key = $item[BillTrace::T_UID];
-            $formMessage[$t_uid_key]['username'] = $username;
-            $formMessage[$t_uid_key][$key]['rate'] = $exchangeRate;
-            $formMessage[$t_uid_key][$key]['rating'] = $rating;
-            $formMessage[$t_uid_key][$key]['messages'][] = $messageString;
-        }
-        
-        return $formMessage;
     }
     
 }
