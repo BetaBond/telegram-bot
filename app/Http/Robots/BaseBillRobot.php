@@ -443,6 +443,10 @@ class BaseBillRobot
                     $incomeDataArray[$username]['total'] = 0;
                 }
                 
+                if (!isset($incomeDataArray[$username]['money'])) {
+                    $incomeDataArray[$username]['money'] = 0;
+                }
+                
                 $incomeDataArray[$username]['total'] += $result;
                 $incomeDataArray[$username]['money'] += $money;
             }
@@ -456,6 +460,10 @@ class BaseBillRobot
                 
                 if (!isset($clearingDataArray[$username]['total'])) {
                     $clearingDataArray[$username]['total'] = 0;
+                }
+                
+                if (!isset($clearingDataArray[$username]['money'])) {
+                    $clearingDataArray[$username]['money'] = 0;
                 }
                 
                 $clearingDataArray[$username]['total'] += $result;
