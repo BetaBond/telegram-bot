@@ -695,7 +695,7 @@ class BaseBillRobot
         
         $types = ['买入', '卖出', '全部'];
         
-        if (!in_array($params[0], array_keys($types))) {
+        if (!in_array($params[0], $types)) {
             return "第一个参数必须是[".implode(', ', $types)."]其中之一";
         }
         
