@@ -36,7 +36,7 @@ class SyncController
             ],
             'unitPrice' => [
                 'required',
-                'integer',
+                'numeric',
                 'min:0'
             ],
         ]);
