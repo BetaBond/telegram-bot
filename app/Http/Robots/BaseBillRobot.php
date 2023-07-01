@@ -700,9 +700,10 @@ class BaseBillRobot
         }
         
         $messages = ["*当前欧易最优买卖价格：*"];
-        $messages[] = "[`银行卡`]: `￥7.2`";
-        $messages[] = "[`支付宝`]: `￥7.2`";
-        $messages[] = "[`微信`]: `￥7.2`";
+        $messages[] = '';
+        $messages[] = "银行卡: `￥7.2`";
+        $messages[] = "支付宝: `￥7.2`";
+        $messages[] = "微信\t\t: `￥7.2`";
         
         return implode("\n", $messages);
     }
