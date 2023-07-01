@@ -701,6 +701,8 @@ class BaseBillRobot
         
         $messages = ["*当前欧易最优买卖价格：*"];
         $messages[] = '';
+        $messages[] = '*买入：*';
+        $messages[] = '';
         $messages[] = "[银行卡]\t\t: `￥7.2`";
         $messages[] = "[支付宝]\t\t: `￥7.2`";
         $messages[] = "[微信]\t\t\t\t\t\t: `￥7.2`";
