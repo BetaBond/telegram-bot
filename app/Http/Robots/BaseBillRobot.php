@@ -703,9 +703,9 @@ class BaseBillRobot
         $messages[] = '';
         $messages[] = '*买入：*';
         $messages[] = '';
-        $messages[] = "[银行卡]\t\t: `￥7.2`";
-        $messages[] = "[支付宝]\t\t: `￥7.2`";
-        $messages[] = "[微信]\t\t\t\t\t\t: `￥7.2`";
+        $messages[] = "[\t\t`银行卡`\t\t]\t\t: `￥7.2`";
+        $messages[] = "[\t\t`支付宝`\t\t]\t\t: `￥7.2`";
+        $messages[] = "[\t\t`微信`\t\t]\t\t\t\t\t\t: `￥7.2`";
         
         return implode("\n", $messages);
     }
