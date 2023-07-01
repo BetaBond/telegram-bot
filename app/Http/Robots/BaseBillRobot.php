@@ -707,22 +707,39 @@ class BaseBillRobot
         $messages = ["*当前欧易最优买卖价格：*"];
         $messages[] = '';
         
+        $bestPrice = [];
+        $sides = ['buy', 'sell'];
+        $payments = ['bank', 'wxPay', 'aliPay'];
+        
         try {
-            $bestPrice = Cache::store('redis')->get('best-price');
-            $bestPrice = json_decode($bestPrice, true);
+            
+            foreach ($sides as $side) {
+                
+                if (!isset($bestPrice[$side])) {
+                    $bestPrice[$side] = [];
+                }
+                
+                foreach ($payments as $payment) {
+                    $store = Cache::store('redis');
+                    $key = 'best_price_'.$side.'_'.$payment;
+                    $bestPrice[$side][$payment] = $store->get($key, '未获取');
+                }
+                
+            }
+            
         } catch (InvalidArgumentException $e) {
             Log::error($e->getMessage());
             return "错误！";
         }
         
-        Log::info(json_encode($bestPrice));
-        
         if (in_array($params[0], ['买入', '全部'])) {
+            $buy = $bestPrice[$sides[0]];
             $messages[] = '*买入方向：*';
             $messages[] = '';
-            $messages[] = "[\t\t`银行卡`\t\t]\t\t: `￥7.2`";
-            $messages[] = "[\t\t`支付宝`\t\t]\t\t: `￥7.2`";
-            $messages[] = "[\t\t`微信`\t\t]\t\t\t\t\t\t: `￥7.2`";
+            $messages[] = "[\t\t`银行卡`\t\t]\t\t: `￥".$buy[$payments[0]]."`";
+            $messages[] = "[\t\t`微信`\t\t]\t\t\t\t\t\t: `￥".$buy[$payments[1]]
+                ."`";
+            $messages[] = "[\t\t`支付宝`\t\t]\t\t: `￥".$buy[$payments[2]]."`";
         }
         
         if ($params[0] === '全部') {
@@ -730,11 +747,13 @@ class BaseBillRobot
         }
         
         if (in_array($params[0], ['卖出', '全部'])) {
+            $sell = $bestPrice[$sides[1]];
             $messages[] = '*卖出方向：*';
             $messages[] = '';
-            $messages[] = "[\t\t`银行卡`\t\t]\t\t: `￥7.2`";
-            $messages[] = "[\t\t`支付宝`\t\t]\t\t: `￥7.2`";
-            $messages[] = "[\t\t`微信`\t\t]\t\t\t\t\t\t: `￥7.2`";
+            $messages[] = "[\t\t`银行卡`\t\t]\t\t: `￥".$sell[$payments[0]]."`";
+            $messages[] = "[\t\t`微信`\t\t]\t\t\t\t\t\t: `￥".$sell[$payments[1]]
+                ."`";
+            $messages[] = "[\t\t`支付宝`\t\t]\t\t: `￥".$sell[$payments[2]]."`";
         }
         
         return implode("\n", $messages);
