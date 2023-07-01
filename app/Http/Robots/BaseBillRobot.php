@@ -196,6 +196,7 @@ class BaseBillRobot
                     ),
                     '信息' => self::info($telegram),
                     '回撤' => self::repeal($params),
+                    '最优价' => self::bestPrice($params),
                     default => false,
                 };
             }
@@ -612,6 +613,13 @@ class BaseBillRobot
         return $save ? '导出成功' : '导出失败';
     }
     
+    /**
+     * 获取机器人信息
+     *
+     * @param  Api  $telegram
+     *
+     * @return string
+     */
     public static function info(Api $telegram): string
     {
         try {
@@ -668,6 +676,32 @@ class BaseBillRobot
         $model = Book::query()->where('id', $sid)->delete();
         
         return $model === 1 ? '回撤成功！' : '回撤失败';
+    }
+    
+    /**
+     * 最优买卖价格
+     *
+     * @param  array  $params
+     *
+     * @return string
+     */
+    public static function bestPrice(array $params): string
+    {
+        $parameterCalibration = MessageHelper::parameterCalibration($params, 1);
+        
+        if ($parameterCalibration !== true) {
+            return $parameterCalibration;
+        }
+        
+        $types = ['买入', '卖出', '全部'];
+        
+        if (!in_array($params[0], array_keys($types))) {
+            return "第一个参数必须是[".implode(', ', $types)."]其中之一";
+        }
+        
+        $messages = ["*当前欧易最优买卖价格：*"];
+        
+        return implode("\n", $messages);
     }
     
 }
