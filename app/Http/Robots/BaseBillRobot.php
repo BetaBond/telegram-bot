@@ -723,6 +723,12 @@ class BaseBillRobot
                     $store = Cache::store('redis');
                     $key = 'best_price_'.$side.'_'.$payment;
                     $bestPrice[$side][$payment] = $store->get($key, '未获取');
+                    
+                    if (is_numeric($bestPrice[$side][$payment])) {
+                        $unitPrice = $bestPrice[$side][$payment];
+                        $bestPrice[$side][$payment] = '￥'.$unitPrice;
+                    }
+                    
                 }
                 
             }
@@ -736,10 +742,10 @@ class BaseBillRobot
             $buy = $bestPrice[$sides[0]];
             $messages[] = '*买入方向：*';
             $messages[] = '';
-            $messages[] = "[\t\t`银行卡`\t\t]\t\t: `￥".$buy[$payments[0]]."`";
-            $messages[] = "[\t\t`微信`\t\t]\t\t\t\t\t\t: `￥".$buy[$payments[1]]
+            $messages[] = "[\t\t`银行卡`\t\t]\t\t: `".$buy[$payments[0]]."`";
+            $messages[] = "[\t\t`微信`\t\t]\t\t\t\t\t\t: `".$buy[$payments[1]]
                 ."`";
-            $messages[] = "[\t\t`支付宝`\t\t]\t\t: `￥".$buy[$payments[2]]."`";
+            $messages[] = "[\t\t`支付宝`\t\t]\t\t: `".$buy[$payments[2]]."`";
         }
         
         if ($params[0] === '全部') {
@@ -750,10 +756,10 @@ class BaseBillRobot
             $sell = $bestPrice[$sides[1]];
             $messages[] = '*卖出方向：*';
             $messages[] = '';
-            $messages[] = "[\t\t`银行卡`\t\t]\t\t: `￥".$sell[$payments[0]]."`";
-            $messages[] = "[\t\t`微信`\t\t]\t\t\t\t\t\t: `￥".$sell[$payments[1]]
+            $messages[] = "[\t\t`银行卡`\t\t]\t\t: `".$sell[$payments[0]]."`";
+            $messages[] = "[\t\t`微信`\t\t]\t\t\t\t\t\t: `".$sell[$payments[1]]
                 ."`";
-            $messages[] = "[\t\t`支付宝`\t\t]\t\t: `￥".$sell[$payments[2]]."`";
+            $messages[] = "[\t\t`支付宝`\t\t]\t\t: `".$sell[$payments[2]]."`";
         }
         
         return implode("\n", $messages);
