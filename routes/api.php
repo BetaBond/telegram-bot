@@ -45,7 +45,7 @@ Route::prefix('/telegram')->group(function () {
         'sync'
     )->group(function () {
         
-        Route::any('bestPrice', 'bestPrice');
+        Route::any('price', 'price');
         
     });
     

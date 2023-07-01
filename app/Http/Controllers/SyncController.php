@@ -21,7 +21,7 @@ class SyncController
      *
      * @return string
      */
-    public function bestPrice(Request $request): string
+    public function price(Request $request): string
     {
         $requestParams = $request::validate([
             'side'      => [
