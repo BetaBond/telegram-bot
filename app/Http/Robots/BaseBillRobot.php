@@ -710,6 +710,10 @@ class BaseBillRobot
             $messages[] = "[\t\t`微信`\t\t]\t\t\t\t\t\t: `￥7.2`";
         }
         
+        if ($params[0] === '全部'){
+            $messages[] = '';
+        }
+        
         if (in_array($params[0], ['卖出', '全部'])) {
             $messages[] = '*卖出方向：*';
             $messages[] = '';
