@@ -701,11 +701,22 @@ class BaseBillRobot
         
         $messages = ["*当前欧易最优买卖价格：*"];
         $messages[] = '';
-        $messages[] = '*买入：*';
-        $messages[] = '';
-        $messages[] = "[\t\t`银行卡`\t\t]\t\t: `￥7.2`";
-        $messages[] = "[\t\t`支付宝`\t\t]\t\t: `￥7.2`";
-        $messages[] = "[\t\t`微信`\t\t]\t\t\t\t\t\t: `￥7.2`";
+        
+        if (in_array($params[0], ['买入', '全部'])) {
+            $messages[] = '*买入方向：*';
+            $messages[] = '';
+            $messages[] = "[\t\t`银行卡`\t\t]\t\t: `￥7.2`";
+            $messages[] = "[\t\t`支付宝`\t\t]\t\t: `￥7.2`";
+            $messages[] = "[\t\t`微信`\t\t]\t\t\t\t\t\t: `￥7.2`";
+        }
+        
+        if (in_array($params[0], ['卖出', '全部'])) {
+            $messages[] = '*卖出方向：*';
+            $messages[] = '';
+            $messages[] = "[\t\t`银行卡`\t\t]\t\t: `￥7.2`";
+            $messages[] = "[\t\t`支付宝`\t\t]\t\t: `￥7.2`";
+            $messages[] = "[\t\t`微信`\t\t]\t\t\t\t\t\t: `￥7.2`";
+        }
         
         return implode("\n", $messages);
     }
