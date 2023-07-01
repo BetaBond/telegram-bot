@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\RobotController;
+use App\Http\Controllers\SyncController;
 use App\Http\Controllers\WebhookController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,16 @@ Route::prefix('/telegram')->group(function () {
     )->group(function () {
         
         Route::any('webhook', 'webhook');
+        
+    });
+    
+    Route::controller(
+        SyncController::class
+    )->prefix(
+        'sync'
+    )->group(function () {
+        
+        Route::any('bestPrice', 'bestPrice');
         
     });
     

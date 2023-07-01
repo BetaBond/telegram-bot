@@ -10,10 +10,12 @@ use App\Models\Robots;
 use App\Models\Trace\AuthTrace;
 use App\Models\Trace\BookTrace;
 use App\Models\Trace\RobotsTrace;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Excel as ExcelType;
+use Psr\SimpleCache\InvalidArgumentException;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\FileUpload\InputFile;
@@ -704,6 +706,16 @@ class BaseBillRobot
         
         $messages = ["*当前欧易最优买卖价格：*"];
         $messages[] = '';
+        
+        try {
+            $bestPrice = Cache::store('redis')->get('best-price');
+            $bestPrice = json_decode($bestPrice, true);
+        } catch (InvalidArgumentException $e) {
+            Log::error($e->getMessage());
+            return "错误！";
+        }
+        
+        Log::info(json_encode($bestPrice));
         
         if (in_array($params[0], ['买入', '全部'])) {
             $messages[] = '*买入方向：*';

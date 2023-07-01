@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Validation\Rule;
 use Telegram\Bot\Laravel\Facades\Telegram;
 
 /**
