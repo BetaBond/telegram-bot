@@ -738,14 +738,30 @@ class BaseBillRobot
             return "错误！";
         }
         
-        if (in_array($params[0], ['买入', '全部'])) {
-            $buy = $bestPrice[$sides[0]];
-            $messages[] = '*买入方向：*';
+        $buildUnitPrice = function (array $bestPrice, string $side) use (
+            $payments
+        ) {
+            $messages = [];
             $messages[] = '';
-            $messages[] = "[\t\t`银行卡`\t\t]\t\t: `".$buy[$payments[0]]."`";
-            $messages[] = "[\t\t`微信`\t\t]\t\t\t\t\t\t: `".$buy[$payments[1]]
-                ."`";
-            $messages[] = "[\t\t`支付宝`\t\t]\t\t: `".$buy[$payments[2]]."`";
+            
+            $bankString = "[\t\t`银行卡`\t\t]\t\t: `";
+            $bankString .= $bestPrice[$side][$payments[0]]."`";
+            $messages[] = $bankString;
+            
+            $wxPayString = "[\t\t`微信`\t\t]\t\t\t\t\t\t: `";
+            $wxPayString .= $bestPrice[$side][$payments[1]]."`";
+            $messages[] = $wxPayString;
+            
+            $aliPayString = "[\t\t`支付宝`\t\t]\t\t: `";
+            $aliPayString .= $bestPrice[$side][$payments[2]]."`";
+            $messages[] = $aliPayString;
+            
+            return $messages;
+        };
+        
+        if (in_array($params[0], ['买入', '全部'])) {
+            $messages[] = '*买入方向：*';
+            array_merge($messages, $buildUnitPrice($bestPrice, $sides[0]));
         }
         
         if ($params[0] === '全部') {
@@ -753,13 +769,8 @@ class BaseBillRobot
         }
         
         if (in_array($params[0], ['卖出', '全部'])) {
-            $sell = $bestPrice[$sides[1]];
             $messages[] = '*卖出方向：*';
-            $messages[] = '';
-            $messages[] = "[\t\t`银行卡`\t\t]\t\t: `".$sell[$payments[0]]."`";
-            $messages[] = "[\t\t`微信`\t\t]\t\t\t\t\t\t: `".$sell[$payments[1]]
-                ."`";
-            $messages[] = "[\t\t`支付宝`\t\t]\t\t: `".$sell[$payments[2]]."`";
+            array_merge($messages, $buildUnitPrice($bestPrice, $sides[1]));
         }
         
         return implode("\n", $messages);
