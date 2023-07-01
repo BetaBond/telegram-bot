@@ -156,8 +156,10 @@ class BaseBillRobot
         Api $telegram
     ): bool {
         $message = match ($command) {
-            '我的' => self::mine($messageInfo['form_id'],
-                $messageInfo['form_user_name']),
+            '我的' => self::mine(
+                $messageInfo['form_id'],
+                $messageInfo['form_user_name']
+            ),
             default => false,
         };
         
@@ -231,6 +233,7 @@ class BaseBillRobot
     {
         return implode("\n", [
             "*您的信息：*",
+            "",
             "User Id\t\t\t\t\t\t\t\t\t\t\t\t:\t\t\t\t`$uid`",
             "User Name\t\t\t\t:\t\t\t\t`$username`",
         ]);
@@ -710,7 +713,7 @@ class BaseBillRobot
             $messages[] = "[\t\t`微信`\t\t]\t\t\t\t\t\t: `￥7.2`";
         }
         
-        if ($params[0] === '全部'){
+        if ($params[0] === '全部') {
             $messages[] = '';
         }
         
