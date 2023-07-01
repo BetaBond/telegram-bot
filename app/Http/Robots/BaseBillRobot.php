@@ -761,7 +761,10 @@ class BaseBillRobot
         
         if (in_array($params[0], ['买入', '全部'])) {
             $messages[] = '*买入方向：*';
-            array_merge($messages, $buildUnitPrice($bestPrice, $sides[0]));
+            $messages = array_merge(
+                $messages,
+                $buildUnitPrice($bestPrice, $sides[0])
+            );
         }
         
         if ($params[0] === '全部') {
@@ -770,7 +773,10 @@ class BaseBillRobot
         
         if (in_array($params[0], ['卖出', '全部'])) {
             $messages[] = '*卖出方向：*';
-            array_merge($messages, $buildUnitPrice($bestPrice, $sides[1]));
+            $messages = array_merge(
+                $messages,
+                $buildUnitPrice($bestPrice, $sides[1])
+            );
         }
         
         return implode("\n", $messages);
