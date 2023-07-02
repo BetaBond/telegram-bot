@@ -201,7 +201,7 @@ class BaseBillRobot
                     '信息' => self::info($telegram),
                     '回撤' => self::repeal($params),
                     '最优价' => self::bestPrice($params),
-                    '单价' => self::price($params),
+                    '单价' => self::price(),
                     default => false,
                 };
             }
