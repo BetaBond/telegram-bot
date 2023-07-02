@@ -702,7 +702,7 @@ class BaseBillRobot
             return "错误！";
         }
         
-        $messages = ["*当前欧易最优买卖价格：*"];
+        $messages = ["*当前欧易大宗商品买卖价格：*"];
         $messages[] = '';
         $messages[] = '数据同步时间：';
         $messages[] = "[`$time`]";
