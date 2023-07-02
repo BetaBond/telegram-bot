@@ -690,11 +690,9 @@ class BaseBillRobot
      */
     public static function price(): string
     {
-        $store = Cache::store('redis');
-        
         try {
-            $store = $store->get('okx_usdt_block_trade');
-            $timestamp = $store->get('okx_usdt_block_trade_updated');
+            $store = Cache::store('redis')->get('okx_usdt_block_trade');
+            $timestamp = Cache::store('redis')->get('okx_usdt_block_trade_updated');
             $time = empty($timestamp) ? '未同步' : date('Y-m-d H:i:s', $timestamp);
         } catch (InvalidArgumentException $e) {
             Log::error($e->getMessage());
