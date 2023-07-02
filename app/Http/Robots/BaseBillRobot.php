@@ -695,7 +695,7 @@ class BaseBillRobot
         try {
             $store = $store->get('okx_usdt_block_trade');
             $timestamp = $store->get('okx_usdt_block_trade_updated', null);
-            $time = empty($time) ? '未同步' : date('Y-m-d H:i:s', $timestamp);
+            $time = empty($timestamp) ? '未同步' : date('Y-m-d H:i:s', $timestamp);
         } catch (InvalidArgumentException $e) {
             Log::error($e->getMessage());
             return "错误！";
