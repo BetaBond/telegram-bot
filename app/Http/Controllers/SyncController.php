@@ -26,10 +26,17 @@ class SyncController
             'price' => ['required', 'string', 'json'],
         ]);
         
-        $cache = Cache::store('redis')->put(
+        $okx_usdt_block_trade = Cache::store('redis')->put(
             'okx_usdt_block_trade',
             $requestParams['price']
         );
+        
+        $okx_usdt_block_trade_updated = Cache::store('redis')->put(
+            'okx_usdt_block_trade_updated',
+            time()
+        );
+        
+        $cache = $okx_usdt_block_trade && $okx_usdt_block_trade_updated;
         
         return $cache ? '成功' : '失败';
     }

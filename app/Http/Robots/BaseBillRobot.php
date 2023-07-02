@@ -200,7 +200,6 @@ class BaseBillRobot
                     ),
                     '信息' => self::info($telegram),
                     '回撤' => self::repeal($params),
-                    '最优价' => self::bestPrice($params),
                     '单价' => self::price(),
                     default => false,
                 };
@@ -695,6 +694,8 @@ class BaseBillRobot
         
         try {
             $store = $store->get('okx_usdt_block_trade');
+            $timestamp = $store->get('okx_usdt_block_trade_updated', null);
+            $time = empty($time) ? '未同步' : date('Y-m-d H:i:s', $timestamp);
         } catch (InvalidArgumentException $e) {
             Log::error($e->getMessage());
             return "错误！";
@@ -702,7 +703,7 @@ class BaseBillRobot
         
         $messages = ["*当前欧易最优买卖价格：*"];
         $messages[] = '';
-        $messages[] = '*买入方向：*';
+        $messages[] = "*买入方向(TOP10)：[$time]*";
         $messages[] = '';
         
         $prices = json_decode($store, true);
@@ -710,105 +711,6 @@ class BaseBillRobot
         
         foreach ($prices as $key => $price) {
             $messages[] = "[`$key`]\t\t:\t\t`￥$price`";
-        }
-        
-        return implode("\n", $messages);
-    }
-    
-    /**
-     * 最优买卖价格
-     *
-     * @param  array  $params
-     *
-     * @return string
-     */
-    public static function bestPrice(array $params): string
-    {
-        $parameterCalibration = MessageHelper::parameterCalibration($params, 1);
-        
-        if ($parameterCalibration !== true) {
-            return $parameterCalibration;
-        }
-        
-        $types = ['买入', '卖出', '全部'];
-        
-        if (!in_array($params[0], $types)) {
-            return "第一个参数必须是[".implode(', ', $types)."]其中之一";
-        }
-        
-        $messages = ["*当前欧易最优买卖价格：*"];
-        $messages[] = '';
-        
-        $bestPrice = [];
-        $sides = ['buy', 'sell'];
-        $payments = ['bank', 'wxPay', 'aliPay'];
-        
-        try {
-            
-            foreach ($sides as $side) {
-                
-                if (!isset($bestPrice[$side])) {
-                    $bestPrice[$side] = [];
-                }
-                
-                foreach ($payments as $payment) {
-                    $store = Cache::store('redis');
-                    $key = 'best_price_'.$side.'_'.$payment;
-                    $bestPrice[$side][$payment] = $store->get($key, '未获取');
-                    
-                    if (is_numeric($bestPrice[$side][$payment])) {
-                        $unitPrice = $bestPrice[$side][$payment];
-                        $bestPrice[$side][$payment] = '￥'.$unitPrice;
-                    }
-                    
-                }
-                
-            }
-            
-        } catch (InvalidArgumentException $e) {
-            Log::error($e->getMessage());
-            return "错误！";
-        }
-        
-        $buildUnitPrice = function (array $bestPrice, string $side) use (
-            $payments
-        ) {
-            $messages = [];
-            $messages[] = '';
-            
-            $bankString = "[\t\t`银行卡`\t\t]\t\t: `";
-            $bankString .= $bestPrice[$side][$payments[0]]."`";
-            $messages[] = $bankString;
-            
-            $wxPayString = "[\t\t`微信`\t\t]\t\t\t\t\t\t: `";
-            $wxPayString .= $bestPrice[$side][$payments[1]]."`";
-            $messages[] = $wxPayString;
-            
-            $aliPayString = "[\t\t`支付宝`\t\t]\t\t: `";
-            $aliPayString .= $bestPrice[$side][$payments[2]]."`";
-            $messages[] = $aliPayString;
-            
-            return $messages;
-        };
-        
-        if (in_array($params[0], ['买入', '全部'])) {
-            $messages[] = '*买入方向：*';
-            $messages = array_merge(
-                $messages,
-                $buildUnitPrice($bestPrice, $sides[0])
-            );
-        }
-        
-        if ($params[0] === '全部') {
-            $messages[] = '';
-        }
-        
-        if (in_array($params[0], ['卖出', '全部'])) {
-            $messages[] = '*卖出方向：*';
-            $messages = array_merge(
-                $messages,
-                $buildUnitPrice($bestPrice, $sides[1])
-            );
         }
         
         return implode("\n", $messages);
