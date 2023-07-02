@@ -692,8 +692,10 @@ class BaseBillRobot
     {
         try {
             $store = Cache::store('redis')->get('okx_usdt_block_trade');
-            $timestamp = Cache::store('redis')->get('okx_usdt_block_trade_updated');
-            $time = empty($timestamp) ? '未同步' : date('Y-m-d H:i:s', $timestamp);
+            $timestamp = Cache::store('redis')
+                ->get('okx_usdt_block_trade_updated');
+            $time = empty($timestamp) ? '未同步'
+                : date('Y-m-d H:i:s', $timestamp);
         } catch (InvalidArgumentException $e) {
             Log::error($e->getMessage());
             return "错误！";
@@ -701,14 +703,17 @@ class BaseBillRobot
         
         $messages = ["*当前欧易最优买卖价格：*"];
         $messages[] = '';
-        $messages[] = "*买入方向(TOP10)：[$time]*";
+        $messages[] = '数据同步时间：';
+        $messages[] = $time;
+        $messages[] = '';
+        $messages[] = "*买入方向(TOP10)：*";
         $messages[] = '';
         
         $prices = json_decode($store, true);
         $prices = is_array($prices) ? $prices : [];
         
         foreach ($prices as $key => $price) {
-            $messages[] = "[`$key`]\t\t:\t\t`￥$price`";
+            $messages[] = "[`".($key + 1)."`]\t\t:\t\t`￥$price`";
         }
         
         return implode("\n", $messages);
