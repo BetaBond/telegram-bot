@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Validation\Rule;
 
 /**
  * 数据同步控制器
@@ -24,26 +23,12 @@ class SyncController
     public function price(Request $request): string
     {
         $requestParams = $request::validate([
-            'side'      => [
-                'required',
-                'string',
-                Rule::in(['buy', 'sell']),
-            ],
-            'payment'   => [
-                'required',
-                'string',
-                Rule::in(['bank', 'wxPay', 'aliPay']),
-            ],
-            'unitPrice' => [
-                'required',
-                'numeric',
-                'min:0'
-            ],
+            'price' => ['required', 'string', 'json'],
         ]);
         
         $cache = Cache::store('redis')->put(
-            'best_price_'.$requestParams['side'].'_'.$requestParams['payment'],
-            $requestParams['unitPrice']
+            'okx_usdt_block_trade',
+            $requestParams['price']
         );
         
         return $cache ? '成功' : '失败';

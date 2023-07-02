@@ -684,6 +684,37 @@ class BaseBillRobot
     }
     
     /**
+     * 单价信息
+     *
+     * @return string
+     */
+    public static function price(): string
+    {
+        $store = Cache::store('redis');
+        
+        try {
+            $store = $store->get('okx_usdt_block_trade');
+        } catch (InvalidArgumentException $e) {
+            Log::error($e->getMessage());
+            return "错误！";
+        }
+        
+        $messages = ["*当前欧易最优买卖价格：*"];
+        $messages[] = '';
+        $messages[] = '*买入方向：*';
+        $messages[] = '';
+        
+        $prices = json_decode($store, true);
+        $prices = is_array($prices) ? $prices : [];
+        
+        foreach ($prices as $key => $price) {
+            $messages[] = "[`$key`]\t\t:\t\t`￥$price`";
+        }
+        
+        return implode("\n", $messages);
+    }
+    
+    /**
      * 最优买卖价格
      *
      * @param  array  $params
