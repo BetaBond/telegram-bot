@@ -531,6 +531,25 @@ class BaseBillRobot
             return "[`￥$money` / `₮$total`]";
         };
         
+        $totalMoneyObject = function (array $dataArray) {
+            $total = 0;
+            $money = 0;
+            
+            foreach ($dataArray as $item) {
+                $total += $item['total'];
+                $money += $item['money'];
+            }
+            
+            return (object) [
+                'total' => $total,
+                'money' => $money,
+            ];
+        };
+        
+        $model = Robots::query()
+            ->where(RobotsTrace::T_UID, $robotId)
+            ->first();
+        
         // 构造输出字符
         $messages[] = '入款（'.$totalNumber($incomeDataArray).' 笔）：';
         $messages[] = '';
@@ -553,8 +572,14 @@ class BaseBillRobot
             $buildMessage($clearingDataArray)
         );
         
+        $clearingExchangeRateKey = RobotsTrace::CLEARING_EXCHANGE_RATE;
+        
+        $dataObject = $totalMoneyObject($clearingDataArray);
+        
         $messages[] = '';
         $messages[] = '合计下发：'.$totalMoney($clearingDataArray);
+        $dynamic = $dataObject->money / $model->$clearingExchangeRateKey;
+        $messages[] = $dynamic;
         
         return implode("\n", $messages);
     }
