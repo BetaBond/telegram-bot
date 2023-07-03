@@ -581,9 +581,6 @@ class BaseBillRobot
         $messages[] = '';
         $messages[] = '合计下发：'.$totalMoney($clearingDataArray);
         
-        $clearingExchangeRateKey = round($model->$clearingExchangeRateKey, 2);
-        $clearingExchangeRateKey = round($model->$clearingExchangeRateKey, 2);
-        
         $dynamic = $model->$clearingExchangeRateKey;
         $dynamic = $dynamic - $model->$clearingRateKey;
         $dynamic = $dataObject->money / $dynamic;
