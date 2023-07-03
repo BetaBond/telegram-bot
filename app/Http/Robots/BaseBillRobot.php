@@ -572,14 +572,26 @@ class BaseBillRobot
             $buildMessage($clearingDataArray)
         );
         
+        // 机器人信息 KEY
         $clearingExchangeRateKey = RobotsTrace::CLEARING_EXCHANGE_RATE;
+        $clearingRateKey = RobotsTrace::CLEARING_RATE;
         
         $dataObject = $totalMoneyObject($clearingDataArray);
         
         $messages[] = '';
         $messages[] = '合计下发：'.$totalMoney($clearingDataArray);
-        $dynamic = $dataObject->money / $model->$clearingExchangeRateKey;
-        $messages[] = $dynamic;
+        
+        $dynamic = $model->$clearingExchangeRateKey;
+        $dynamic = $dynamic - $model->$clearingRateKey;
+        $dynamic = $dataObject->money / $dynamic;
+        
+        $dynamicString = "$dataObject->money / (";
+        $dynamicString .= $model->$clearingExchangeRateKey;
+        $dynamicString .= ' - ';
+        $dynamicString .= $model->$clearingRateKey.')';
+        $dynamicString .= " = $dynamic";
+        
+        $messages[] = "动态汇率：[`$dynamicString`]";
         
         return implode("\n", $messages);
     }
