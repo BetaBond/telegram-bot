@@ -592,8 +592,8 @@ class BaseBillRobot
         $dynamicString .= $model->$clearingRateKey.')';
         $dynamicString .= " = $dynamic";
         
-        $messages[] = "动态汇率(下发)：";
         $messages[] = '';
+        $messages[] = "动态汇率 (下发)：";
         $messages[] = "[`$dynamicString`]";
         
         return implode("\n", $messages);
