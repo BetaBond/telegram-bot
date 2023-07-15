@@ -463,7 +463,8 @@ class BaseBillRobot
             
             // 进账的构造
             if ($type === 1) {
-                $result = ($money * $rate) / $exchangeRate;
+                $result = $money * $rate;
+                $result = empty($result) ? 0 : $result / $exchangeRate;
                 $result = round($result, 2);
                 $msgString .= "[`($money \* $rate) / $exchangeRate = $result`]\n";
                 
