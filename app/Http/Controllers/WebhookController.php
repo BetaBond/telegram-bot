@@ -55,6 +55,8 @@ class WebhookController
             baseBotUrl: config('telegram.base_bot_url'),
         );
         
+        Log::info(date('Y-m-d H:i:s'));
+        
         return WebhookService::messages($messages, $telegram);
     }
     
