@@ -57,7 +57,7 @@ class LeaderDistributeJob implements ShouldQueue
             
             Log::info('处理: '.$telegram->getMe()->id);
         } catch (TelegramSDKException $e) {
-            Log::error('LeaderDistributeJob: '.$e->getMessage());
+            Log::error('LeaderDistributeJob('.__LINE__.'): '.$e->getMessage());
             return;
         }
         
@@ -72,7 +72,7 @@ class LeaderDistributeJob implements ShouldQueue
                     'text'       => $message
                 ]);
             } catch (TelegramSDKException $e) {
-                Log::error('LeaderDistributeJob: '.$e->getMessage());
+                Log::error('LeaderDistributeJob('.__LINE__.'): '.$e->getMessage());
             }
         }
     }
