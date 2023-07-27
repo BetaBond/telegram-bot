@@ -5,6 +5,7 @@ namespace App\Http\Service;
 use App\Http\Robots\BaseBillRobot;
 use App\Jobs\LeaderDistributeJob;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Telegram\Bot\Api;
@@ -109,6 +110,8 @@ class WebhookService
         array_shift($params);
         
         $robot = $telegram->getMe();
+        
+        Log::info('分发: '.$robot->id);
         
         // 分发给对应职能的机器人
         match ($robot->username) {
