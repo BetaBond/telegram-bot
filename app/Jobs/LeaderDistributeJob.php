@@ -54,6 +54,8 @@ class LeaderDistributeJob implements ShouldQueue
                 config('telegram.bots.jungle_leader_bot.token'),
                 baseBotUrl: config('telegram.base_bot_url'),
             );
+            
+            Log::info('处理: '.$telegram->getMe()->id);
         } catch (TelegramSDKException $e) {
             Log::error('LeaderDistributeJob: '.$e->getMessage());
             return;

@@ -38,6 +38,7 @@ class WebhookController
      *
      * @param  Request  $request
      * @param  string  $token
+     *
      * @return bool|string
      * @throws TelegramSDKException
      */
@@ -45,7 +46,7 @@ class WebhookController
     {
         $requestParams = $request::validate([
             'update_id' => ['required', 'integer'],
-            'message' => ['required', 'array'],
+            'message'   => ['required', 'array'],
         ]);
         
         $messages = $requestParams['message'];
@@ -55,7 +56,7 @@ class WebhookController
             baseBotUrl: config('telegram.base_bot_url'),
         );
         
-        Log::info(date('Y-m-d H:i:s'));
+        Log::info('接收: '.$telegram->getMe()->id);
         
         return WebhookService::messages($messages, $telegram);
     }
