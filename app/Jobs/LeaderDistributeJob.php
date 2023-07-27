@@ -3,6 +3,8 @@
 namespace App\Jobs;
 
 use App\Helpers\MessageHelper;
+use App\Models\Robots;
+use App\Models\Trace\RobotsTrace;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -18,7 +20,7 @@ use Throwable;
  *
  * @author beta
  */
-class LeaderDistribute implements ShouldQueue
+class LeaderDistributeJob implements ShouldQueue
 {
     
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -26,13 +28,13 @@ class LeaderDistribute implements ShouldQueue
     /**
      * 创建一个 job 实例
      *
-     * @param  Api  $telegram
+     * @param  string  $telegramId
      * @param  array  $info
      * @param  string  $command
      * @param  array  $params
      */
     public function __construct(
-        private Api $telegram,
+        private string $telegramId,
         private array $info,
         private string $command,
         private array $params
@@ -47,18 +49,38 @@ class LeaderDistribute implements ShouldQueue
      */
     public function handle(): void
     {
+        $robot = Robots::query()->where(
+            RobotsTrace::T_UID,
+            $this->telegramId
+        )->first();
+        
+        if (!$robot) {
+            Log::error("LeaderDistributeJob: (t_uid) 不存在于表中[$this->telegramId]");
+            return;
+        }
+        
+        try {
+            $telegram = new Api(
+                $robot->token,
+                baseBotUrl: config('telegram.base_bot_url'),
+            );
+        } catch (TelegramSDKException $e) {
+            Log::error('LeaderDistributeJob: '.$e->getMessage());
+            return;
+        }
+        
         $message = 'Job';
         $message = MessageHelper::compatibleParsingMd2($message);
         
         if ($message) {
             try {
-                $this->telegram->sendMessage([
+                $telegram->sendMessage([
                     'chat_id'    => $this->info['chat_id'],
                     'parse_mode' => 'MarkdownV2',
                     'text'       => $message
                 ]);
             } catch (TelegramSDKException $e) {
-                Log::error($e->getMessage());
+                Log::error('LeaderDistributeJob: '.$e->getMessage());
             }
         }
     }
@@ -70,7 +92,7 @@ class LeaderDistribute implements ShouldQueue
      */
     public function failed(Throwable $e): void
     {
-        Log::error($e->getMessage());
+        Log::error('LeaderDistributeJob: '.$e->getMessage());
     }
     
 }

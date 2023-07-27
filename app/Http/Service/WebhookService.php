@@ -3,7 +3,7 @@
 namespace App\Http\Service;
 
 use App\Http\Robots\BaseBillRobot;
-use App\Jobs\LeaderDistribute;
+use App\Jobs\LeaderDistributeJob;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -112,8 +112,8 @@ class WebhookService
         
         // 分发给对应职能的机器人
         match ($robot->username) {
-            'jungle_leader_bot' => LeaderDistribute::dispatch(
-                $telegram,
+            'jungle_leader_bot' => LeaderDistributeJob::dispatch(
+                $robot->id,
                 $messageInfo,
                 $command,
                 $params
