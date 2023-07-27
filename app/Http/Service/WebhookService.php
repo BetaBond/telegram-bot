@@ -3,10 +3,8 @@
 namespace App\Http\Service;
 
 use App\Http\Robots\BaseBillRobot;
-use App\Http\Robots\LeaderRobot;
 use App\Jobs\LeaderDistribute;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Telegram\Bot\Api;
@@ -26,10 +24,10 @@ class WebhookService
      * @param  array  $message
      * @param  Api  $telegram
      *
-     * @return bool|string
+     * @return bool
      * @throws TelegramSDKException
      */
-    public static function messages(array $message, Api $telegram): bool|string
+    public static function messages(array $message, Api $telegram): bool
     {
         $message = Validator::validate($message, [
             'message_id' => ['required', 'integer'],
@@ -113,7 +111,7 @@ class WebhookService
         $robot = $telegram->getMe();
         
         // 分发给对应职能的机器人
-        return match ($robot->username) {
+        match ($robot->username) {
             'jungle_leader_bot' => LeaderDistribute::dispatch(
                 $telegram,
                 $messageInfo,
@@ -123,6 +121,8 @@ class WebhookService
             default => BaseBillRobot::instructionParse($command, $params,
                 $messageInfo, $telegram),
         };
+        
+        return true;
     }
     
     
