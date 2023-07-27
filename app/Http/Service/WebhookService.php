@@ -145,7 +145,7 @@ class WebhookService
         string $time,
         int $chatId,
         int $formId,
-        int $robotId
+        int $robotId = 0
     ): bool {
         $key = md5("$time|$chatId|$formId|$robotId");
         $value = Cache::get($key);

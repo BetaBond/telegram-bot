@@ -26,6 +26,7 @@ Route::prefix('/telegram')->group(function () {
     )->group(function () {
         
         Route::any('message/{token}', 'message');
+        Route::any('job/{token}', 'job');
         
     });
     

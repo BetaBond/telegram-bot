@@ -28,13 +28,13 @@ class LeaderDistributeJob implements ShouldQueue
     /**
      * 创建一个 job 实例
      *
-     * @param  string  $telegramId
+     * @param  string  $token
      * @param  array  $info
      * @param  string  $command
      * @param  array  $params
      */
     public function __construct(
-        private string $telegramId,
+        private string $token,
         private array $info,
         private string $command,
         private array $params
@@ -51,7 +51,7 @@ class LeaderDistributeJob implements ShouldQueue
     {
         try {
             $telegram = new Api(
-                config('telegram.bots.jungle_leader_bot.token'),
+                $this->token,
                 baseBotUrl: config('telegram.base_bot_url'),
             );
             

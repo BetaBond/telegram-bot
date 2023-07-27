@@ -14,6 +14,7 @@ class MessageHelper
      * 兼容解析 MarkdownV2 语法
      *
      * @param  string  $message
+     *
      * @return string
      */
     public static function compatibleParsingMd2(string $message): string
@@ -38,6 +39,7 @@ class MessageHelper
      *
      * @param  array  $params
      * @param  int  $num
+     *
      * @return bool|string
      */
     public static function parameterCalibration(
@@ -55,5 +57,9 @@ class MessageHelper
         return true;
     }
     
+    public static function sendMsg()
+    {
+    
+    }
     
 }
