@@ -115,17 +115,12 @@ class WebhookService
         
         Log::info('分发: '.$robot->id);
         
-        // 分发给对应职能的机器人
-        match ($robot->username) {
-            'jungle_leader_bot' => LeaderDistributeJob::dispatch(
-                $robot->id,
-                $messageInfo,
-                $command,
-                $params
-            ),
-            default => BaseBillRobot::instructionParse($command, $params,
-                $messageInfo, $telegram),
-        };
+        BaseBillRobot::instructionParse(
+            $command,
+            $params,
+            $messageInfo,
+            $telegram
+        );
         
         return true;
     }
