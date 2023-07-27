@@ -49,19 +49,9 @@ class LeaderDistributeJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $robot = Robots::query()->where(
-            RobotsTrace::T_UID,
-            $this->telegramId
-        )->first();
-        
-        if (!$robot) {
-            Log::error("LeaderDistributeJob: (t_uid) 不存在于表中[$this->telegramId]");
-            return;
-        }
-        
         try {
             $telegram = new Api(
-                $robot->token,
+                config('telegram.bots.jungle_leader_bot.token'),
                 baseBotUrl: config('telegram.base_bot_url'),
             );
         } catch (TelegramSDKException $e) {
