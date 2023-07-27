@@ -109,6 +109,8 @@ class WebhookService
         
         array_shift($params);
         
+        Log::info('分发: ');
+        
         $robot = $telegram->getMe();
         
         Log::info('分发: '.$robot->id);
