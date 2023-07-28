@@ -50,7 +50,7 @@ class LeaderExplainJob implements ShouldQueue
         $messages = MessageHelper::compatibleParsingMd2($messages);
         
         try {
-            MessageHelper::send('', [
+            MessageHelper::send($this->token, [
                 'chat_id'    => $this->info['chat_id'],
                 'parse_mode' => 'MarkdownV2',
                 'text'       => $messages
