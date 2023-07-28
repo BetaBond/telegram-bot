@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Robots\LeaderRobot;
 use App\Http\Service\WebhookService;
-use App\Jobs\LeaderDistributeJob;
+use App\Jobs\Leader\LeaderDistributeJob;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;

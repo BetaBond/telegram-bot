@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 use Throwable;
 
 /**
@@ -16,7 +17,7 @@ use Throwable;
  *
  * @author beta
  */
-class LeaderExplain implements ShouldQueue
+class LeaderExplainJob implements ShouldQueue
 {
     
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -24,16 +25,11 @@ class LeaderExplain implements ShouldQueue
     /**
      * 创建一个 job 实例
      *
-     * @param  string  $token
-     * @param  array  $info
-     * @param  string  $command
-     * @param  array  $params
+     * @return void
      */
     public function __construct(
         private string $token,
         private array $info,
-        private string $command,
-        private array $params
     ) {
         //
     }
@@ -45,7 +41,23 @@ class LeaderExplain implements ShouldQueue
      */
     public function handle(): void
     {
-    
+        $messages = implode("\n", [
+            "*使用说明：*",
+            "1: 每个用户在会话（`群聊/私聊`）中每秒最多受理一次指令",
+            "2: 每个指令需要带上对应的参数以空格进行分割",
+        ]);
+        
+        $messages = MessageHelper::compatibleParsingMd2($messages);
+        
+        try {
+            MessageHelper::send('', [
+                'chat_id'    => $this->info['chat_id'],
+                'parse_mode' => 'MarkdownV2',
+                'text'       => $messages
+            ]);
+        } catch (TelegramSDKException $e) {
+            Log::error(__CLASS__.'('.__LINE__.')'.': '.$e->getMessage());
+        }
     }
     
     /**
@@ -55,7 +67,7 @@ class LeaderExplain implements ShouldQueue
      */
     public function failed(Throwable $e): void
     {
-        Log::error(__CLASS__.': '.$e->getMessage());
+        Log::error(__CLASS__.'('.__LINE__.')'.': '.$e->getMessage());
     }
     
 }

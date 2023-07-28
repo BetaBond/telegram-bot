@@ -3,7 +3,6 @@
 namespace App\Http\Service;
 
 use App\Http\Robots\BaseBillRobot;
-use App\Jobs\LeaderDistributeJob;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;

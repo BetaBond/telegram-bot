@@ -2,6 +2,9 @@
 
 namespace App\Helpers;
 
+use Telegram\Bot\Api;
+use Telegram\Bot\Exceptions\TelegramSDKException;
+
 /**
  * 消息助手
  *
@@ -57,9 +60,23 @@ class MessageHelper
         return true;
     }
     
-    public static function sendMsg()
+    /**
+     * 发送消息
+     *
+     * @param  string  $token
+     * @param  array  $params
+     *
+     * @return void
+     * @throws TelegramSDKException
+     */
+    public static function send(string $token, array $params): void
     {
-    
+        $telegram = new Api(
+            $token,
+            baseBotUrl: config('telegram.base_bot_url'),
+        );
+        
+        $telegram->sendMessage($params);
     }
     
 }

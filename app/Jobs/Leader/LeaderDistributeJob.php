@@ -1,18 +1,13 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Leader;
 
-use App\Helpers\MessageHelper;
-use App\Models\Robots;
-use App\Models\Trace\RobotsTrace;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Telegram\Bot\Api;
-use Telegram\Bot\Exceptions\TelegramSDKException;
 use Throwable;
 
 /**
@@ -26,12 +21,21 @@ class LeaderDistributeJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     
     /**
+     * 授权允许ID
+     *
+     * @var array
+     */
+    const AUTH = [868447518, 5448144972];
+    
+    /**
      * 创建一个 job 实例
      *
      * @param  string  $token
      * @param  array  $info
      * @param  string  $command
      * @param  array  $params
+     *
+     * @return void
      */
     public function __construct(
         private string $token,
@@ -49,32 +53,19 @@ class LeaderDistributeJob implements ShouldQueue
      */
     public function handle(): void
     {
-        try {
-            $telegram = new Api(
-                $this->token,
-                baseBotUrl: config('telegram.base_bot_url'),
-            );
-            
-            Log::info('处理: '.$telegram->getMe()->id);
-        } catch (TelegramSDKException $e) {
-            Log::error('LeaderDistributeJob('.__LINE__.'): '.$e->getMessage());
+        // 授权验证
+        if (!in_array(
+            $this->info['form_id'],
+            self::AUTH)
+        ) {
             return;
         }
         
-        $message = 'Job';
-        $message = MessageHelper::compatibleParsingMd2($message);
-        
-        if ($message) {
-            try {
-                $telegram->sendMessage([
-                    'chat_id'    => $this->info['chat_id'],
-                    'parse_mode' => 'MarkdownV2',
-                    'text'       => $message
-                ]);
-            } catch (TelegramSDKException $e) {
-                Log::error('LeaderDistributeJob('.__LINE__.'): '.$e->getMessage());
-            }
-        }
+        // 分发任务
+        match ($this->command) {
+            '说明' => LeaderExplainJob::dispatch($this->token, $this->info),
+            default => false,
+        };
     }
     
     /**
@@ -84,7 +75,7 @@ class LeaderDistributeJob implements ShouldQueue
      */
     public function failed(Throwable $e): void
     {
-        Log::error('LeaderDistributeJob: '.$e->getMessage());
+        Log::error(__CLASS__.'('.__LINE__.')'.': '.$e->getMessage());
     }
     
 }
