@@ -132,26 +132,19 @@ class WebhookController
         
         array_shift($params);
         
-        $tUidKey = RobotsTrace::T_UID;
-        
-        $robot = Robots::query()
-            ->where(RobotsTrace::TOKEN, $token)
-            ->first();
-        
-        Log::info(json_encode([$robot]));
-        
-        if (!$robot) {
-            return false;
-        }
-        
-        if ($robot->$tUidKey == 5669756920) {
+        if ($token === config('telegram.bots.jungle_leader_bot.token')) {
+            
+            // 分发任务
             LeaderDistributeJob::dispatch(
                 $token,
                 $messageInfo,
                 $command,
                 $params,
             );
+            
+            return true;
         }
+        
         
         return true;
     }
