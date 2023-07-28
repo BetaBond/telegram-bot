@@ -13,11 +13,11 @@ use Telegram\Bot\Exceptions\TelegramSDKException;
 use Throwable;
 
 /**
- * 帮助命令
+ * 说明命令
  *
  * @author beta
  */
-class LeaderHelpJob implements ShouldQueue
+class Explain implements ShouldQueue
 {
     
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -42,12 +42,9 @@ class LeaderHelpJob implements ShouldQueue
     public function handle(): void
     {
         $messages = implode("\n", [
-            "*指令使用帮助：*",
-            "`说明`  |  在当前版本的使用说明",
-            "`帮助`  |  在当前版本的使用帮助（指令列表）",
-            "`加入`  |  添加一个新的机器人进入主网 | 加入 [token]",
-            "`授权`  |  授权用户使用此机器人 | 授权 [用户ID] [机器人ID]",
-            "`订阅`  |  更新所有机器人的订阅地址"
+            "*使用说明：*",
+            "1: 每个用户在会话（`群聊/私聊`）中每秒最多受理一次指令",
+            "2: 每个指令需要带上对应的参数以空格进行分割",
         ]);
         
         $messages = MessageHelper::compatibleParsingMd2($messages);

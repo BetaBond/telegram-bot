@@ -63,8 +63,9 @@ class LeaderDistributeJob implements ShouldQueue
         
         // 分发任务
         match ($this->command) {
-            '说明' => LeaderExplainJob::dispatch($this->token, $this->info),
-            '帮助' => LeaderHelpJob::dispatch($this->token, $this->info),
+            '说明' => Explain::dispatch($this->token, $this->info),
+            '帮助' => Help::dispatch($this->token, $this->info),
+            '加入' => Join::dispatch($this->token, $this->info, $this->params),
             default => false,
         };
     }
