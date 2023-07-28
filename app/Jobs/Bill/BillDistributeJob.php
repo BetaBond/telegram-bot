@@ -49,6 +49,7 @@ class BillDistributeJob implements ShouldQueue
         // 无需验证的指令分发
         $noAuth = match ($this->command) {
             '我的' => Mine::dispatch($this->token, $this->info),
+            '单价' => Price::dispatch($this->token, $this->info),
             default => false,
         };
         

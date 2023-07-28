@@ -8,16 +8,18 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Psr\SimpleCache\InvalidArgumentException;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Throwable;
 
 /**
- * 我的命令
+ * 单价命令
  *
  * @author beta
  */
-class Mine implements ShouldQueue
+class Price implements ShouldQueue
 {
     
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -63,14 +65,38 @@ class Mine implements ShouldQueue
      */
     public function handle(): void
     {
-        $formId = $this->info['form_id'];
-        $formUserName = $this->info['form_user_name'];
+        try {
+            $store = Cache::store('redis')->get('okx_usdt_block_trade');
+            
+            $timestamp = Cache::store(
+                'redis'
+            )->get('okx_usdt_block_trade_updated');
+            
+            $time = empty($timestamp) ? '未同步'
+                : date('Y-m-d H:i:s', $timestamp);
+            
+        } catch (InvalidArgumentException $e) {
+            Log::error(__CLASS__.'('.__LINE__.')'.': '.$e->getMessage());
+            $this->send('单价信息读取错误!');
+            return;
+        }
         
-        $this->send(implode("\n", [
-            "*您的信息：*",
-            "User Id\t\t\t\t\t\t\t\t\t\t\t\t:\t\t\t\t`".$formId.'`',
-            "User Name\t\t\t\t:\t\t\t\t`".$formUserName.'`',
-        ]));
+        $messages = ["*当前欧易大宗商品买卖价格：*"];
+        $messages[] = '';
+        $messages[] = '数据同步时间：';
+        $messages[] = "[`$time`]";
+        $messages[] = '';
+        $messages[] = "*买入方向(TOP10)：*";
+        $messages[] = '';
+        
+        $prices = json_decode($store, true);
+        $prices = is_array($prices) ? $prices : [];
+        
+        foreach ($prices as $key => $price) {
+            $messages[] = "[`".($key + 1)."`]\t\t:\t\t`￥$price`";
+        }
+        
+        $this->send(implode("\n", $messages));
     }
     
     /**
