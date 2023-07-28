@@ -138,6 +138,8 @@ class WebhookController
             ->where(RobotsTrace::TOKEN, $token)
             ->first();
         
+        Log::info(json_encode([$robot]));
+        
         if (!$robot) {
             return false;
         }
