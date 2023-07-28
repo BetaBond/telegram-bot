@@ -83,7 +83,7 @@ class Auth implements ShouldQueue
             ->where(AuthTrace::T_UID, $t_uid)
             ->exists();
         
-        if ($exists) {
+        if (!$exists) {
             $this->send('机器人不存在于主网中!');
             return;
         }
