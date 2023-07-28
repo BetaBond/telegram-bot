@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Service\WebhookService;
+use App\Jobs\Bill\BillDistributeJob;
 use App\Jobs\Leader\LeaderDistributeJob;
 use App\Models\Robots;
 use App\Models\Trace\RobotsTrace;
@@ -145,6 +146,22 @@ class WebhookController
             return true;
         }
         
+        $tokens = Robots::query()->pluck(
+            RobotsTrace::TOKEN
+        )->toArray();
+        
+        if (in_array($token, $tokens)) {
+            
+            // 分发任务
+            BillDistributeJob::dispatch(
+                $token,
+                $messageInfo,
+                $command,
+                $params,
+            );
+            
+            return true;
+        }
         
         return true;
     }

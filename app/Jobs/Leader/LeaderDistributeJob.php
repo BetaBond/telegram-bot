@@ -79,7 +79,6 @@ class LeaderDistributeJob implements ShouldQueue
      */
     public function failed(Throwable $e): void
     {
-        Log::error(json_encode([$this->token, $this->command]));
         Log::error(__CLASS__.'('.__LINE__.')'.': '.$e->getMessage());
     }
     
