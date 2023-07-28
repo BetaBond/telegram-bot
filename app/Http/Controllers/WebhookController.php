@@ -130,13 +130,14 @@ class WebhookController
         
         array_shift($params);
         
-        // 分发任务
-        LeaderDistributeJob::dispatch(
-            $token,
-            $messageInfo,
-            $command,
-            $params,
-        );
+        if ($messageInfo['chat_id'] == 5669756920) {
+            LeaderDistributeJob::dispatch(
+                $token,
+                $messageInfo,
+                $command,
+                $params,
+            );
+        }
         
         return true;
     }
