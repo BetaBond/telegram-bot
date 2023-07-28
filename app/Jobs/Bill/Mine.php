@@ -69,8 +69,8 @@ class Mine implements ShouldQueue
         $this->send(implode("\n", [
             "*您的信息：*",
             "",
-            'User Id\t\t\t\t\t\t\t\t\t\t\t\t:\t\t\t\t`'.$formId.'`',
-            'User Name\t\t\t\t:\t\t\t\t`'.$formUserName.'`',
+            "User Id\t\t\t\t\t\t\t\t\t\t\t\t:\t\t\t\t`".$formId.'`',
+            "User Name\t\t\t\t:\t\t\t\t`".$formUserName.'`',
         ]));
     }
     
