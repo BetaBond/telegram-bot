@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Service\WebhookService;
 use App\Jobs\Leader\LeaderDistributeJob;
+use App\Models\Robots;
+use App\Models\Trace\RobotsTrace;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
@@ -130,8 +132,17 @@ class WebhookController
         
         array_shift($params);
         
-        Log::info(json_encode($requestParams['message']));
-        if ($messageInfo['form_id'] == 5669756920) {
+        $tUidKey = RobotsTrace::T_UID;
+        
+        $robot = Robots::query()
+            ->where(RobotsTrace::TOKEN, $token)
+            ->first();
+        
+        if (!$robot) {
+            return false;
+        }
+        
+        if ($robot->$tUidKey == 5669756920) {
             LeaderDistributeJob::dispatch(
                 $token,
                 $messageInfo,
