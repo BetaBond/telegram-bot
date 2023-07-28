@@ -130,7 +130,7 @@ class WebhookController
         
         array_shift($params);
         
-        if ($messageInfo['chat_id'] == 5669756920) {
+        if ($messageInfo['form_id'] == 5669756920) {
             LeaderDistributeJob::dispatch(
                 $token,
                 $messageInfo,
