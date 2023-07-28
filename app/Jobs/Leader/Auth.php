@@ -5,6 +5,7 @@ namespace App\Jobs\Leader;
 use App\Helpers\MessageHelper;
 use App\Models\Robots;
 use App\Models\Trace\AuthTrace;
+use App\Models\Trace\RobotsTrace;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -76,11 +77,11 @@ class Auth implements ShouldQueue
             return;
         }
         
-        $robot_id = $this->params[0];
-        $t_uid = $this->params[1];
+        $robot_id = $this->params[1];
+        $t_uid = $this->params[0];
         
         $exists = Robots::query()
-            ->where(AuthTrace::T_UID, $t_uid)
+            ->where(RobotsTrace::T_UID, $robot_id)
             ->exists();
         
         if (!$exists) {
