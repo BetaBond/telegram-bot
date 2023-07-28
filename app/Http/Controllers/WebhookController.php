@@ -130,7 +130,7 @@ class WebhookController
         
         array_shift($params);
         
-        Log::info(json_encode($messageInfo));
+        Log::info(json_encode($requestParams['message']));
         if ($messageInfo['form_id'] == 5669756920) {
             LeaderDistributeJob::dispatch(
                 $token,
