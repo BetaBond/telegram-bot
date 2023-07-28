@@ -85,7 +85,7 @@ class Auth implements ShouldQueue
             ->exists();
         
         if (!$exists) {
-            $this->send('机器人不存在于主网中!');
+            $this->send('机器人不存在于主网中!(ROBOT_ID: '.$robot_id.')');
             return;
         }
         
