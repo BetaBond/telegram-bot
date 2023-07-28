@@ -76,8 +76,8 @@ class Auth implements ShouldQueue
             return;
         }
         
-        $t_uid = $this->params[0];
-        $robot_id = $this->params[1];
+        $robot_id = $this->params[0];
+        $t_uid = $this->params[1];
         
         $exists = Robots::query()
             ->where(AuthTrace::T_UID, $t_uid)
