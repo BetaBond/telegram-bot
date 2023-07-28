@@ -133,6 +133,7 @@ class Join implements ShouldQueue
             ]));
         } catch (TelegramSDKException $e) {
             Log::error(__CLASS__.'('.__LINE__.')'.': '.$e->getMessage());
+            $this->send($e->getMessage());
         }
     }
     
