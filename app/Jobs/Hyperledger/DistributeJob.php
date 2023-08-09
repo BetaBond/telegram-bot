@@ -16,6 +16,7 @@ use App\Jobs\Hyperledger\Wallet\Balance as BalanceWallet;
 use App\Jobs\Hyperledger\Wallet\Name as NameWallet;
 
 use App\Jobs\Hyperledger\Hyperledger\Receipt as ReceiptHyperledger;
+use App\Jobs\Hyperledger\Hyperledger\Data as DataHyperledger;
 
 /**
  * 超级账本机器人命令分发
@@ -91,6 +92,11 @@ class DistributeJob implements ShouldQueue
                 $this->info,
                 $this->params
             ),
+            default => false,
+        };
+
+        match ($this->command) {
+            '数据' => DataHyperledger::dispatch($this->token, $this->info),
             default => false,
         };
     }
