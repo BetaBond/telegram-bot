@@ -111,6 +111,14 @@ class ReceiptData implements ShouldQueue
             $messages[] = '来自 @'.$username.' ('.count($datum).' 笔) :';
             $messages[] = '';
 
+            if (!isset($totalAmountSet->rmb->$username)) {
+                $totalAmountSet->rmb->$username = 0;
+            }
+
+            if (!isset($totalAmountSet->usdt->$username)) {
+                $totalAmountSet->usdt->$username = 0;
+            }
+
             foreach ($datum as $uuid => $item) {
                 $date = date('H:i:s', $item->$createdAtKey);
                 $msg = '[`'.$uuid.'`] [`'.$date.'`]';
