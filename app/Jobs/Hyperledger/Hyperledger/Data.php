@@ -129,7 +129,13 @@ class Data implements ShouldQueue
                 $createdAtKey = HyperledgerTrace::CREATED_AT;
                 $walletIdKey = HyperledgerTrace::WALLET_ID;
 
-                $dataSet[$data->$usernameKey][$data->$idKey] = [
+                $uuid = $data->$idKey;
+                $uuidEnd = substr($uuid, -3, 3);
+                $uuidMain = substr($uuid, 0, strlen($uuid) - 3);
+                $uuidMain = date('His', (int) $uuidMain);
+                $uuid = $uuidEnd.$uuidMain;
+
+                $dataSet[$data->$usernameKey][$uuid] = [
                     $idKey           => $data->$idKey,
                     $walletIdKey     => $data->$walletIdKey,
                     $moneyKey        => $data->$moneyKey,
@@ -158,8 +164,6 @@ class Data implements ShouldQueue
             $this->info,
             $receiptDataSet
         );
-
-        $this->send(json_encode($hyperledger));
     }
 
     /**
