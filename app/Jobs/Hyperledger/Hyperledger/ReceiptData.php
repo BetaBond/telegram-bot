@@ -112,7 +112,12 @@ class ReceiptData implements ShouldQueue
 
             foreach ($datum as $uuid => $item) {
                 $date = date('H:i:s', $item->$createdAtKey);
-                $msg = '[`'.$uuid.'`] [`'.$date.'`] [`'.$item->$remarkKey.'`]';
+                $msg = '[`'.$uuid.'`] [`'.$date.'`]';
+
+                if (!empty($item->$remarkKey)) {
+                    $msg .= '[`'.$item->$remarkKey.'`]';
+                }
+
                 $messages[] = $msg;
             }
         }
