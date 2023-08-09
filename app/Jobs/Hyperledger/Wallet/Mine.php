@@ -83,6 +83,8 @@ class Mine implements ShouldQueue
             $messages[] = '余额: '.$item->$balanceKey;
             $messages[] = '';
         }
+
+        $this->send(implode("\n", $messages));
     }
 
     /**
