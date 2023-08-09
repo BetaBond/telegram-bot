@@ -106,6 +106,7 @@ class ReceiptData implements ShouldQueue
 
         foreach ($this->data as $username => $datum) {
             $messages[] = '来自 @'.$username.' ('.count($datum).' 笔) :';
+            $messages[] = '';
 
             foreach ($datum as $uuid => $item) {
                 $date = date('H:i:s', $item->$createdAtKey);
@@ -117,11 +118,15 @@ class ReceiptData implements ShouldQueue
 
                 $messages[] = $msg;
 
+                $item->$rateKey = $item->$rateKey * 1;
+                $item->$exchangeRateKey = $item->$exchangeRateKey * 1;
+
                 $resultMoney = 0;
                 $msg = '[`('.$item->$moneyKey.' * '.$item->$rateKey.') ';
                 $msg .= '/ '.$item->$exchangeRateKey.' = '.$resultMoney.'`]';
 
                 $messages[] = $msg;
+                $messages[] = '';
             }
         }
 
