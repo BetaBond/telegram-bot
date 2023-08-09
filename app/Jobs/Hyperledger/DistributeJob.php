@@ -15,6 +15,8 @@ use App\Jobs\Hyperledger\Wallet\Mine as MineWallet;
 use App\Jobs\Hyperledger\Wallet\Balance as BalanceWallet;
 use App\Jobs\Hyperledger\Wallet\Name as NameWallet;
 
+use App\Jobs\Hyperledger\Hyperledger\Receipt as ReceiptHyperledger;
+
 /**
  * 超级账本机器人命令分发
  *
@@ -64,18 +66,27 @@ class DistributeJob implements ShouldQueue
         }
 
         match ($this->command) {
+            '我的钱包' => MineWallet::dispatch($this->token, $this->info),
             '创建钱包' => CreateWallet::dispatch(
                 $this->token,
                 $this->info,
                 $this->params
             ),
-            '我的钱包' => MineWallet::dispatch($this->token, $this->info),
             '钱包余额' => BalanceWallet::dispatch(
                 $this->token,
                 $this->info,
                 $this->params
             ),
             '钱包名称' => NameWallet::dispatch(
+                $this->token,
+                $this->info,
+                $this->params
+            ),
+            default => false,
+        };
+
+        match ($this->command) {
+            '入款', '+' => ReceiptHyperledger::dispatch(
                 $this->token,
                 $this->info,
                 $this->params
