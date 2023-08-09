@@ -96,7 +96,11 @@ class DistributeJob implements ShouldQueue
         };
 
         match ($this->command) {
-            '数据' => DataHyperledger::dispatch($this->token, $this->info),
+            '数据' => DataHyperledger::dispatch(
+                $this->token,
+                $this->info,
+                $this->params
+            ),
             default => false,
         };
     }

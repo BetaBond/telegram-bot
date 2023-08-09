@@ -101,7 +101,10 @@ class Data implements ShouldQueue
             $username = $this->params[0];
             $username = str_replace('@', '', $username);
 
-            $hyperledger = $hyperledger->where(BookTrace::USERNAME, $username);
+            $hyperledger = $hyperledger->where(
+                HyperledgerTrace::USERNAME,
+                $username
+            );
         }
 
         // 取出数据
