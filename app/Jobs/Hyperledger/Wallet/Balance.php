@@ -82,7 +82,7 @@ class Balance implements ShouldQueue
         $money = $this->params[2];
         $formId = $this->info['form_id'];
 
-        if (!is_int($id)) {
+        if (!is_numeric($id)) {
             $this->send('参数 [1] 类型错误');
             return;
         }
