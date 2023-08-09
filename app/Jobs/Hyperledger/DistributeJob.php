@@ -13,6 +13,7 @@ use Throwable;
 use App\Jobs\Hyperledger\Wallet\Create as CreateWallet;
 use App\Jobs\Hyperledger\Wallet\Mine as MineWallet;
 use App\Jobs\Hyperledger\Wallet\Balance as BalanceWallet;
+use App\Jobs\Hyperledger\Wallet\Name as NameWallet;
 
 /**
  * 超级账本机器人命令分发
@@ -70,6 +71,11 @@ class DistributeJob implements ShouldQueue
             ),
             '我的钱包' => MineWallet::dispatch($this->token, $this->info),
             '钱包余额' => BalanceWallet::dispatch(
+                $this->token,
+                $this->info,
+                $this->params
+            ),
+            '钱包名称' => NameWallet::dispatch(
                 $this->token,
                 $this->info,
                 $this->params
