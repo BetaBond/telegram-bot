@@ -120,6 +120,7 @@ class ReceiptData implements ShouldQueue
 
                 $messages[] = $msg;
 
+                $item->$moneyKey = $item->$moneyKey * 1;
                 $item->$rateKey = $item->$rateKey * 1;
                 $item->$exchangeRateKey = $item->$exchangeRateKey * 1;
 
@@ -129,7 +130,7 @@ class ReceiptData implements ShouldQueue
                     !empty($item->$exchangeRateKey)
                     && !empty($item->$rateKey)
                 ) {
-                    $resultMoney = ($item->$moneyKey * $item->$moneyKey);
+                    $resultMoney = ($item->$moneyKey * $item->$rateKey);
                     $resultMoney = $resultMoney / $item->$exchangeRateKey;
                     $resultMoney = round($resultMoney, 2);
                 }
