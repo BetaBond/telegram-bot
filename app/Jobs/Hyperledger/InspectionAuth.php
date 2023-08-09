@@ -83,8 +83,9 @@ class InspectionAuth implements ShouldQueue
         ])->get();
 
         foreach ($model as $item) {
-            $robot = '[ID: '.$item->robot->id.']';
-            $messages[] = $robot;
+            $robot = $item->robot();
+            $msg = '[ID: '.$robot->id.']';
+            $messages[] = $msg;
         }
 
         $this->send(implode("\n", $messages));
