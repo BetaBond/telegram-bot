@@ -147,14 +147,15 @@ class ReceiptData implements ShouldQueue
         $msg = '合计入款 : [`￥';
         $msg .= $totalAmount->rmb.'` / `₮';
         $msg .= $totalAmount->usdt.'`]';
-
         $messages[] = $msg;
 
-        $messages = array_chunk($messages, 50);
-
-        foreach ($messages as $message) {
-            $this->send(implode("\n", $message));
+        // 分批发送
+        if ($totalStrokes > 50) {
+            $this->send('数据量过于庞大无法发送!');
+            return;
         }
+
+        $this->send(implode("\n", $messages));
     }
 
     /**
