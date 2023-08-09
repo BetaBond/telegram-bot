@@ -93,8 +93,6 @@ class ReceiptData implements ShouldQueue
 
         $totalStrokes = $this->totalStrokes();
 
-        $messages[] = '`'.date('Y-m-d H:i:s').'`';
-        $messages[] = '';
         $messages[] = "今日入款 ($totalStrokes 笔) :";
         $messages[] = '';
 
@@ -130,7 +128,7 @@ class ReceiptData implements ShouldQueue
                     !empty($item->$exchangeRateKey)
                     && !empty($item->$rateKey)
                 ) {
-                    $resultMoney = ($item->$moneyKey * $item->$rateKey);
+                    $resultMoney = $item->$moneyKey * $item->$rateKey;
                     $resultMoney = $resultMoney / $item->$exchangeRateKey;
                     $resultMoney = round($resultMoney, 2);
                 }
