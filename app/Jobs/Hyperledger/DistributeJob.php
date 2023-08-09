@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Hyperledger;
 
+use App\Jobs\Hyperledger\Wallet\Create;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -57,6 +58,15 @@ class DistributeJob implements ShouldQueue
         if ($noAuth !== false) {
             return;
         }
+
+        $command = match ($this->command) {
+            '创建钱包' => Create::dispatch(
+                $this->token,
+                $this->info,
+                $this->params
+            ),
+            default => false,
+        };
     }
 
     /**
