@@ -50,6 +50,7 @@ class DistributeJob implements ShouldQueue
         $noAuth = match ($this->command) {
             '我的' => Mine::dispatch($this->token, $this->info),
             '单价' => Price::dispatch($this->token, $this->info),
+            '检查授权' => InspectionAuth::dispatch($this->token, $this->info),
             default => false,
         };
 
