@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs\Leader;
+namespace App\Jobs\Hyperledger;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,22 +11,15 @@ use Illuminate\Support\Facades\Log;
 use Throwable;
 
 /**
- * 管理机器人命令分发
+ * 超级账本机器人命令分发
  *
  * @author beta
  */
-class LeaderDistributeJob implements ShouldQueue
+class DistributeJob implements ShouldQueue
 {
-    
+
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    
-    /**
-     * 授权允许ID
-     *
-     * @var array
-     */
-    const AUTH = [868447518, 5448144972];
-    
+
     /**
      * 创建一个 job 实例
      *
@@ -45,7 +38,7 @@ class LeaderDistributeJob implements ShouldQueue
     ) {
         //
     }
-    
+
     /**
      * 执行这个任务
      *
@@ -53,25 +46,18 @@ class LeaderDistributeJob implements ShouldQueue
      */
     public function handle(): void
     {
-        // 授权验证
-        if (!in_array(
-            $this->info['form_id'],
-            self::AUTH)
-        ) {
-            return;
-        }
-        
-        // 分发任务
-        match ($this->command) {
-            '说明' => Explain::dispatch($this->token, $this->info),
-            '帮助' => Help::dispatch($this->token, $this->info),
-            '加入' => Join::dispatch($this->token, $this->info, $this->params),
-            '授权' => Auth::dispatch($this->token, $this->info, $this->params),
-            '订阅' => Sub::dispatch($this->token, $this->info),
+        // 无需验证的指令分发
+        $noAuth = match ($this->command) {
+            '我的' => Mine::dispatch($this->token, $this->info),
+            '单价' => Price::dispatch($this->token, $this->info),
             default => false,
         };
+
+        if ($noAuth !== false) {
+            return;
+        }
     }
-    
+
     /**
      * 处理失败处理
      *
@@ -81,5 +67,5 @@ class LeaderDistributeJob implements ShouldQueue
     {
         Log::error(__CLASS__.'('.__LINE__.')'.': '.$e->getMessage());
     }
-    
+
 }
