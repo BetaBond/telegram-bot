@@ -37,8 +37,8 @@ class Auth extends Model
     {
         return $this->hasOne(
             Robots::class,
-            RobotsTrace::ID,
-            Trace::ID
+            RobotsTrace::T_UID,
+            Trace::ROBOT_ID
         );
     }
 
