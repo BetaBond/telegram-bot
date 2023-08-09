@@ -104,6 +104,9 @@ class ReceiptData implements ShouldQueue
         $exchangeRateKey = HyperledgerTrace::EXCHANGE_RATE;
         $createdAtKey = HyperledgerTrace::CREATED_AT;
 
+        $totalAmount = (object) ['rmb' => 0, 'usdt' => 0];
+        $totalAmountSet = (object) ['rmb' => [], 'usdt' => []];
+
         foreach ($this->data as $username => $datum) {
             $messages[] = '来自 @'.$username.' ('.count($datum).' 笔) :';
             $messages[] = '';
@@ -137,7 +140,18 @@ class ReceiptData implements ShouldQueue
 
                 $messages[] = $msg;
                 $messages[] = '';
+
+                $totalAmount->rmb += $item->$moneyKey;
+                $totalAmount->usdt += $resultMoney;
+                $totalAmountSet->rmb->$username += $item->$moneyKey;
+                $totalAmountSet->usdt->$username += $item->$resultMoney;
             }
+
+            $msg = '合计入款 (@'.$username.') : [`￥';
+            $msg .= $totalAmountSet->rmb->$username.'` / `₮';
+            $msg .= $totalAmountSet->usdt->$username.'`]';
+
+            $messages[] = $msg;
         }
 
         $this->send(implode("\n", $messages));
