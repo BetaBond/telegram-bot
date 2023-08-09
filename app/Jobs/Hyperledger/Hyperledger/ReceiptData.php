@@ -135,7 +135,8 @@ class ReceiptData implements ShouldQueue
      */
     public function failed(Throwable $e): void
     {
-        Log::error(__CLASS__.'('.__LINE__.')'.': '.$e->getMessage());
+        Log::error(__CLASS__.'('.__LINE__.')'.': ('.$e->getLine().')'
+            .$e->getMessage());
     }
 
 }
