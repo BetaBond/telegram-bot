@@ -78,13 +78,15 @@ class Mine implements ShouldQueue
         $total = 0;
 
         foreach ($model as $item) {
+            $idKey = WalletTrace::ID;
             $nameKey = WalletTrace::NAME;
             $balanceKey = WalletTrace::BALANCE;
 
             $item->$balanceKey = $item->$balanceKey * 1;
 
-            $messages[] = '[`'.$item->$nameKey.'`]';
-            $messages[] = '当前余额: [￥`'.$item->$balanceKey.'`]';
+            $messages[] = '*'.$item->$nameKey.':*';
+            $messages[] = 'ID: ￥`'.$item->$idKey.'`';
+            $messages[] = '当前余额: ￥`'.$item->$balanceKey.'`';
             $messages[] = '';
 
             $total += $item->$balanceKey;

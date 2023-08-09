@@ -2,7 +2,6 @@
 
 namespace App\Jobs\Hyperledger;
 
-use App\Jobs\Hyperledger\Wallet\Create;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -11,7 +10,9 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-use \App\Jobs\Hyperledger\Wallet\Mine as MineWallet;
+use App\Jobs\Hyperledger\Wallet\Create as CreateWallet;
+use App\Jobs\Hyperledger\Wallet\Mine as MineWallet;
+use App\Jobs\Hyperledger\Wallet\Balance as BalanceWallet;
 
 /**
  * 超级账本机器人命令分发
@@ -61,13 +62,18 @@ class DistributeJob implements ShouldQueue
             return;
         }
 
-        $command = match ($this->command) {
-            '创建钱包' => Create::dispatch(
+        match ($this->command) {
+            '创建钱包' => CreateWallet::dispatch(
                 $this->token,
                 $this->info,
                 $this->params
             ),
             '我的钱包' => MineWallet::dispatch($this->token, $this->info),
+            '钱包余额' => BalanceWallet::dispatch(
+                $this->token,
+                $this->info,
+                $this->params
+            ),
             default => false,
         };
     }
