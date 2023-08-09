@@ -81,6 +81,16 @@ class Create implements ShouldQueue
         $balance = $this->params[1];
         $formId = $this->info['form_id'];
 
+        if (!is_numeric($balance)) {
+            $this->send('参数 [2] 类型错误');
+            return;
+        }
+
+        if ($balance < 0) {
+            $this->send('参数 [2] 必须大于等于0');
+            return;
+        }
+
         $model = Wallet::query()->create([
             WalletTrace::NAME    => $name,
             WalletTrace::BALANCE => $balance,
