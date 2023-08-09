@@ -80,7 +80,13 @@ class InspectionAuth implements ShouldQueue
             ->whereIn(RobotsTrace::T_UID, $robotsId)
             ->get()->toArray();
 
-        $messages[] = json_encode($model);
+        foreach ($model as $item) {
+            $idKey = RobotsTrace::T_UID;
+            $usernameKey = RobotsTrace::USERNAME;
+            $msg = "[ID: $item->$idKey / USERNAME: $item->$usernameKey]";
+
+            $messages[] = $msg;
+        }
 
         $this->send(implode("\n", $messages));
     }
