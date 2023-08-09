@@ -12,7 +12,7 @@ use Telegram\Bot\Exceptions\TelegramSDKException;
  */
 class MessageHelper
 {
-    
+
     /**
      * 兼容解析 MarkdownV2 语法
      *
@@ -33,10 +33,10 @@ class MessageHelper
         $message = str_replace('_', "\\_", $message);
         $message = str_replace('{', "\\{", $message);
         $message = str_replace('}', "\\}", $message);
-        
+
         return str_replace(')', "\\)", $message);
     }
-    
+
     /**
      * 验证参数是否符合
      *
@@ -52,14 +52,14 @@ class MessageHelper
         if (empty($params)) {
             return '参数错误';
         }
-        
-        if (count($params) !== $num) {
+
+        if (count($params) < $num) {
             return '参数不足';
         }
-        
+
         return true;
     }
-    
+
     /**
      * 发送消息
      *
@@ -75,8 +75,8 @@ class MessageHelper
             $token,
             baseBotUrl: config('telegram.base_bot_url'),
         );
-        
+
         $telegram->sendMessage($params);
     }
-    
+
 }
