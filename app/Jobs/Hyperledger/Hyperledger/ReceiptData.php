@@ -119,7 +119,7 @@ class ReceiptData implements ShouldQueue
 
                 $resultMoney = 0;
                 $msg = '[`('.$item->$moneyKey.' * '.$item->$rateKey.') ';
-                $msg .= '/ '.$item->$exchangeRateKey.' = '.$resultMoney;
+                $msg .= '/ '.$item->$exchangeRateKey.' = '.$resultMoney.'`]';
 
                 $messages[] = $msg;
             }
