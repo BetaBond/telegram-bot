@@ -95,11 +95,11 @@ class ReceiptData implements ShouldQueue
 
         $messages[] = '`'.date('Y-m-d H:i:s').'`';
         $messages[] = '';
-        $messages[] = "今日入款 ($totalStrokes) 笔:";
+        $messages[] = "今日入款 ($totalStrokes 笔) :";
         $messages[] = '';
 
         foreach ($this->data as $username => $datum) {
-            $messages[] = '来自 @'.$username.' ('.count($datum).') 笔:';
+            $messages[] = '来自 @'.$username.' ('.count($datum).' 笔) :';
         }
 
         $this->send(implode("\n", $messages));
