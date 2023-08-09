@@ -69,19 +69,17 @@ class ReceiptData implements ShouldQueue
     /**
      * 总笔数计算
      *
-     * @return array
+     * @return int
      */
-    private function totalStrokes(): array
+    private function totalStrokes(): int
     {
-        $number = 0;
-        $numberSet = [];
+        $totalStrokes = 0;
 
-        foreach ($this->data as $username => $datum) {
-            $numberSet[$username] = count($datum);
-            $number += count($datum);
+        foreach ($this->data as $datum) {
+            $totalStrokes += count($datum);
         }
 
-        return [$number, $numberSet];
+        return $totalStrokes;
     }
 
     /**
@@ -93,12 +91,16 @@ class ReceiptData implements ShouldQueue
     {
         $messages = [];
 
-        [$number, $numberSet] = $this->totalStrokes();
+        $totalStrokes = $this->totalStrokes();
 
         $messages[] = '`'.date('Y-m-d H:i:s').'`';
         $messages[] = '';
-        $messages[] = "今日入款 ($number) 笔:";
+        $messages[] = "今日入款 ($totalStrokes) 笔:";
         $messages[] = '';
+
+        foreach ($this->data as $username => $datum) {
+            $messages[] = '来自 @'.$username.' ('.count($datum).') 笔:';
+        }
 
         $this->send(implode("\n", $messages));
     }
