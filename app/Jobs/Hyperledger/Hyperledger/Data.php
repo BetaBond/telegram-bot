@@ -143,11 +143,11 @@ class Data implements ShouldQueue
                 return $dataSet;
             };
 
-            if ($item->$typeKey === 1) {
+            if ($item->$typeKey == 1) {
                 $receiptDataSet = $setData($receiptDataSet, $item);
             }
 
-            if ($item->$typeKey === -1) {
+            if ($item->$typeKey == -1) {
                 $issueDataSet = $setData($issueDataSet, $item);
             }
         }
