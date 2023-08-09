@@ -85,7 +85,7 @@ class InspectionAuth implements ShouldQueue
             $idKey = RobotsTrace::T_UID;
             $usernameKey = RobotsTrace::USERNAME;
             $msg = '[`'.($index + 1).'`] ';
-            $msg .= 'ID : `'.$item->$idKey.'` || ';
+            $msg .= 'ID : `'.$item->$idKey.'` : ';
             $msg .= 'USERNAME : `@'.$item->$usernameKey.'`';
 
             $messages[] = $msg;
