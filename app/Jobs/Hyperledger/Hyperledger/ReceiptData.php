@@ -123,9 +123,13 @@ class ReceiptData implements ShouldQueue
 
                 $resultMoney = 0;
 
-                if (!empty($item->$exchangeRateKey) && !empty($item->$rateKey)) {
+                if (
+                    !empty($item->$exchangeRateKey)
+                    && !empty($item->$rateKey)
+                ) {
                     $resultMoney = ($item->$moneyKey * $item->$moneyKey);
                     $resultMoney = $resultMoney / $item->$exchangeRateKey;
+                    $resultMoney = round($resultMoney, 2);
                 }
 
                 $msg = '[`('.$item->$moneyKey.' * '.$item->$rateKey.') ';
