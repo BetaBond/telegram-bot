@@ -85,8 +85,9 @@ class Mine implements ShouldQueue
             $item->$balanceKey = $item->$balanceKey * 1;
 
             $messages[] = '*'.$item->$nameKey.':*';
-            $messages[] = 'ID: ￥`'.$item->$idKey.'`';
-            $messages[] = '当前余额: ￥`'.$item->$balanceKey.'`';
+            $messages[] = '';
+            $messages[] = 'ID: `'.$item->$idKey.'`';
+            $messages[] = 'Balance: ￥`'.$item->$balanceKey.'`';
             $messages[] = '';
 
             $total += $item->$balanceKey;
