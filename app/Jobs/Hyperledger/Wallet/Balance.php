@@ -69,7 +69,7 @@ class Balance implements ShouldQueue
     {
         $parameterCalibration = MessageHelper::parameterCalibration(
             $this->params,
-            2
+            3
         );
 
         if ($parameterCalibration !== true) {
@@ -78,8 +78,8 @@ class Balance implements ShouldQueue
         }
 
         $id = $this->params[0];
-        $type = $this->params[0];
-        $money = $this->params[1];
+        $type = $this->params[1];
+        $money = $this->params[2];
         $formId = $this->info['form_id'];
 
         if (!is_int($id)) {
