@@ -83,8 +83,8 @@ class InspectionAuth implements ShouldQueue
         foreach ($model as $item) {
             $idKey = RobotsTrace::T_UID;
             $usernameKey = RobotsTrace::USERNAME;
-            $msg = '[ID: '.$item->$idKey.' / ';
-            $msg .= $item->$usernameKey.']';
+            $msg = '[ID: `'.$item->$idKey.'` / ';
+            $msg .= '`@'.$item->$usernameKey.'`]';
 
             $messages[] = $msg;
         }
