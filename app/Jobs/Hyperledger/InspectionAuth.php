@@ -81,11 +81,12 @@ class InspectionAuth implements ShouldQueue
             ->whereIn(RobotsTrace::T_UID, $robotsId)
             ->get();
 
-        foreach ($model as $item) {
+        foreach ($model as $index => $item) {
             $idKey = RobotsTrace::T_UID;
             $usernameKey = RobotsTrace::USERNAME;
-            $msg = '[ID : `'.$item->$idKey.'` / ';
-            $msg .= 'USERNAME : `@'.$item->$usernameKey.'`]';
+            $msg = '['.($index + 1).'] ';
+            $msg .= 'ID : `'.$item->$idKey.'` / ';
+            $msg .= 'USERNAME : `@'.$item->$usernameKey.'`';
 
             $messages[] = $msg;
         }
