@@ -135,7 +135,7 @@ class Data implements ShouldQueue
                 $uuidMain = date('His', (int) $uuidMain);
                 $uuid = $uuidEnd.$uuidMain;
 
-                $dataSet[$data->$usernameKey][$uuid] = [
+                $dataSet[$data->$usernameKey][$uuid] = (object)[
                     $idKey           => $data->$idKey,
                     $walletIdKey     => $data->$walletIdKey,
                     $moneyKey        => $data->$moneyKey,
