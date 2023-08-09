@@ -75,14 +75,20 @@ class Mine implements ShouldQueue
             ->where(WalletTrace::T_UID, $formId)
             ->get();
 
+        $total = 0;
+
         foreach ($model as $item) {
             $nameKey = WalletTrace::NAME;
             $balanceKey = WalletTrace::BALANCE;
 
             $messages[] = '*'.$item->$nameKey.':*';
-            $messages[] = '余额: '.$item->$balanceKey;
+            $messages[] = '当前余额: [`'.$item->$balanceKey.'`]';
             $messages[] = '';
+
+            $total += $item->$balanceKey;
         }
+
+        $messages[] = "总计余额: [`$total`]";
 
         $this->send(implode("\n", $messages));
     }
