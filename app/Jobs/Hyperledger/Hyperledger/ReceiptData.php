@@ -150,7 +150,11 @@ class ReceiptData implements ShouldQueue
 
         $messages[] = $msg;
 
-        $this->send(implode("\n", $messages));
+        $messages = array_chunk($messages, 50);
+
+        foreach ($messages as $message) {
+            $this->send(implode("\n", $message));
+        }
     }
 
     /**
