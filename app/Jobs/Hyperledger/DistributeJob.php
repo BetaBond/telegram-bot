@@ -11,6 +11,8 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
+use \App\Jobs\Hyperledger\Wallet\Mine as MineWallet;
+
 /**
  * 超级账本机器人命令分发
  *
@@ -65,6 +67,7 @@ class DistributeJob implements ShouldQueue
                 $this->info,
                 $this->params
             ),
+            '我的钱包' => MineWallet::dispatch($this->token, $this->info),
             default => false,
         };
     }
