@@ -98,8 +98,23 @@ class ReceiptData implements ShouldQueue
         $messages[] = "今日入款 ($totalStrokes 笔) :";
         $messages[] = '';
 
+        $idKey = HyperledgerTrace::ID;
+        $moneyKey = HyperledgerTrace::MONEY;
+        $usernameKey = HyperledgerTrace::USERNAME;
+        $remarkKey = HyperledgerTrace::REMARK;
+        $rateKey = HyperledgerTrace::RATE;
+        $exchangeRateKey = HyperledgerTrace::EXCHANGE_RATE;
+        $createdAtKey = HyperledgerTrace::CREATED_AT;
+        $walletIdKey = HyperledgerTrace::WALLET_ID;
+
         foreach ($this->data as $username => $datum) {
             $messages[] = '来自 @'.$username.' ('.count($datum).' 笔) :';
+
+            foreach ($datum as $uuid => $item) {
+                $date = date('H:i:s', $item->$createdAtKey);
+                $msg = '[`'.$uuid.'`] [`'.$date.'`] [`'.$item->$remarkKey.'`]';
+                $messages[] = $msg;
+            }
         }
 
         $this->send(implode("\n", $messages));
