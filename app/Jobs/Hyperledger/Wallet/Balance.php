@@ -97,11 +97,6 @@ class Balance implements ShouldQueue
             return;
         }
 
-        if ($money < 0) {
-            $this->send('参数 [3] 必须大于等于0');
-            return;
-        }
-
         $model = Wallet::query()
             ->where(WalletTrace::T_UID, $formId)
             ->where(WalletTrace::ID, $id)
@@ -121,6 +116,11 @@ class Balance implements ShouldQueue
 
         if ($type === $types[1]) {
             $money = $balance - $money;
+        }
+
+        if ($money < 0) {
+            $this->send('参数 [3] 计算后结果必须大于等于0');
+            return;
         }
 
         $model = Wallet::query()
