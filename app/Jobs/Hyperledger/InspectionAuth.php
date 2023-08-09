@@ -70,6 +70,7 @@ class InspectionAuth implements ShouldQueue
         $formId = $this->info['form_id'];
 
         $messages = ["*您所拥有的机器人授权信息：*"];
+        $messages[] = '';
 
         $robotsId = Auth::query()
             ->where(AuthTrace::T_UID, $formId)
@@ -83,8 +84,8 @@ class InspectionAuth implements ShouldQueue
         foreach ($model as $item) {
             $idKey = RobotsTrace::T_UID;
             $usernameKey = RobotsTrace::USERNAME;
-            $msg = '[ID: `'.$item->$idKey.'` / ';
-            $msg .= '`@'.$item->$usernameKey.'`]';
+            $msg = '[ID : `'.$item->$idKey.'` / ';
+            $msg .= 'USERNAME : `@'.$item->$usernameKey.'`]';
 
             $messages[] = $msg;
         }
