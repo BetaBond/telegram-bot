@@ -158,6 +158,8 @@ class Data implements ShouldQueue
             $this->info,
             $receiptDataSet
         );
+
+        $this->send(json_encode($hyperledger));
     }
 
     /**
