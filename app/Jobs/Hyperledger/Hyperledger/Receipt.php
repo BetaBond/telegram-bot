@@ -84,6 +84,8 @@ class Receipt implements ShouldQueue
         }
 
         $money = $this->params[0];
+        $remark = $this->params[1] ?? '';
+
         $formId = $this->info['form_id'];
         $formUserName = $this->info['form_user_name'];
 
@@ -127,7 +129,9 @@ class Receipt implements ShouldQueue
             HyperledgerTrace::EXCHANGE_RATE => (float) $exchangeRate,
             HyperledgerTrace::RATE          => (float) $rate,
             HyperledgerTrace::MONEY         => $money,
-            BookTrace::USERNAME             => $formUserName,
+            HyperledgerTrace::USERNAME      => $formUserName,
+            HyperledgerTrace::REMARK        => $remark,
+            HyperledgerTrace::WALLET_ID     => 0,
         ]);
 
         $this->send($model->save() ? '进账成功' : '进账失败');

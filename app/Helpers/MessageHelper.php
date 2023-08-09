@@ -53,8 +53,8 @@ class MessageHelper
             return '参数错误';
         }
 
-        if (count($params) !== $num) {
-            return '参数不足或过多';
+        if (count($params) < $num) {
+            return '参数不足';
         }
 
         return true;
