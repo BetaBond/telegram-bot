@@ -95,7 +95,8 @@ class ReceiptData implements ShouldQueue
 
         [$number, $numberSet] = $this->totalStrokes();
 
-        $messages[] = date('Y-m-d H:i:s');
+        $messages[] = '[`'.date('Y-m-d H:i:s').']`';
+        $messages[] = '';
         $messages[] = "今日入款 ($number) 笔:";
         $messages[] = '';
 
