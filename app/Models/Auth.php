@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Trace\AuthTrace as Trace;
+use App\Models\Trace\RobotsTrace;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -36,8 +37,8 @@ class Auth extends Model
     {
         return $this->hasOne(
             Robots::class,
-            'id',
-            'robot_id'
+            RobotsTrace::ID,
+            Trace::ID
         );
     }
 

@@ -80,13 +80,9 @@ class InspectionAuth implements ShouldQueue
                     RobotsTrace::USERNAME,
                 ]);
             }
-        ])->get();
+        ])->get()->toArray();
 
-        foreach ($model as $item) {
-            $robot = $item->robot();
-            $msg = '[ID: '.$robot->id.']';
-            $messages[] = $msg;
-        }
+        $messages[] = json_encode($model);
 
         $this->send(implode("\n", $messages));
     }
