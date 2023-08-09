@@ -28,18 +28,4 @@ class Auth extends Model
         parent::__construct($attributes);
     }
 
-    /**
-     * 绑定机器人信息表 [一对一关联]
-     *
-     * @return HasOne
-     */
-    public function robot(): HasOne
-    {
-        return $this->hasOne(
-            Robots::class,
-            RobotsTrace::T_UID,
-            Trace::ROBOT_ID
-        );
-    }
-
 }

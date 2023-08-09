@@ -4,6 +4,7 @@ namespace App\Jobs\Hyperledger;
 
 use App\Helpers\MessageHelper;
 use App\Models\Auth;
+use App\Models\Robots;
 use App\Models\Trace\AuthTrace;
 use App\Models\Trace\RobotsTrace;
 use Illuminate\Bus\Queueable;
@@ -70,17 +71,14 @@ class InspectionAuth implements ShouldQueue
 
         $messages = ["*您所拥有的机器人授权信息：*"];
 
-        $model = Auth::query()
-            ->where(AuthTrace::T_UID, $formId);
+        $robotsId = Auth::query()
+            ->where(AuthTrace::T_UID, $formId)
+            ->pluck(AuthTrace::ROBOT_ID)
+            ->toArray();
 
-        $model = $model->with([
-            'robot' => function ($query) {
-                $query->select([
-                    RobotsTrace::ID,
-                    RobotsTrace::USERNAME,
-                ]);
-            }
-        ])->get()->toArray();
+        $model = Robots::query()
+            ->whereIn(RobotsTrace::T_UID, $robotsId)
+            ->get()->toArray();
 
         $messages[] = json_encode($model);
 
