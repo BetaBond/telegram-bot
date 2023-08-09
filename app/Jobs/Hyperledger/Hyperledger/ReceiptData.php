@@ -67,13 +67,38 @@ class ReceiptData implements ShouldQueue
     }
 
     /**
+     * 总笔数计算
+     *
+     * @return array
+     */
+    private function totalStrokes(): array
+    {
+        $number = 0;
+        $numberSet = [];
+
+        foreach ($this->data as $username => $datum) {
+            $numberSet[$username] = count($datum);
+            $number += count($datum);
+        }
+
+        return [$number, $numberSet];
+    }
+
+    /**
      * 执行这个任务
      *
      * @return void
      */
     public function handle(): void
     {
-        $this->send(json_encode($this->data));
+        $messages = [];
+
+        [$number, $numberSet] = $this->totalStrokes();
+
+        $messages[] = "入款 ($number) 笔:";
+        $messages[] = '';
+
+        $this->send(implode("\n", $messages));
     }
 
     /**
