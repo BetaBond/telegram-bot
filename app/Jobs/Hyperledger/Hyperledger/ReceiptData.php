@@ -111,12 +111,12 @@ class ReceiptData implements ShouldQueue
             $messages[] = '来自 @'.$username.' ('.count($datum).' 笔) :';
             $messages[] = '';
 
-            if (!isset($totalAmountSet->rmb->$username)) {
-                $totalAmountSet->rmb->$username = 0;
+            if (!isset($totalAmountSet->rmb[$username])) {
+                $totalAmountSet->rmb[$username] = 0;
             }
 
-            if (!isset($totalAmountSet->usdt->$username)) {
-                $totalAmountSet->usdt->$username = 0;
+            if (!isset($totalAmountSet->usdt[$username])) {
+                $totalAmountSet->usdt[$username] = 0;
             }
 
             foreach ($datum as $uuid => $item) {
@@ -151,13 +151,13 @@ class ReceiptData implements ShouldQueue
 
                 $totalAmount->rmb += $item->$moneyKey;
                 $totalAmount->usdt += $resultMoney;
-                $totalAmountSet->rmb->$username += $item->$moneyKey;
-                $totalAmountSet->usdt->$username += $item->$resultMoney;
+                $totalAmountSet->rmb[$username] += $item->$moneyKey;
+                $totalAmountSet->usdt[$username] += $item->$resultMoney;
             }
 
             $msg = '合计入款 (@'.$username.') : [`￥';
-            $msg .= $totalAmountSet->rmb->$username.'` / `₮';
-            $msg .= $totalAmountSet->usdt->$username.'`]';
+            $msg .= $totalAmountSet->rmb[$username].'` / `₮';
+            $msg .= $totalAmountSet->usdt[$username].'`]';
 
             $messages[] = $msg;
         }
