@@ -108,9 +108,56 @@ class Data implements ShouldQueue
         }
 
         // 取出数据
-        $hyperledger = $hyperledger->get()->toArray();
+        $hyperledger = $hyperledger->get();
 
-        $this->send(json_encode($hyperledger));
+        // 数据分类
+        $receiptDataSet = [];
+        $issueDataSet = [];
+
+        // 构建数据集
+        foreach ($hyperledger as $item) {
+            $typeKey = HyperledgerTrace::TYPE;
+            $item->$typeKey = (int) $item->$typeKey;
+
+            $setData = function (array $dataSet, $data) {
+                $idKey = HyperledgerTrace::ID;
+                $moneyKey = HyperledgerTrace::MONEY;
+                $usernameKey = HyperledgerTrace::USERNAME;
+                $remarkKey = HyperledgerTrace::REMARK;
+                $rateKey = HyperledgerTrace::RATE;
+                $exchangeRateKey = HyperledgerTrace::EXCHANGE_RATE;
+                $createdAtKey = HyperledgerTrace::CREATED_AT;
+                $walletIdKey = HyperledgerTrace::WALLET_ID;
+
+                $dataSet[$data->$usernameKey][$data->$idKey] = [
+                    $idKey           => $data->$idKey,
+                    $walletIdKey     => $data->$walletIdKey,
+                    $moneyKey        => $data->$moneyKey,
+                    $usernameKey     => $data->$usernameKey,
+                    $remarkKey       => $data->$remarkKey,
+                    $rateKey         => $data->$rateKey,
+                    $exchangeRateKey => $data->$exchangeRateKey,
+                    $createdAtKey    => $data->$createdAtKey,
+                ];
+
+                return $dataSet;
+            };
+
+            if ($item->$typeKey === 1) {
+                $receiptDataSet = $setData($receiptDataSet, $item);
+            }
+
+            if ($item->$typeKey === -1) {
+                $issueDataSet = $setData($issueDataSet, $item);
+            }
+        }
+
+        // 发送入款数据
+        ReceiptData::dispatch(
+            $this->token,
+            $this->info,
+            $receiptDataSet
+        );
     }
 
     /**
