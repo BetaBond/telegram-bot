@@ -83,7 +83,8 @@ class InspectionAuth implements ShouldQueue
         foreach ($model as $item) {
             $idKey = RobotsTrace::T_UID;
             $usernameKey = RobotsTrace::USERNAME;
-            $msg = "[ID: $item->$idKey / USERNAME: $item->$usernameKey]";
+            $msg = '[ID: '.$item->$idKey.' / ';
+            $msg .= $item->$usernameKey.']';
 
             $messages[] = $msg;
         }
@@ -98,7 +99,8 @@ class InspectionAuth implements ShouldQueue
      */
     public function failed(Throwable $e): void
     {
-        Log::error(__CLASS__.'('.__LINE__.')'.': ('.$e->getLine().')'.$e->getMessage());
+        Log::error(__CLASS__.'('.__LINE__.')'.': ('.$e->getLine().')'
+            .$e->getMessage());
     }
 
 }
