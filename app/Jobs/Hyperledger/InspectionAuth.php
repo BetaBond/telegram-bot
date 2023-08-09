@@ -78,7 +78,7 @@ class InspectionAuth implements ShouldQueue
 
         $model = Robots::query()
             ->whereIn(RobotsTrace::T_UID, $robotsId)
-            ->get()->toArray();
+            ->get();
 
         foreach ($model as $item) {
             $idKey = RobotsTrace::T_UID;
