@@ -755,6 +755,11 @@ class BaseBillRobot
         $prices = json_decode($store, true);
         $prices = is_array($prices) ? $prices : [];
 
+        // 避免单一价格
+        if ($prices[0] !== $prices[1]) {
+            $prices[0] = $prices[1];
+        }
+
         foreach ($prices as $key => $price) {
             $messages[] = "[`".($key + 1)."`]\t\t:\t\t`￥$price`";
         }
