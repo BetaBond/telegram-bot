@@ -162,6 +162,8 @@ class BaseBillRobot
                 $messageInfo['form_id'],
                 $messageInfo['form_user_name']
             ),
+            '单价' => self::price(),
+            '地址' => self::address(),
             default => false,
         };
 
@@ -200,7 +202,6 @@ class BaseBillRobot
                     ),
                     '信息' => self::info($telegram),
                     '回撤' => self::repeal($params),
-                    '单价' => self::price(),
                     default => false,
                 };
             }
@@ -765,6 +766,16 @@ class BaseBillRobot
         }
 
         return implode("\n", $messages);
+    }
+
+    /**
+     * 阿蛮的地址
+     *
+     * @return string
+     */
+    public static function address(): string
+    {
+        return 'TAhj5mvm1FUSroBtgCggH6NK3SrLPVbfcq';
     }
 
 }
